@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Markets — March 2026</title>
+<meta name="description" content="A data-driven read of the four currents shaping equity markets in 2026: landscape, shifts, risks, and frontier.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: #0a0a0a; color: #fff; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
+  .viewer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .slide {
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .chrome { position: fixed; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; pointer-events: none; z-index: 10; }
+  .chrome.top { top: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent); }
+  .chrome.bottom { bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); }
+  .chrome > * { pointer-events: auto; }
+  .title { font-size: 13px; font-weight: bold; letter-spacing: 0.03em; color: #fff; }
+  .title span { color: #F6693D; }
+  .download {
+    background: #F6693D;
+    color: #000;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: transform 0.15s;
+  }
+  .download:hover { transform: translateY(-1px); }
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(20,20,20,0.85);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  button {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    transition: all 0.15s;
+  }
+  button:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+  button:disabled { opacity: 0.3; cursor: default; }
+  .counter { min-width: 52px; text-align: center; color: #ccc; font-variant-numeric: tabular-nums; }
+  .counter b { color: #fff; font-weight: bold; }
+  .hint { font-size: 10px; color: #888; letter-spacing: 0.08em; text-transform: uppercase; }
+  @media (max-width: 640px) {
+    .hint, .title { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="viewer">
+    <img id="slide" class="slide" alt="Slide" draggable="false" />
+  </div>
+  <div class="chrome top">
+    <div class="title">AI Markets <span>— March 2026</span></div>
+    <a class="download" href="./ai-markets-deck.pptx" download>Download .pptx</a>
+  </div>
+  <div class="chrome bottom">
+    <div class="hint">← → arrows</div>
+    <div class="controls">
+      <button id="prev" aria-label="Previous slide">‹</button>
+      <span class="counter"><b id="cur">1</b> / <span id="total">22</span></span>
+      <button id="next" aria-label="Next slide">›</button>
+    </div>
+    <div class="hint" style="visibility:hidden;">← → arrows</div>
+  </div>
+  <script>
+    const TOTAL = 22;
+    let i = 1;
+    const img = document.getElementById('slide');
+    const cur = document.getElementById('cur');
+    const total = document.getElementById('total');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    total.textContent = TOTAL;
+
+    function show(n) {
+      i = Math.max(1, Math.min(TOTAL, n));
+      img.src = `./slides/Slide${i}.JPG`;
+      cur.textContent = i;
+      prevBtn.disabled = i === 1;
+      nextBtn.disabled = i === TOTAL;
+      history.replaceState(null, '', `#${i}`);
+    }
+
+    prevBtn.addEventListener('click', () => show(i - 1));
+    nextBtn.addEventListener('click', () => show(i + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || e.key === 'j') { show(i + 1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'k') { show(i - 1); e.preventDefault(); }
+      else if (e.key === 'Home') { show(1); e.preventDefault(); }
+      else if (e.key === 'End') { show(TOTAL); e.preventDefault(); }
+    });
+
+    let touchX = null;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 40) show(i + (dx < 0 ? 1 : -1));
+      touchX = null;
+    }, { passive: true });
+
+    const fromHash = parseInt((location.hash || '').slice(1), 10);
+    show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash : 1);
+
+    for (let n = 1; n <= TOTAL; n++) {
+      const pre = new Image();
+      pre.src = `./slides/Slide${n}.JPG`;
+    }
+  </script>
+</body>
+</html>
