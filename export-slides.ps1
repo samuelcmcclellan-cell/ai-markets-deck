@@ -17,8 +17,8 @@ $ppt = New-Object -ComObject PowerPoint.Application
 $ppt.Visible = [Microsoft.Office.Core.MsoTriState]::msoTrue
 $pres = $ppt.Presentations.Open($Pptx, $true, $false, $false)
 
-# Export as JPG at a reasonable resolution
-$pres.Export($OutDir, "JPG", 1600, 900)
+# Export as JPG at a reasonable resolution (4:3 slides → 1600x1200)
+$pres.Export($OutDir, "JPG", 1600, 1200)
 
 $pres.Close()
 $ppt.Quit()

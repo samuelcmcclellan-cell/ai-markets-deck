@@ -71,16 +71,16 @@ function addThemeTag(slide, label) {
 }
 
 function addHeadline(slide, text, opts) {
-  const h = (opts && opts.h) || 0.7;
+  const h = (opts && opts.h) || 0.75;
   const w = (opts && opts.w) || 7.2;
   slide.addText(text, {
     x: 0.5, y: 0.2, w: w, h: h,
-    fontSize: 27, color: C.black, bold: true, fontFace: "Arial Black", valign: "top", margin: 0,
+    fontSize: 24, color: C.black, bold: true, fontFace: "Arial Black", valign: "top", margin: 0,
   });
 }
 
 function addSubhead(slide, text, opts) {
-  const y = (opts && opts.y) || 0.95;
+  const y = (opts && opts.y) || 1.0;
   const h = (opts && opts.h) || 0.5;
   slide.addText(text, {
     x: 0.5, y: y, w: 9.0, h: h,
@@ -188,16 +188,16 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   s.background = { color: C.yellow };
 
-  // Hero image placeholder — grows in 4:3 to use more vertical room.
-  addImagePlaceholder(s, 6.4, 0.9, 3.2, 4.8, "Hero — abstract GPU / data-center close-up");
+  // Hero image placeholder — square-ish so it doesn't look stretched.
+  addImagePlaceholder(s, 6.3, 1.6, 3.3, 3.3, "Hero — abstract GPU / data-center close-up");
 
   // Date eyebrow, top right above the hero image
   s.addText("May 2026", {
-    x: 7.9, y: 0.35, w: 1.7, h: 0.35,
+    x: 7.9, y: 0.6, w: 1.7, h: 0.35,
     fontSize: 14, color: C.black, fontFace: "Arial", align: "right", margin: 0,
   });
   s.addShape(pres.shapes.LINE, {
-    x: 7.9, y: 0.75, w: 1.7, h: 0,
+    x: 7.9, y: 1.0, w: 1.7, h: 0,
     line: { color: C.black, width: 1 },
   });
 
@@ -207,15 +207,15 @@ function lineOpts(extra) {
     fill: { color: C.orange }, line: { color: C.orange, width: 0 },
   });
 
-  // Wordmark
+  // Wordmark — fits on one line at fontSize 60
   s.addText("AI Markets", {
-    x: 0.5, y: 2.4, w: 5.8, h: 1.6,
-    fontSize: 72, color: C.black, bold: true, fontFace: "Arial Black", valign: "top", margin: 0,
+    x: 0.5, y: 2.4, w: 5.8, h: 1.2,
+    fontSize: 60, color: C.black, bold: true, fontFace: "Arial Black", valign: "top", margin: 0,
   });
 
   // Single short tagline
   s.addText("The capex cycle repricing every layer of tech.", {
-    x: 0.5, y: 4.3, w: 5.8, h: 0.6,
+    x: 0.5, y: 3.75, w: 5.8, h: 0.6,
     fontSize: 18, color: C.black, bold: true, fontFace: "Arial Black", valign: "top", margin: 0,
   });
 
@@ -238,11 +238,11 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0, y: 2.3, w: 10.0, h: 3.6,
+    x: 0, y: 1.85, w: 10.0, h: 4.1,
     fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
   });
   s.addText("THE DECK AT A GLANCE", {
-    x: 0.5, y: 2.45, w: 9.0, h: 0.28,
+    x: 0.5, y: 2.0, w: 9.0, h: 0.28,
     fontSize: 9, color: C.gold, bold: true, fontFace: "Arial", charSpacing: 3, margin: 0,
   });
 
@@ -254,7 +254,7 @@ function lineOpts(extra) {
     { label: "FRONTIER",  accent: C.pink,   stat: "05", sub: "Orbital, physical, autonomy, biology.",         pages: "Slides 16–19" },
   ];
 
-  const cardY = 2.9, cardW = 1.7, cardH = 2.65, gap = 0.18;
+  const cardY = 2.45, cardW = 1.7, cardH = 3.2, gap = 0.18;
   const totalW = cards.length * cardW + (cards.length - 1) * gap;
   const startX = (10 - totalW) / 2;
 
@@ -281,7 +281,7 @@ function lineOpts(extra) {
       fontSize: 9, color: "CCCCCC", fontFace: "Arial", align: "center", margin: 0,
     });
     s.addText(c.pages, {
-      x: x, y: cardY + 2.35, w: cardW, h: 0.22,
+      x: x, y: cardY + 2.8, w: cardW, h: 0.22,
       fontSize: 8, color: "AAAAAA", fontFace: "Arial", align: "center", italic: true, margin: 0,
     });
   });
