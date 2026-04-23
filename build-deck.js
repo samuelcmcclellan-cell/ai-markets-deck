@@ -589,42 +589,59 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
   addHeadline(s, "Semiconductors, explained.");
-  addSubhead(s, "Silicon wafers etched with billions of microscopic switches. A handful of categories do very different jobs — and AI demand concentrates in just two.");
+  addSubhead(s, "Chips pass through four making stages before reaching six product markets. AI capex piles into just two categories — but flows through bottlenecks at every stage.");
   addHeadlineRule(s);
 
-  // ---- Teaching strip: four plain-English verbs, one row ----
-  const verbs = [
-    { k: "LOGIC",   v: "computes", color: C.orange },
-    { k: "MEMORY",  v: "stores",   color: C.gold   },
-    { k: "ANALOG",  v: "senses",   color: C.navy   },
-    { k: "POWER",   v: "switches", color: C.medGray },
+  // ---- Top strip: four-stage value chain with flow arrows ----
+  const stages = [
+    { k: "DESIGN",     v: "architects the chip", players: "NVIDIA · Apple · AMD · Broadcom",       color: C.purple   },
+    { k: "EQUIPMENT",  v: "builds the tools",    players: "ASML · Applied Materials · Lam · KLA",  color: C.pink     },
+    { k: "FOUNDRY",    v: "prints the wafer",    players: "TSMC · Samsung · Intel Foundry",        color: C.darkGray },
+    { k: "PACKAGING",  v: "stacks the dies",     players: "TSMC CoWoS · ASE · Amkor",              color: C.black    },
   ];
-  const STRIP_Y = 1.85, STRIP_H = 0.5, STRIP_X = 0.5, STRIP_W = 9.0;
+  const STRIP_X = 0.5, STRIP_Y = 1.85, STRIP_H = 0.85, STRIP_W = 9.0;
   s.addShape(pres.shapes.RECTANGLE, {
     x: STRIP_X, y: STRIP_Y, w: STRIP_W, h: STRIP_H,
     fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
   });
-  const cellW = STRIP_W / verbs.length;
-  verbs.forEach((item, i) => {
-    const cx = STRIP_X + i * cellW;
+  const stageW = STRIP_W / stages.length;
+  stages.forEach((st, i) => {
+    const cx = STRIP_X + i * stageW;
     // Colored dot
     s.addShape(pres.shapes.OVAL, {
-      x: cx + 0.22, y: STRIP_Y + 0.17, w: 0.16, h: 0.16,
-      fill: { color: item.color }, line: { color: item.color, width: 0 },
+      x: cx + 0.20, y: STRIP_Y + 0.11, w: 0.14, h: 0.14,
+      fill: { color: st.color }, line: { color: st.color, width: 0 },
     });
-    // Category label + verb
-    s.addText([
-      { text: item.k + "  ", options: { bold: true, color: C.black, fontSize: 10.5, charSpacing: 2 } },
-      { text: item.v,        options: { color: C.medGray, fontSize: 10.5, italic: true } },
-    ], {
-      x: cx + 0.44, y: STRIP_Y, w: cellW - 0.5, h: STRIP_H,
+    // Row 1: Stage label (bold caps)
+    s.addText(st.k, {
+      x: cx + 0.40, y: STRIP_Y + 0.02, w: stageW - 0.5, h: 0.26,
+      fontSize: 11, bold: true, color: C.black, charSpacing: 2,
       fontFace: "Arial", valign: "middle", margin: 0,
     });
-    // Divider between cells
-    if (i < verbs.length - 1) {
-      s.addShape(pres.shapes.LINE, {
-        x: cx + cellW, y: STRIP_Y + 0.08, w: 0, h: STRIP_H - 0.16,
-        line: { color: C.lightGray, width: 0.5 },
+    // Row 2: italic action (its own line, no wrap)
+    s.addText(st.v, {
+      x: cx + 0.20, y: STRIP_Y + 0.28, w: stageW - 0.3, h: 0.20,
+      fontSize: 9.5, italic: true, color: C.medGray,
+      fontFace: "Arial", valign: "middle", margin: 0,
+    });
+    // Divider beneath description
+    s.addShape(pres.shapes.LINE, {
+      x: cx + 0.22, y: STRIP_Y + 0.50, w: stageW - 0.5, h: 0,
+      line: { color: C.lightGray, width: 0.5 },
+    });
+    // Player list (can wrap to 2 lines)
+    s.addText(st.players, {
+      x: cx + 0.20, y: STRIP_Y + 0.52, w: stageW - 0.30, h: 0.32,
+      fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
+    });
+    // Flow arrow (chevron) between stages
+    if (i < stages.length - 1) {
+      const ax = cx + stageW - 0.05;
+      const ay = STRIP_Y + STRIP_H / 2;
+      s.addText("›", {
+        x: ax - 0.12, y: ay - 0.20, w: 0.24, h: 0.40,
+        fontSize: 24, color: C.medGray, bold: true, fontFace: "Arial",
+        align: "center", valign: "middle", margin: 0,
       });
     }
   });
@@ -638,8 +655,8 @@ function lineOpts(extra) {
     { name: "SENSORS + OPTO",   desc: "How chips see, hear, and communicate with photons.",                      use: "Phone cameras, lidar, fiber optics",  players: "Sony · Samsung · STMicro",            color: C.green },
     { name: "DISCRETE + POWER", desc: "Heavy-current switching for machines, grids, and vehicles.",              use: "EVs, industrial motors, chargers",    players: "Infineon · ON Semi · Wolfspeed",      color: C.medGray },
   ];
-  const GRID_X = 0.5, GRID_Y = 2.55;
-  const cardW = 2.90, cardH = 1.50, hgap = 0.15, vgap = 0.12;
+  const GRID_X = 0.5, GRID_Y = 2.85;
+  const cardW = 2.90, cardH = 1.40, hgap = 0.15, vgap = 0.10;
 
   types.forEach((t, i) => {
     const col = i % 3;
@@ -652,45 +669,45 @@ function lineOpts(extra) {
       fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
     });
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: y, w: cardW, h: 0.3,
+      x: x, y: y, w: cardW, h: 0.28,
       fill: { color: t.color }, line: { color: t.color, width: 0 },
     });
     s.addText(t.name, {
-      x: x, y: y, w: cardW, h: 0.3,
+      x: x, y: y, w: cardW, h: 0.28,
       fontSize: 10, color: t.color === C.gold ? C.black : C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
     });
     // Plain-English function
     s.addText(t.desc, {
-      x: x + 0.15, y: y + 0.38, w: cardW - 0.3, h: 0.52,
-      fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
+      x: x + 0.15, y: y + 0.34, w: cardW - 0.3, h: 0.5,
+      fontSize: 9.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
     });
     // Representative use (italic, medGray)
     s.addText(t.use, {
-      x: x + 0.15, y: y + 0.92, w: cardW - 0.3, h: 0.28,
-      fontSize: 9, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
+      x: x + 0.15, y: y + 0.86, w: cardW - 0.3, h: 0.26,
+      fontSize: 8.5, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
     });
     // Players divider + line
     s.addShape(pres.shapes.LINE, {
-      x: x + 0.2, y: y + cardH - 0.28, w: cardW - 0.4, h: 0,
+      x: x + 0.2, y: y + cardH - 0.26, w: cardW - 0.4, h: 0,
       line: { color: C.lightGray, width: 0.5 },
     });
     s.addText(t.players, {
-      x: x, y: y + cardH - 0.26, w: cardW, h: 0.22,
+      x: x, y: y + cardH - 0.24, w: cardW, h: 0.22,
       fontSize: 7.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
     });
   });
 
-  // Bottom payoff banner — teaching takeaway, plain English
+  // Bottom payoff banner — ties both axes together
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.75, w: 9.0, h: 0.45,
+    x: 0.5, y: 5.78, w: 9.0, h: 0.44,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
-  s.addText("Logic and memory are the only two categories where AI capex concentrates — the rest of silicon serves the rest of the economy.", {
-    x: 0.7, y: 5.75, w: 8.6, h: 0.45,
-    fontSize: 12, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  s.addText("Logic and memory absorb the AI capex — but every chip flows through ASML tools, TSMC fabs, and advanced packaging, where bottlenecks decide who ships.", {
+    x: 0.7, y: 5.78, w: 8.6, h: 0.44,
+    fontSize: 11.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: SIA category taxonomy; WSTS Fall 2025 forecast for market-size context. Category descriptions are plain-English simplifications.");
+  addSource(s, "Sources: SIA category taxonomy; WSTS Fall 2025; SEMI World Fab Forecast; TrendForce; company disclosures. Category descriptions are plain-English simplifications.");
   addFooter(s, 7);
 }
 
@@ -1189,7 +1206,7 @@ function lineOpts(extra) {
      cell("Code, APIs, browsers, databases", { align: "left", bold: true, color: C.black })],
   ];
   // Image placeholder on the left
-  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.25, "Screenshot — dark-themed IDE with AI coworker editing code, orange accents");
+  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.25, "Screenshot — dark-mode IDE, AI agent editing Python code live, glowing orange cursor, 'Claude is editing' pill, streaming test output in a terminal pane, square framing");
 
   // Table on the right
   s.addTable(tableData, {
@@ -1391,7 +1408,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // LEFT: taller-aspect image anchor (~4:3 vertical)
-  addImagePlaceholder(s, 0.5, 1.85, 3.5, 3.3, "Cinematic — bunny-suited techs on fab floor, orange photolith glow, tall aspect");
+  addImagePlaceholder(s, 0.5, 1.85, 3.5, 3.3, "Cinematic — two bunny-suited technicians in front of an EUV lithography tool, warm amber photolith glow, shallow DOF on a gloved hand at a control, stainless-steel cleanroom, near-square");
 
   // RIGHT: two hero stats + concentration narrative
   const stats = [
@@ -1534,7 +1551,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // LEFT: taller-aspect protest banner image (slightly taller to match right column)
-  addImagePlaceholder(s, 0.5, 1.85, 3.5, 3.5, "Photojournalism — 'STOP THE AI RACE' hand-lettered signs at a dusk rally, tall aspect");
+  addImagePlaceholder(s, 0.5, 1.85, 3.5, 3.5, "Photojournalism — 'STOP THE AI RACE' hand-lettered protest signs at a dusk rally, shoulder-height crowd POV, warm golden-hour sky, faces in shadow, signs in sharp focus, square");
 
   // RIGHT: short framing paragraph above three narrative cards
   s.addText("Three forces now price the AI infrastructure bet lower: communities blocking the builds, voters souring on the technology, and a shortage of the skilled workers who wire it all up.", {
@@ -1596,7 +1613,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // Hero image on the right
-  addImagePlaceholder(s, 5.85, 1.6, 3.65, 3.8, "Render — orbital data-center satellite with solar wings above Earth's limb at dawn");
+  addImagePlaceholder(s, 5.85, 1.6, 3.65, 3.8, "Render — modular orbital data-center satellite with 50-meter solar wings catching a violet tint, above Earth's dawn limb with atmospheric glow, deep indigo space, hyperrealistic Octane quality, slightly portrait");
 
   const cards = [
     { title: "NO GRID QUEUE",   body: "Earth's interconnection backlogs, zoning battles, and cooling constraints don't exist in orbit." },
@@ -1648,7 +1665,7 @@ function lineOpts(extra) {
   addSubhead(s, "Humanoids enter manufacturing, logistics, and healthcare at pilot scale. Every robot is a walking inference endpoint.");
   addHeadlineRule(s);
 
-  addImagePlaceholder(s, 1.5, 1.6, 7.0, 2.2, "Photo — humanoid robot mid-stride on a factory floor, warm work-light, motion blur");
+  addImagePlaceholder(s, 1.5, 1.6, 7.0, 2.2, "Panoramic photo — humanoid robot mid-stride on a factory floor, matte-white body with violet joint accents, motion blur on limbs, amber work-lights, a blurred human worker in a safety vest in the background");
 
   const cards = [
     { title: "PHYSICAL WORK",         body: "Manufacturing, logistics, warehousing, agriculture, healthcare — pilots are underway." },
@@ -1700,7 +1717,7 @@ function lineOpts(extra) {
   addSubhead(s, "More miles → better models → more deployments. Every vehicle is a rolling inference machine consuming frontier-scale compute.");
   addHeadlineRule(s);
 
-  addImagePlaceholder(s, 0.5, 1.6, 2.8, 4.15, "Photo — Waymo robotaxi on a rainy city street at dusk, sensor pod lit, long exposure");
+  addImagePlaceholder(s, 0.5, 1.6, 2.8, 4.15, "Long-exposure photo — white minivan robotaxi with a violet-glowing roof lidar on a rainy dusk city street, red and white traffic light trails, wet asphalt reflecting neon storefronts, tall portrait");
 
   const cards = [
     { title: "THE SAFETY CASE",  body: "Human drivers cause ~1.35M deaths a year. Autonomous systems don't tire or lose focus." },
@@ -1754,7 +1771,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // Image on the left, taller
-  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.67, "Render — ribbon-diagram protein structure against graphite black, shallow DOF");
+  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.67, "Render — protein ribbon diagram in a violet-to-magenta-to-gold gradient on graphite black, razor-sharp front with softly-blurred back, faint electron-density mesh around the structure, no labels or annotations");
 
   // Three educational mechanism cards stacked on the right
   const stages = [
