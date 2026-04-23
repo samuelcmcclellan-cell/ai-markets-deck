@@ -1240,14 +1240,14 @@ function lineOpts(extra) {
   addSubhead(s, "Semis are up, software is down — a ~58-point spread inside one theme. Private credit and PE-owned software names are now selling off in sympathy.");
   addHeadlineRule(s);
 
-  addChartTitle(s, "YTD price return, rebased to 100", 0.5, 1.7);
+  addChartTitle(s, "YTD price return, rebased to 100", 0.5, 1.55);
   s.addChart(pres.charts.LINE,
     [
       { name: "Semis",    labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100, 110, 118, 128, 138] },
       { name: "Nasdaq",   labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100,  98,  96,  99, 104] },
       { name: "Software", labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100,  88,  78,  76,  80] },
     ],
-    lineOpts({ x: 0.5, y: 1.9, w: 4.3, h: 3.75 })
+    lineOpts({ x: 0.5, y: 1.95, w: 4.3, h: 3.75 })
   );
 
   // ---- Right-side panels: cleaner container + consistent spacing ----
@@ -1628,14 +1628,14 @@ function lineOpts(extra) {
     });
     s.addText(c.title, {
       x: 0.5, y: y, w: 5.15, h: 0.35,
-      fontSize: 11, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 2, margin: 0.15,
+      fontSize: 11, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 3, margin: 0.30,
     });
     s.addShape(pres.shapes.RECTANGLE, {
       x: 0.5, y: y + 0.35, w: 5.15, h: 0.8,
       fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
     });
     s.addText(c.body, {
-      x: 0.65, y: y + 0.4, w: 4.85, h: 0.72,
+      x: 0.75, y: y + 0.4, w: 4.75, h: 0.72,
       fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
     });
   });
