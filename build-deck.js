@@ -593,22 +593,23 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
   addHeadline(s, "The labs.");
-  addSubhead(s, "Four frontier labs now worth ~$1.5T in aggregate private value. Q1 2026 doubled all of 2025's foundational-AI VC funding — and VCs are still chasing.");
+  addSubhead(s, "Three private labs worth ~$1.5T combined, plus Google inside Alphabet's $2.3T public market cap. Q1 2026 doubled all of 2025's foundational-AI VC funding.");
   addHeadlineRule(s);
 
   const hdr = (t) => ({ text: t, options: { fill: { color: C.black }, color: C.white, bold: true, fontSize: 11, fontFace: "Arial", align: "center", valign: "middle" } });
   const cell = (t, opts) => ({ text: t, options: Object.assign({ fontSize: 11.5, fontFace: "Arial", valign: "middle", align: "center", color: C.darkGray }, opts || {}) });
   const rows = [
-    { name: "OpenAI",    val: "$852B", mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Apr 2026" },
-    { name: "Anthropic", val: "$380B", mult: "~13× ARR",  event: "$30B Series G (Feb); VCs now offering $800B+" },
-    { name: "xAI",       val: "$230B", mult: "~77× ARR*", event: "$20B Nvidia-led Series E · Q1 2026" },
-    { name: "Mistral",   val: "$14B",  mult: "~14× ARR",  event: "€1.7B Series C · Jun 2024" },
+    { name: "OpenAI",    logo: "logos/openai.png",    val: "$852B", mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Apr 2026" },
+    { name: "Anthropic", logo: "logos/anthropic.png", val: "$380B", mult: "~13× ARR",  event: "$30B Series G (Feb); VCs now offering $800B+" },
+    { name: "Google",    logo: "logos/google.png",    val: "$2.3T", mult: "~20× P/E",  event: "Alphabet (public) · Gemini 3 / DeepMind · ~$85B 2026 capex" },
+    { name: "xAI",       logo: "logos/xai.png",       val: "$230B", mult: "~77× ARR*", event: "$20B Nvidia-led Series E · Q1 2026" },
   ];
   const tableData = [
-    [hdr("Lab"), hdr("Valuation"), hdr("Multiple"), hdr("Latest event")],
+    [hdr(""), hdr("Lab"), hdr("Valuation"), hdr("Multiple"), hdr("Latest event")],
     ...rows.map((r, i) => {
       const fill = i % 2 === 1 ? { fill: { color: C.offWhite } } : { fill: { color: C.white } };
       return [
+        cell("", fill),
         cell(r.name, Object.assign({ bold: true, color: C.black, align: "left" }, fill)),
         cell(r.val,  Object.assign({ bold: true, color: C.orange }, fill)),
         cell(r.mult, fill),
@@ -616,12 +617,26 @@ function lineOpts(extra) {
       ];
     }),
   ];
+  const TABLE_X = 0.5, TABLE_Y = 1.9, ROW_H = 0.55, LOGO_COL_W = 0.7;
   s.addTable(tableData, {
-    x: 0.5, y: 1.9, w: 9.0,
-    colW: [1.3, 1.4, 1.5, 4.8],
-    rowH: 0.55,
+    x: TABLE_X, y: TABLE_Y, w: 9.0,
+    colW: [LOGO_COL_W, 1.2, 1.3, 1.4, 4.4],
+    rowH: ROW_H,
     border: { pt: 0.5, color: C.lightGray },
     fontFace: "Arial",
+  });
+
+  // Overlay logo images centered in the first column of each data row
+  const LOGO_SIZE = 0.4;
+  rows.forEach((r, i) => {
+    const rowY = TABLE_Y + (i + 1) * ROW_H;
+    s.addImage({
+      path: r.logo,
+      x: TABLE_X + (LOGO_COL_W - LOGO_SIZE) / 2,
+      y: rowY + (ROW_H - LOGO_SIZE) / 2,
+      w: LOGO_SIZE, h: LOGO_SIZE,
+      sizing: { type: "contain", w: LOGO_SIZE, h: LOGO_SIZE },
+    });
   });
 
   s.addShape(pres.shapes.RECTANGLE, {
@@ -633,7 +648,7 @@ function lineOpts(extra) {
     fontSize: 13.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: TechCrunch, CNBC, Tech-Insider (Apr 2026); Crunchbase Q1 2026 VC data; Sacra ARR run-rates; Bloomberg. *xAI ARR estimated.");
+  addSource(s, "Sources: TechCrunch, CNBC, Tech-Insider (Apr 2026); Crunchbase Q1 2026 VC data; Sacra ARR run-rates; Bloomberg; Alphabet 10-K & 2026 capex guide. *xAI ARR estimated.");
   addFooter(s, 8);
 }
 
