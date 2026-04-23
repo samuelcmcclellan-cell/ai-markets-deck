@@ -583,96 +583,109 @@ function lineOpts(extra) {
 }
 
 // ===================================================================
-// SLIDE 7 — Semiconductor primer (what semis actually are)
+// SLIDE 7 — Semiconductor primer (market structure, 6 categories)
 // ===================================================================
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Semiconductors, in one slide.");
-  addSubhead(s, "A ~$975B market that turns sand into intelligence. Four kinds of chips, each doing a different job inside every phone, car, and data center.");
+  addHeadline(s, "Inside the $975B chip market.");
+  addSubhead(s, "Six categories of silicon. Memory and logic take 68% of the market — and virtually all of the AI capex. Logic isn't just CPUs: GPUs, AI accelerators, ASICs, FPGAs, and networking chips all live here.");
   addHeadlineRule(s);
 
-  // Definition callout card
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 1.85, w: 9.0, h: 0.8,
-    fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
+  // ---- Market-share stacked bar (visual scale) ----
+  const segments = [
+    { name: "MEMORY",    pct: 38, color: C.gold,    label: "MEMORY 38%",    labelColor: C.black },
+    { name: "LOGIC",     pct: 30, color: C.orange,  label: "LOGIC 30%",     labelColor: C.white },
+    { name: "PROCESSORS",pct: 11, color: C.teal,    label: "MPU/MCU 11%",   labelColor: C.white },
+    { name: "ANALOG",    pct: 10, color: C.navy,    label: "ANALOG 10%",    labelColor: C.white },
+    { name: "SENSORS",   pct:  6, color: C.green,   label: "",              labelColor: C.white },
+    { name: "DISCRETE",  pct:  5, color: C.medGray, label: "",              labelColor: C.white },
+  ];
+  const BAR_X = 0.5, BAR_Y = 1.85, BAR_W = 9.0, BAR_H = 0.45;
+  let cx = BAR_X;
+  segments.forEach(seg => {
+    const w = BAR_W * (seg.pct / 100);
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: cx, y: BAR_Y, w: w, h: BAR_H,
+      fill: { color: seg.color }, line: { color: seg.color, width: 0 },
+    });
+    if (seg.label) {
+      s.addText(seg.label, {
+        x: cx, y: BAR_Y, w: w, h: BAR_H,
+        fontSize: 10, color: seg.labelColor, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 1, margin: 0,
+      });
+    }
+    cx += w;
   });
-  s.addText("WHAT IS A SEMICONDUCTOR?", {
-    x: 0.7, y: 1.9, w: 8.6, h: 0.25,
-    fontSize: 9, color: C.gold, bold: true, fontFace: "Arial", charSpacing: 3, margin: 0,
-  });
-  s.addText("A tiny switch — billions of them etched onto a silicon wafer — that turns electricity into computation, memory, and signal. Every modern device runs on them.", {
-    x: 0.7, y: 2.2, w: 8.6, h: 0.45,
-    fontSize: 11.5, color: C.white, fontFace: "Arial", valign: "middle", margin: 0,
+  s.addText("$975B total semiconductor market, 2026E", {
+    x: 0.5, y: 2.32, w: 9.0, h: 0.22,
+    fontSize: 8.5, color: C.medGray, italic: true, fontFace: "Arial", align: "right", margin: 0,
   });
 
-  // Four chip-type cards
+  // ---- Six category cards (2 rows × 3 cols) ----
   const types = [
-    { name: "LOGIC",    icon: "CPU",  desc: "Does the thinking. GPUs, CPUs, TPUs.",   share: "$302B", pct: "31%", players: "NVIDIA · AMD · Intel · TSMC", color: C.orange },
-    { name: "MEMORY",   icon: "MEM",  desc: "Stores the data. DRAM, HBM, NAND.",       share: "$295B", pct: "30%", players: "SK Hynix · Samsung · Micron",  color: C.gold },
-    { name: "ANALOG",   icon: "≈",    desc: "Connects to the real world. Power, RF.",  share: "$95B",  pct: "10%", players: "TI · Analog Devices · Infineon", color: C.teal },
-    { name: "OTHER",    icon: "•••",  desc: "Microcontrollers, sensors, discretes.",   share: "$283B", pct: "29%", players: "Broadcom · Qualcomm · NXP",    color: C.medGray },
+    { name: "LOGIC",            share: "$295B", pct: "30%", desc: "GPUs, AI accelerators, ASICs, FPGAs, networking ICs — where computation happens",     players: "NVIDIA · AMD · Broadcom · TSMC",    color: C.orange },
+    { name: "MEMORY",           share: "$371B", pct: "38%", desc: "DRAM, HBM, NAND, NOR — stores data and feeds logic at terabit speeds",               players: "SK Hynix · Samsung · Micron",        color: C.gold },
+    { name: "PROCESSORS",       share: "$107B", pct: "11%", desc: "CPUs and application processors — general-purpose silicon in phones and PCs",        players: "Intel · AMD · Apple · Qualcomm",     color: C.teal },
+    { name: "ANALOG",           share: "$98B",  pct: "10%", desc: "Power management, RF, data converters — the bridge between silicon and the real world", players: "TI · Analog Devices · Infineon",     color: C.navy },
+    { name: "SENSORS + OPTO",   share: "$58B",  pct: "6%",  desc: "CMOS image sensors, MEMS, LEDs, photonics — how chips see, hear, and communicate",   players: "Sony · Samsung · STMicro",            color: C.green },
+    { name: "DISCRETE + POWER", share: "$48B",  pct: "5%",  desc: "SiC, GaN, power transistors — heavy-current switching for EVs, grids, and industrial", players: "Infineon · ON Semi · Wolfspeed",      color: C.medGray },
   ];
-  const cardY = 2.8, cardW = 2.13, cardH = 2.65, gap = 0.16;
-  const totalW = types.length * cardW + (types.length - 1) * gap;
-  const startX = (10 - totalW) / 2;
+  const GRID_X = 0.5, GRID_Y = 2.65;
+  const cardW = 2.90, cardH = 1.44, hgap = 0.15, vgap = 0.10;
+
   types.forEach((t, i) => {
-    const x = startX + i * (cardW + gap);
-    // Card body
+    const col = i % 3;
+    const row = Math.floor(i / 3);
+    const x = GRID_X + col * (cardW + hgap);
+    const y = GRID_Y + row * (cardH + vgap);
+
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: cardY, w: cardW, h: cardH,
+      x: x, y: y, w: cardW, h: cardH,
       fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
     });
-    // Accent header bar
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: cardY, w: cardW, h: 0.4,
+      x: x, y: y, w: cardW, h: 0.3,
       fill: { color: t.color }, line: { color: t.color, width: 0 },
     });
     s.addText(t.name, {
-      x: x, y: cardY, w: cardW, h: 0.4,
-      fontSize: 11, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 3, margin: 0,
+      x: x, y: y, w: cardW, h: 0.3,
+      fontSize: 10, color: t.color === C.gold ? C.black : C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
     });
-    // Icon/glyph
-    s.addText(t.icon, {
-      x: x, y: cardY + 0.5, w: cardW, h: 0.55,
-      fontSize: 24, color: t.color, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
-    });
-    // Share ($)
-    s.addText(t.share, {
-      x: x, y: cardY + 1.1, w: cardW, h: 0.35,
-      fontSize: 18, color: C.black, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
-    });
-    s.addText(t.pct + " of market", {
-      x: x, y: cardY + 1.42, w: cardW, h: 0.2,
-      fontSize: 8.5, color: C.medGray, fontFace: "Arial", align: "center", margin: 0,
+    // Share + pct row
+    s.addText([
+      { text: t.share,       options: { fontSize: 17, color: C.black,   bold: true, fontFace: "Arial Black" } },
+      { text: "   " + t.pct, options: { fontSize: 11, color: C.medGray, fontFace: "Arial" } },
+    ], {
+      x: x, y: y + 0.38, w: cardW, h: 0.32, align: "center", valign: "middle", margin: 0,
     });
     // Description
     s.addText(t.desc, {
-      x: x + 0.1, y: cardY + 1.7, w: cardW - 0.2, h: 0.5,
-      fontSize: 9.5, color: C.darkGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+      x: x + 0.14, y: y + 0.78, w: cardW - 0.28, h: 0.42,
+      fontSize: 9, color: C.darkGray, fontFace: "Arial", valign: "top", align: "center", margin: 0,
     });
-    // Players footer
+    // Players divider + line
     s.addShape(pres.shapes.LINE, {
-      x: x + 0.2, y: cardY + 2.22, w: cardW - 0.4, h: 0,
+      x: x + 0.2, y: y + cardH - 0.28, w: cardW - 0.4, h: 0,
       line: { color: C.lightGray, width: 0.5 },
     });
     s.addText(t.players, {
-      x: x + 0.1, y: cardY + 2.3, w: cardW - 0.2, h: 0.3,
-      fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+      x: x, y: y + cardH - 0.26, w: cardW, h: 0.22,
+      fontSize: 7.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
     });
   });
 
   // Bottom payoff banner
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.6, w: 9.0, h: 0.6,
+    x: 0.5, y: 5.75, w: 9.0, h: 0.45,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
-  s.addText("$975B total, +26% YoY. Logic + memory = ~$600B — tracking hyperscaler capex almost dollar-for-dollar.", {
-    x: 0.7, y: 5.6, w: 8.6, h: 0.6,
-    fontSize: 12.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  s.addText("Memory + logic = ~$666B, or 68% of the market — and where virtually every dollar of AI capex lands.", {
+    x: 0.7, y: 5.75, w: 8.6, h: 0.45,
+    fontSize: 12, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: WSTS Fall 2025 forecast; SIA; company 10-Ks; TrendForce. Segment totals rounded; 'Other' combines micro + discrete + sensors.");
+  addSource(s, "Sources: WSTS Fall 2025 forecast ($975B 2026E); SIA market-structure breakdown; company 10-Ks; TrendForce memory data. Segment shares rounded.");
   addFooter(s, 7);
 }
 
@@ -1058,27 +1071,28 @@ function lineOpts(extra) {
      cell("None",                { align: "left" }),
      cell("Code, APIs, browsers, databases", { align: "left", bold: true, color: C.black })],
   ];
+  // Image placeholder on the left
+  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.25, "Screenshot — dark-themed IDE with AI coworker editing code, orange accents");
+
+  // Table on the right
   s.addTable(tableData, {
-    x: 0.5, y: 1.85, w: 5.5,
-    colW: [1.4, 2.0, 2.1],
+    x: 3.95, y: 1.85, w: 5.55,
+    colW: [1.45, 2.05, 2.05],
     rowH: 0.65,
     border: { pt: 0.5, color: C.lightGray },
     fontFace: "Arial",
   });
 
-  // Image placeholder on the right
-  addImagePlaceholder(s, 6.2, 1.85, 3.3, 3.25, "Screenshot — dark-themed IDE with AI coworker editing code, orange accents");
-
   s.addShape(pres.shapes.RECTANGLE, {
     x: 0.5, y: 5.85, w: 9.0, h: 0.5,
     fill: { color: C.orange }, line: { color: C.orange, width: 0 },
   });
-  s.addText("Labs are buying dev-tool companies (Bun, Astral) to lock the coding stack.", {
+  s.addText("The 10–100× compute step-up per session is what every AI capex forecast is pricing in.", {
     x: 0.7, y: 5.85, w: 8.6, h: 0.5,
     fontSize: 13, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Source: Anthropic, OpenAI, GitHub Trending; company announcements; TechCrunch acquisition reporting.");
+  addSource(s, "Source: Anthropic, OpenAI, GitHub Trending; Morgan Stanley CIO Survey; Strategy Research.");
   addFooter(s, 11);
 }
 
@@ -1099,63 +1113,80 @@ function lineOpts(extra) {
       { name: "Nasdaq",   labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100,  98,  96,  99, 104] },
       { name: "Software", labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100,  88,  78,  76,  80] },
     ],
-    lineOpts({ x: 0.5, y: 2.2, w: 4.3, h: 3.6 })
+    lineOpts({ x: 0.5, y: 1.9, w: 4.3, h: 3.75 })
   );
 
-  const ROW_H = 0.38;
-  const X_TICKER = 1.0;
-  const X_PCT    = 0.9;
-  const drawPanel = (x, y, title, color, rows, pctColor) => {
+  // ---- Right-side panels: cleaner container + consistent spacing ----
+  const P_X = 5.2, P_W = 4.3;
+  const HEAD_H = 0.30, ROW_H = 0.30;
+  const drawPanel = (y, title, headerColor, rows, pctColor) => {
+    const h = HEAD_H + rows.length * ROW_H + 0.05;
+    // Container
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: y, w: 4.3, h: 0.3,
-      fill: { color: color }, line: { color: color, width: 0 },
+      x: P_X, y: y, w: P_W, h: h,
+      fill: { color: C.white }, line: { color: C.lightGray, width: 0.5 },
+    });
+    // Colored header bar
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: P_X, y: y, w: P_W, h: HEAD_H,
+      fill: { color: headerColor }, line: { color: headerColor, width: 0 },
     });
     s.addText(title, {
-      x: x, y: y, w: 4.3, h: 0.3,
-      fontSize: 10, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
+      x: P_X, y: y, w: P_W, h: HEAD_H,
+      fontSize: 9.5, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
     });
+    // Rows with aligned columns and subtle row dividers
     rows.forEach((r, i) => {
-      const ry = y + 0.35 + i * ROW_H;
+      const ry = y + HEAD_H + 0.04 + i * ROW_H;
       s.addText(r.ticker, {
-        x: x, y: ry, w: X_TICKER, h: ROW_H,
-        fontSize: 10.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0.05,
+        x: P_X + 0.18, y: ry, w: 1.3, h: ROW_H,
+        fontSize: 10, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
       });
       s.addText(r.pct, {
-        x: x + X_TICKER, y: ry, w: X_PCT, h: ROW_H,
-        fontSize: 12.5, color: pctColor, bold: true, fontFace: "Arial Black", valign: "middle", margin: 0,
+        x: P_X + 1.48, y: ry, w: 0.82, h: ROW_H,
+        fontSize: 12, color: pctColor, bold: true, fontFace: "Arial Black", align: "right", valign: "middle", margin: 0,
       });
       s.addText(r.note, {
-        x: x + X_TICKER + X_PCT, y: ry, w: 4.3 - X_TICKER - X_PCT, h: ROW_H,
-        fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
+        x: P_X + 2.42, y: ry, w: 1.72, h: ROW_H,
+        fontSize: 8.5, color: C.medGray, fontFace: "Arial", valign: "middle", margin: 0,
       });
+      if (i < rows.length - 1) {
+        s.addShape(pres.shapes.LINE, {
+          x: P_X + 0.18, y: ry + ROW_H - 0.005, w: P_W - 0.36, h: 0,
+          line: { color: C.lightGray, width: 0.4 },
+        });
+      }
     });
+    return h;
   };
 
-  drawPanel(5.2, 2.2, "MEMORY SUPERCYCLE", C.green, [
+  const PANEL_GAP = 0.10;
+  let py = 1.9;
+  py += drawPanel(py, "MEMORY SUPERCYCLE", C.green, [
     { ticker: "Samsung",  pct: "+72%", note: "HBM capacity +50% in 2026" },
     { ticker: "Micron",   pct: "+68%", note: "HBM sold out; $8B run-rate" },
     { ticker: "SK Hynix", pct: "+62%", note: "60% HBM share; HBM4 ramp" },
-  ], C.green);
+  ], C.green) + PANEL_GAP;
 
-  drawPanel(5.2, 3.55, "SOFTWARE UNDER PRESSURE", C.red, [
+  py += drawPanel(py, "SOFTWARE UNDER PRESSURE", C.red, [
     { ticker: "Salesforce", pct: "–22%", note: "Seat model under agent threat" },
     { ticker: "Adobe",      pct: "–24%", note: "Gen-AI erodes content moat" },
     { ticker: "ServiceNow", pct: "–19%", note: "Workflows disrupted by agents" },
-  ], C.red);
+  ], C.red) + PANEL_GAP;
 
-  drawPanel(5.2, 4.90, "PRIVATE CREDIT & PE", C.darkGray, [
-    { ticker: "BDC index", pct: "–11%",  note: "Software loan books re-marked" },
-    { ticker: "PE SaaS",   pct: "–15%",  note: "TBoss, Vista portcos written down" },
+  py += drawPanel(py, "PRIVATE CREDIT & PE", C.darkGray, [
+    { ticker: "BDC index", pct: "–11%", note: "Software loan books re-marked" },
+    { ticker: "PE SaaS",   pct: "–15%", note: "2021 marks written down in Q1" },
   ], C.red);
 
   // Bottom payoff banner
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.9, w: 9.0, h: 0.4,
+    x: 0.5, y: 5.78, w: 9.0, h: 0.42,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
-  s.addText("The software sell-off is now a private-credit problem. PE shops holding SaaS at 2021 marks are taking the writedowns in Q1 reports.", {
-    x: 0.7, y: 5.9, w: 8.6, h: 0.4,
-    fontSize: 10.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  s.addText("The software sell-off is now a private-credit problem — PE shops are writing down 2021-marked SaaS.", {
+    x: 0.7, y: 5.78, w: 8.6, h: 0.42,
+    fontSize: 11, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
   addSource(s, "Sources: Yahoo Finance YTD total returns (Apr 17, 2026); Counterpoint Research; Morgan Stanley CIO Survey; Bloomberg BDC and PE secondary marks; PitchBook. Single-stock YTDs indicative.");
@@ -1449,7 +1480,7 @@ function lineOpts(extra) {
     const y = 1.6 + i * 1.3;
     s.addShape(pres.shapes.RECTANGLE, {
       x: 0.5, y: y, w: 5.15, h: 0.35,
-      fill: { color: C.purple }, line: { color: C.purple, width: 0 },
+      fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
     });
     s.addText(c.title, {
       x: 0.5, y: y, w: 5.15, h: 0.35,
@@ -1470,7 +1501,7 @@ function lineOpts(extra) {
     fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
   });
   s.addText([
-    { text: "PLAYERS   ", options: { bold: true, color: C.purple, fontSize: 9.5, charSpacing: 3 } },
+    { text: "PLAYERS   ", options: { bold: true, color: C.gold, fontSize: 9.5, charSpacing: 3 } },
     { text: "Starcloud · SpaceX · Google Suncatcher · Aetherflux", options: { color: C.white, fontSize: 11, bold: true } },
   ], {
     x: 0.7, y: 5.85, w: 8.6, h: 0.4, fontFace: "Arial", valign: "middle", margin: 0,
@@ -1501,7 +1532,7 @@ function lineOpts(extra) {
     const x = 0.5 + i * 3.1;
     s.addShape(pres.shapes.RECTANGLE, {
       x: x, y: 4.0, w: 2.95, h: 0.35,
-      fill: { color: C.purple }, line: { color: C.purple, width: 0 },
+      fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
     });
     s.addText(c.title, {
       x: x, y: 4.0, w: 2.95, h: 0.35,
@@ -1522,7 +1553,7 @@ function lineOpts(extra) {
     fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
   });
   s.addText([
-    { text: "PLAYERS   ", options: { bold: true, color: C.purple, fontSize: 9.5, charSpacing: 3 } },
+    { text: "PLAYERS   ", options: { bold: true, color: C.gold, fontSize: 9.5, charSpacing: 3 } },
     { text: "Tesla Optimus · Figure · Boston Dynamics · Unitree · Agility", options: { color: C.white, fontSize: 11, bold: true } },
   ], {
     x: 0.7, y: 5.85, w: 8.6, h: 0.4, fontFace: "Arial", valign: "middle", margin: 0,
@@ -1554,7 +1585,7 @@ function lineOpts(extra) {
     const cx = 3.5, cw = 6.0;
     s.addShape(pres.shapes.RECTANGLE, {
       x: cx, y: y, w: cw, h: 0.35,
-      fill: { color: C.purple }, line: { color: C.purple, width: 0 },
+      fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
     });
     s.addText(c.title, {
       x: cx, y: y, w: cw, h: 0.35,
@@ -1575,7 +1606,7 @@ function lineOpts(extra) {
     fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
   });
   s.addText([
-    { text: "PLAYERS   ", options: { bold: true, color: C.purple, fontSize: 9.5, charSpacing: 3 } },
+    { text: "PLAYERS   ", options: { bold: true, color: C.gold, fontSize: 9.5, charSpacing: 3 } },
     { text: "Waymo · Tesla FSD · Baidu Apollo · Aurora", options: { color: C.white, fontSize: 11, bold: true } },
   ], {
     x: 0.7, y: 5.9, w: 8.6, h: 0.35, fontFace: "Arial", valign: "middle", margin: 0,
@@ -1586,56 +1617,76 @@ function lineOpts(extra) {
 }
 
 // ===================================================================
-// SLIDE 20 — AI in biology (drug discovery — fewer hero stats)
+// SLIDE 20 — AI in biology (educational: 3 mechanisms, no hero stat)
 // ===================================================================
 {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
   addHeadline(s, "AI is rewriting drug discovery.");
-  addSubhead(s, "AlphaFold solved protein folding. AI-designed drugs are in Phase 1/2 trials. The pharma R&D cycle is compressing from a decade to under two years.");
+  addSubhead(s, "Three mechanisms compress the R&D cycle's earliest stages from years to hours. Clinical trials still take years — AI collapses the design stage, not the regulatory one.");
   addHeadlineRule(s);
 
-  // Hero image — taller
-  addImagePlaceholder(s, 0.5, 1.85, 4.3, 3.3, "Render — ribbon-diagram protein structure in purple against graphite black, shallow DOF");
+  // Image on the left, taller
+  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.67, "Render — ribbon-diagram protein structure against graphite black, shallow DOF");
 
-  // One hero stat anchors the right column
-  makeBigNumber(s, "240M", "protein structures in AlphaFold DB — nearly every known protein, solved", 5.0, 2.0, 4.5, C.purple);
-
-  // Three concept cards stacked
-  const cards = [
-    { title: "PROTEIN FOLDING",  body: "A 50-year structure-prediction problem, solved. 3M+ researchers across 190 countries use the DB." },
-    { title: "AI-NATIVE PHARMA", body: "Isomorphic Labs' $3B deals with Lilly + Novartis. AI-designed small molecules now in Phase 1/2 trials." },
-    { title: "R&D COMPRESSION",  body: "Discovery → IND shrinking from ~10 years to ~18 months on the fastest platforms." },
+  // Three educational mechanism cards stacked on the right
+  const stages = [
+    {
+      num: "01",
+      title: "STRUCTURE PREDICTION",
+      body: "Predicting a protein's 3D shape from its amino-acid sequence was a 50-year unsolved problem. Crystallography took months per protein. Deep learning now infers structure in seconds — unlocking every drug target at once.",
+    },
+    {
+      num: "02",
+      title: "GENERATIVE MOLECULE DESIGN",
+      body: "There are ~10⁶⁰ drug-like small molecules. Wet labs can screen millions. Generative models search the rest — proposing novel binders optimized for selectivity, potency, and drug-like properties.",
+    },
+    {
+      num: "03",
+      title: "IN SILICO VALIDATION",
+      body: "Molecular dynamics and binding-affinity prediction filter candidates before synthesis. Weeks of bench work become hours of GPU compute. Far fewer molecules reach animal testing.",
+    },
   ];
-  cards.forEach((c, i) => {
-    const y = 3.6 + i * 0.72;
+
+  const CARD_X = 4.0, CARD_W = 5.5, CARD_H = 1.17, CARD_GAP = 0.08;
+  const CARD_Y0 = 1.85;
+  stages.forEach((c, i) => {
+    const y = CARD_Y0 + i * (CARD_H + CARD_GAP);
+    // Card body
     s.addShape(pres.shapes.RECTANGLE, {
-      x: 5.0, y: y, w: 4.5, h: 0.3,
-      fill: { color: C.purple }, line: { color: C.purple, width: 0 },
+      x: CARD_X, y: y, w: CARD_W, h: CARD_H,
+      fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
     });
-    s.addText(c.title, {
-      x: 5.0, y: y, w: 4.5, h: 0.3,
-      fontSize: 10, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 2, margin: 0.12,
+    // Header bar (neutral darkGray — no purple)
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: CARD_X, y: y, w: CARD_W, h: 0.32,
+      fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
     });
+    s.addText([
+      { text: c.num + "   ", options: { bold: true, color: C.gold, fontSize: 10.5, charSpacing: 2 } },
+      { text: c.title,       options: { bold: true, color: C.white, fontSize: 10.5, charSpacing: 2 } },
+    ], {
+      x: CARD_X + 0.18, y: y, w: CARD_W - 0.3, h: 0.32,
+      fontFace: "Arial", valign: "middle", margin: 0,
+    });
+    // Body copy
     s.addText(c.body, {
-      x: 5.05, y: y + 0.32, w: 4.4, h: 0.35,
+      x: CARD_X + 0.2, y: y + 0.37, w: CARD_W - 0.4, h: CARD_H - 0.42,
       fontSize: 9.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
     });
   });
 
-  // Players strip
+  // Bottom context strip (replaces PLAYERS row — education, not examples)
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.85, w: 9.0, h: 0.4,
-    fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
+    x: 0.5, y: 5.68, w: 9.0, h: 0.42,
+    fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
-  s.addText([
-    { text: "PLAYERS   ", options: { bold: true, color: C.purple, fontSize: 9.5, charSpacing: 3 } },
-    { text: "DeepMind / Isomorphic · Recursion + Exscientia · Insitro · Generate Biomedicines · Moderna", options: { color: C.white, fontSize: 10.5, bold: true } },
-  ], {
-    x: 0.7, y: 5.85, w: 8.6, h: 0.4, fontFace: "Arial", valign: "middle", margin: 0,
+  s.addText("Traditional pharma: 10–15 years, ~$2.6B per approved drug, <10% Phase I success. AI collapses the design stage — clinical trials are still bound by biology and the FDA.", {
+    x: 0.7, y: 5.68, w: 8.6, h: 0.42,
+    fontSize: 10, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: DeepMind AlphaFold DB (Feb 2026 — 240M structures, 3M researchers); Isomorphic Labs / Fierce Biotech (Jan 2024, Feb 2025 partnerships); Recursion FY25 filings (Exscientia merger Jul 2025); CNBC; Nature.");
+  addSource(s, "Sources: Jumper et al. (AlphaFold, Nature 2020); Tufts CSDD drug-development cost and timeline studies; Hughes et al., Br. J. Pharmacol. on screening scale; Strategy Research.");
   addFooter(s, 20);
 }
 
