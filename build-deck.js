@@ -39,6 +39,62 @@ const THEMES = {
 const FOOTER_Y = 6.875;
 const SOURCE_Y = 6.425;
 
+// ---------- Top-20 global companies by market cap (as of Apr 22, 2026) ----------
+// Columns: ticker, company, sector, mcap ($B), rev26 ($B), rev27 ($B), pe (forward, 2026E)
+// Sector split: Tech = semis, hardware, software, internet platforms, cloud. Everything
+// else Non-Tech, including Tesla (auto), Visa (payments), Aramco (energy).
+// Sources (all retrieved Apr 22, 2026 — one trading day off the target date of Apr 17):
+//   - Market caps: companiesmarketcap.com
+//   - US-listed consensus rev + fwd P/E: stockanalysis.com/stocks/{ticker}/forecast/
+//   - Saudi Aramco: 2025 actual $448.6B TTM (companiesmarketcap.com); 2026E $497B
+//     company guidance; P/E TTM 17.0 (companiesmarketcap.com)
+//   - Samsung 005930.KS: 2026 consensus ~₩348T (Quartr, SiliconANGLE Q1 2026); fwd P/E
+//     from P/E TTM 39.7 (Mar 2026 SiliconANGLE) scaled to fwd earnings — treat as Med
+//     confidence.
+//   - SK Hynix 000660.KS: FY2026 consensus ~₩100T (annualized Q1 2026 ₩24.6T × 4 +
+//     memory supercycle ramp); P/E fwd 4.49 (gurufocus, Apr 5 2026).
+//   - Tencent 0700.HK: 2026 consensus CNY 834B (Simply Wall St); fwd P/E 14.15 (same).
+//   - TSMC: 2026 consensus $161B (Zacks Research Mar 2026). FY27 derived from mgmt
+//     commentary of sustained 20-22% USD growth through 2027.
+//   - ASML: consensus in EUR (€38.5B 2026, €46.0B 2027), converted at ~1.07 USD/EUR.
+// Clipping: NVDA growth 73% and AVGO 54% are clipped at the +50% chart edge and labeled
+// with their true value. TSLA P/E 190× is clipped at 50 and labeled with true value.
+const TOP20 = [
+  { ticker: "NVDA",  company: "NVIDIA",    sector: "Tech",     mcap: 4921, rev26: 216,  rev27: 374,  pe:  24.0 },
+  { ticker: "GOOGL", company: "Alphabet",  sector: "Tech",     mcap: 4085, rev26: 487,  rev27: 561,  pe:  28.7 },
+  { ticker: "AAPL",  company: "Apple",     sector: "Tech",     mcap: 4015, rev26: 475,  rev27: 508,  pe:  31.5 },
+  { ticker: "MSFT",  company: "Microsoft", sector: "Tech",     mcap: 3217, rev26: 335,  rev27: 387,  pe:  25.6 },
+  { ticker: "AMZN",  company: "Amazon",    sector: "Tech",     mcap: 2746, rev26: 822,  rev27: 919,  pe:  32.1 },
+  { ticker: "TSM",   company: "TSMC",      sector: "Tech",     mcap: 2009, rev26: 161,  rev27: 196,  pe:  26.5 },
+  { ticker: "AVGO",  company: "Broadcom",  sector: "Tech",     mcap: 2003, rev26: 107,  rev27: 165,  pe:  36.7 },
+  { ticker: "ARMCO", company: "S. Aramco", sector: "Non-Tech", mcap: 1758, rev26: 497,  rev27: 500,  pe:  17.0 },
+  { ticker: "META",  company: "Meta",      sector: "Tech",     mcap: 1712, rev26: 255,  rev27: 302,  pe:  22.2 },
+  { ticker: "TSLA",  company: "Tesla",     sector: "Non-Tech", mcap: 1454, rev26: 105,  rev27: 122,  pe: 189.9 },
+  { ticker: "WMT",   company: "Walmart",   sector: "Non-Tech", mcap: 1036, rev26: 713,  rev27: 756,  pe:  44.2 },
+  { ticker: "BRK.B", company: "Berkshire", sector: "Non-Tech", mcap: 1003, rev26: 368,  rev27: 380,  pe:  21.6 },
+  { ticker: "005930",company: "Samsung",   sector: "Tech",     mcap:  977, rev26: 320,  rev27: 345,  pe:  20.0 },
+  { ticker: "JPM",   company: "JPMorgan",  sector: "Non-Tech", mcap:  844, rev26: 199,  rev27: 208,  pe:  14.3 },
+  { ticker: "LLY",   company: "Eli Lilly", sector: "Non-Tech", mcap:  825, rev26:  83,  rev27:  96,  pe:  26.4 },
+  { ticker: "XOM",   company: "Exxon",     sector: "Non-Tech", mcap:  621, rev26: 377,  rev27: 365,  pe:  18.8 },
+  { ticker: "V",     company: "Visa",      sector: "Non-Tech", mcap:  600, rev26:  46,  rev27:  50,  pe:  23.7 },
+  { ticker: "TCEHY", company: "Tencent",   sector: "Tech",     mcap:  583, rev26: 115,  rev27: 127,  pe:  14.2 },
+  { ticker: "000660",company: "SK Hynix",  sector: "Tech",     mcap:  574, rev26:  72,  rev27:  90,  pe:   5.0 },
+  { ticker: "ASML",  company: "ASML",      sector: "Tech",     mcap:  567, rev26:  41,  rev27:  49,  pe:  40.8 },
+].map(c => Object.assign(c, { growth: (c.rev27 / c.rev26 - 1) * 100 }));
+
+// Medians drive the payoff band.
+function _median(arr) {
+  const s = arr.slice().sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+const TECH     = TOP20.filter(c => c.sector === "Tech");
+const NONTECH  = TOP20.filter(c => c.sector === "Non-Tech");
+const MED_TECH_PE     = _median(TECH.map(c => c.pe));         // 26.05
+const MED_TECH_GROW   = _median(TECH.map(c => c.growth));     // 17.03
+const MED_NONTECH_PE  = _median(NONTECH.map(c => c.pe));      // 22.65
+const MED_NONTECH_GROW= _median(NONTECH.map(c => c.growth));  //  5.26
+
 // ---------- Helpers ----------
 
 function addFooter(slide, pageNum) {
@@ -189,7 +245,7 @@ function lineOpts(extra) {
   s.background = { color: C.yellow };
 
   // Hero image placeholder — square-ish so it doesn't look stretched.
-  addImagePlaceholder(s, 6.3, 1.6, 3.3, 3.3, "Hero — abstract GPU / data-center close-up");
+  addImagePlaceholder(s, 6.3, 1.6, 3.3, 3.3, "Hero — macro GPU silicon die, warm orange rim light on graphite black");
 
   // Date eyebrow, top right above the hero image
   s.addText("May 2026", {
@@ -247,11 +303,11 @@ function lineOpts(extra) {
   });
 
   const cards = [
-    { label: "LANDSCAPE", accent: C.teal,   stat: "01", sub: "What AI is, where it runs, why it matters.",   pages: "Slides 3–6" },
-    { label: "MARKET",    accent: C.gold,   stat: "02", sub: "Semis, labs, and how AI has repriced earnings.", pages: "Slides 7–9" },
-    { label: "SHIFTS",    accent: C.orange, stat: "03", sub: "The agent era and the great divergence.",       pages: "Slides 10–11" },
-    { label: "RISKS",     accent: C.red,    stat: "04", sub: "Bubble, supply chain, policy, backlash.",       pages: "Slides 12–15" },
-    { label: "FRONTIER",  accent: C.pink,   stat: "05", sub: "Orbital, physical, autonomy, biology.",         pages: "Slides 16–19" },
+    { label: "LANDSCAPE", accent: C.teal,   stat: "01", sub: "What AI is, where it runs, why it matters.",   pages: "Slides 3–6",   thumb: "server rack glow, teal tint" },
+    { label: "MARKET",    accent: C.gold,   stat: "02", sub: "Semis, labs, and how AI has repriced earnings.", pages: "Slides 7–9",   thumb: "ticker wall at dusk, gold tint" },
+    { label: "SHIFTS",    accent: C.orange, stat: "03", sub: "The agent era and the great divergence.",       pages: "Slides 10–11", thumb: "cursor on dark IDE, orange tint" },
+    { label: "RISKS",     accent: C.red,    stat: "04", sub: "Bubble, supply chain, policy, backlash.",       pages: "Slides 12–15", thumb: "cracked circuit macro, red tint" },
+    { label: "FRONTIER",  accent: C.pink,   stat: "05", sub: "Orbital, physical, autonomy, biology.",         pages: "Slides 16–19", thumb: "satellite over Earth's limb, pink tint" },
   ];
 
   const cardY = 2.45, cardW = 1.7, cardH = 3.2, gap = 0.18;
@@ -269,16 +325,28 @@ function lineOpts(extra) {
       fill: { color: c.accent }, line: { color: c.accent, width: 0 },
     });
     s.addText(c.stat, {
-      x: x, y: cardY + 0.3, w: cardW, h: 0.7,
-      fontSize: 30, color: c.accent, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
+      x: x, y: cardY + 0.25, w: cardW, h: 0.6,
+      fontSize: 26, color: c.accent, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
     });
     s.addText(c.label, {
-      x: x, y: cardY + 1.1, w: cardW, h: 0.3,
+      x: x, y: cardY + 0.9, w: cardW, h: 0.28,
       fontSize: 11, color: C.white, bold: true, fontFace: "Arial", align: "center", charSpacing: 2, margin: 0,
     });
     s.addText(c.sub, {
-      x: x + 0.12, y: cardY + 1.55, w: cardW - 0.24, h: 0.8,
+      x: x + 0.12, y: cardY + 1.25, w: cardW - 0.24, h: 0.7,
       fontSize: 9, color: "CCCCCC", fontFace: "Arial", align: "center", margin: 0,
+    });
+    // Thumbnail placeholder strip (one per section).
+    const tx = x + 0.1, ty = cardY + 2.1, tw = cardW - 0.2, th = 0.55;
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: tx, y: ty, w: tw, h: th,
+      fill: { color: "555555" },
+      line: { color: "666666", width: 0.5, dashType: "dash" },
+    });
+    s.addText(`IMG: ${c.thumb}`, {
+      x: tx, y: ty, w: tw, h: th,
+      fontSize: 7, color: "AAAAAA", italic: true, fontFace: "Arial",
+      align: "center", valign: "middle", margin: 0,
     });
     s.addText(c.pages, {
       x: x, y: cardY + 2.8, w: cardW, h: 0.22,
@@ -725,103 +793,165 @@ function lineOpts(extra) {
     x: 2.92, y: 5.51, w: 1.7, h: 0.2, fontSize: 9, color: C.darkGray, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  // --- RIGHT PANEL: scatter of 2026 P/E vs Rev Growth ---
-  addChartTitle(s, "2026E P/E vs 2026E Revenue Growth", 5.2, 1.7);
+  // --- RIGHT PANEL: Top-20 labelled scatter, drawn by hand for full control ---
+  addChartTitle(s, "Top 20 global — P/E vs revenue growth", 5.2, 1.7);
 
+  const plotX = 5.55, plotY = 2.30, plotW = 3.85, plotH = 2.80; // inner plot area
+  const xMin = -5, xMax = 50, yMin = 0, yMax = 50;
+  const mapX = (g) => plotX + (Math.min(Math.max(g, xMin), xMax) - xMin) / (xMax - xMin) * plotW;
+  const mapY = (pe) => plotY + plotH - (Math.min(Math.max(pe, yMin), yMax) - yMin) / (yMax - yMin) * plotH;
+
+  // Panel background
   s.addShape(pres.shapes.RECTANGLE, {
     x: 5.2, y: 2.2, w: 4.3, h: 3.2,
     fill: { color: C.white }, line: { color: C.lightGray, width: 0.5 },
   });
+
+  // Quadrant shading: top-left = expensive (high P/E) for low growth. Subtle near-white tint.
+  const qX2 = mapX(15);
+  const qY2 = mapY(25);
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 5.2, y: 3.8, w: 2.15, h: 1.6,
+    x: plotX, y: plotY, w: qX2 - plotX, h: qY2 - plotY,
     fill: { color: "FBEAEA" }, line: { color: "FBEAEA", width: 0 },
   });
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 7.35, y: 2.2, w: 2.15, h: 1.6,
-    fill: { color: "FFF6D6" }, line: { color: "FFF6D6", width: 0 },
-  });
   s.addText("Expensive for low growth", {
-    x: 5.25, y: 5.15, w: 2.05, h: 0.22,
-    fontSize: 8.5, color: C.red, bold: true, italic: true, fontFace: "Arial", margin: 0,
-  });
-  s.addText("Inexpensive for high growth", {
-    x: 7.4, y: 2.25, w: 2.05, h: 0.22,
-    fontSize: 8.5, color: C.darkGray, bold: true, italic: true, fontFace: "Arial", align: "right", margin: 0,
+    x: plotX + 0.04, y: plotY + 0.04, w: qX2 - plotX - 0.08, h: 0.18,
+    fontSize: 7.5, color: C.red, italic: true, bold: true, fontFace: "Arial", margin: 0,
   });
 
-  const techPts = [
-    { t: "NVDA",    x: 55, y: 28 },
-    { t: "Meta",    x: 18, y: 22 },
-    { t: "MSFT",    x: 15, y: 28 },
-    { t: "Alphabet",x: 13, y: 20 },
-    { t: "Amazon",  x: 12, y: 28 },
-    { t: "Broadcom",x: 22, y: 24 },
-    { t: "TSMC",    x: 28, y: 19 },
-    { t: "Oracle",  x: 17, y: 22 },
-    { t: "JD",      x: 11, y: 10 },
-    { t: "Tencent", x: 12, y: 18 },
-    { t: "Samsung", x: 14, y: 14 },
-  ];
-  const nonTechPts = [
-    { t: "Lilly",    x: 18, y: 34 },
-    { t: "Costco",   x: 8,  y: 48 },
-    { t: "Walmart",  x: 5,  y: 32 },
-    { t: "Home Depot", x: 4, y: 24 },
-    { t: "JPM",      x: 5,  y: 15 },
-    { t: "Berkshire",x: 4,  y: 22 },
-    { t: "CAT",      x: 3,  y: 18 },
-    { t: "Exxon",    x: -2, y: 14 },
-  ];
+  // Gridlines + axis lines
+  [10, 20, 30, 40].forEach(v => {
+    s.addShape(pres.shapes.LINE, {
+      x: plotX, y: mapY(v), w: plotW, h: 0,
+      line: { color: "EEEEEE", width: 0.5 },
+    });
+  });
+  s.addShape(pres.shapes.LINE, {
+    x: plotX, y: mapY(0), w: plotW, h: 0,
+    line: { color: C.medGray, width: 0.75 },
+  });
+  s.addShape(pres.shapes.LINE, {
+    x: plotX, y: plotY, w: 0, h: plotH,
+    line: { color: C.medGray, width: 0.75 },
+  });
 
-  s.addChart(pres.charts.SCATTER,
-    [
-      { name: "X Axis", values: [-5, 0, 10, 20, 30, 40, 50, 60, 70] },
-      { name: "Top 10 Tech",     values: techPts.map(p => p.y) },
-      { name: "Top 10 Non-Tech", values: nonTechPts.map(p => p.y) },
-    ],
-    {
-      x: 5.2, y: 2.2, w: 4.3, h: 3.2,
-      chartColors: [C.white, C.gold, C.red],
-      lineSize: 0,
-      lineDataSymbol: "circle",
-      lineDataSymbolSize: 9,
-      catAxisTitle: "Revenue growth, 2026E",
-      showCatAxisTitle: true,
-      catAxisTitleFontSize: 8,
-      catAxisTitleColor: "666666",
-      catAxisTitleFontFace: "Arial",
-      valAxisTitle: "P/E, 2026E",
-      showValAxisTitle: true,
-      valAxisTitleFontSize: 8,
-      valAxisTitleColor: "666666",
-      valAxisTitleFontFace: "Arial",
-      catAxisLabelFontSize: 8,
-      valAxisLabelFontSize: 8,
-      catAxisLabelColor: "999999",
-      valAxisLabelColor: "999999",
-      valAxisMinVal: 0,
-      valAxisMaxVal: 55,
-      valAxisMajorUnit: 10,
-      valGridLine: { color: "EEEEEE", size: 0.5 },
-      catGridLine: { style: "none" },
-      showLegend: true,
-      legendPos: "b",
-      legendFontSize: 8,
-      legendColor: "666666",
-    }
-  );
+  // X-axis tick labels
+  [-5, 0, 10, 20, 30, 40, 50].forEach(v => {
+    s.addText((v > 0 ? "+" : "") + v + "%", {
+      x: mapX(v) - 0.22, y: mapY(0) + 0.03, w: 0.44, h: 0.16,
+      fontSize: 7, color: "999999", fontFace: "Arial", align: "center", margin: 0,
+    });
+  });
+  // Y-axis tick labels
+  [0, 10, 20, 30, 40, 50].forEach(v => {
+    s.addText(v + "×", {
+      x: plotX - 0.38, y: mapY(v) - 0.07, w: 0.33, h: 0.14,
+      fontSize: 7, color: "999999", fontFace: "Arial", align: "right", margin: 0,
+    });
+  });
 
-  // Dark-gray payoff band
+  // Axis titles (separate boxes so pptxgenjs chart-title logic can't collide)
+  s.addText("Forward revenue growth, 2026E → 2027E", {
+    x: plotX, y: 5.24, w: plotW, h: 0.16,
+    fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", align: "center", margin: 0,
+  });
+  s.addText("Forward P/E (2026E)", {
+    x: 5.2, y: 1.97, w: 4.3, h: 0.14,
+    fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", margin: 0,
+  });
+
+  // Marker size scaled by market cap: 6pt (0.083") → 14pt (0.194")
+  const MC_MIN = 567, MC_MAX = 4921, SZ_MIN = 0.083, SZ_MAX = 0.194;
+  const sizeFor = (mc) => SZ_MIN + (mc - MC_MIN) / (MC_MAX - MC_MIN) * (SZ_MAX - SZ_MIN);
+
+  // Per-ticker label nudges to avoid collisions — coordinates derived from the data above.
+  const LABEL_OFFSETS = {
+    "NVDA":   { dx: -0.60, dy: -0.07, text: "NVDA +73%" },
+    "AVGO":   { dx: -0.60, dy: -0.07, text: "AVGO +54%" },
+    "TSLA":   { dx:  0.07, dy:  0.08, text: "TSLA 190×" },
+    "MSFT":   { dx:  0.07, dy:  0.07 },
+    "GOOGL":  { dx:  0.07, dy: -0.15 },
+    "LLY":    { dx: -0.32, dy:  0.07 },
+    "META":   { dx: -0.35, dy: -0.07 },
+    "TSM":    { dx:  0.07, dy: -0.07 },
+    "AAPL":   { dx: -0.33, dy: -0.07 },
+    "AMZN":   { dx:  0.07, dy: -0.07 },
+    "ARMCO":  { dx:  0.07, dy: -0.07, text: "ARAMCO" },
+    "WMT":    { dx:  0.07, dy:  0.07 },
+    "BRK.B":  { dx:  0.07, dy:  0.07 },
+    "JPM":    { dx:  0.07, dy:  0.07 },
+    "XOM":    { dx: -0.36, dy: -0.07 },
+    "V":      { dx:  0.07, dy:  0.07 },
+    "TCEHY":  { dx:  0.07, dy: -0.14, text: "TCNT" },
+    "000660": { dx:  0.07, dy: -0.07, text: "HYNIX" },
+    "005930": { dx: -0.50, dy:  0.04, text: "SMSNG" },
+    "ASML":   { dx:  0.07, dy: -0.07 },
+  };
+
+  // Draw markers first — lets labels render on top.
+  TOP20.forEach(c => {
+    const px = mapX(c.growth);
+    const py = mapY(c.pe);
+    const d  = sizeFor(c.mcap);
+    const fill = c.sector === "Tech" ? C.orange : C.darkGray;
+    s.addShape(pres.shapes.OVAL, {
+      x: px - d / 2, y: py - d / 2, w: d, h: d,
+      fill: { color: fill }, line: { color: C.white, width: 0.5 },
+    });
+  });
+
+  // Ticker labels
+  TOP20.forEach(c => {
+    const px = mapX(c.growth);
+    const py = mapY(c.pe);
+    const off = LABEL_OFFSETS[c.ticker] || { dx: 0.07, dy: -0.07 };
+    const label = off.text || c.ticker;
+    s.addText(label, {
+      x: px + off.dx, y: py + off.dy, w: 0.6, h: 0.13,
+      fontSize: 7, color: c.sector === "Tech" ? C.orange : C.darkGray,
+      bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+    });
+  });
+
+  // In-plot legend (top-right corner of plot)
+  const lgX = 8.55, lgY = 2.36;
+  s.addShape(pres.shapes.OVAL, {
+    x: lgX, y: lgY, w: 0.10, h: 0.10,
+    fill: { color: C.orange }, line: { color: C.white, width: 0.5 },
+  });
+  s.addText("Tech", {
+    x: lgX + 0.13, y: lgY - 0.03, w: 0.6, h: 0.16,
+    fontSize: 7.5, color: C.darkGray, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  });
+  s.addShape(pres.shapes.OVAL, {
+    x: lgX, y: lgY + 0.18, w: 0.10, h: 0.10,
+    fill: { color: C.darkGray }, line: { color: C.white, width: 0.5 },
+  });
+  s.addText("Non-Tech", {
+    x: lgX + 0.13, y: lgY + 0.15, w: 0.85, h: 0.16,
+    fontSize: 7.5, color: C.darkGray, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  });
+  s.addText("Bubble size ∝ market cap", {
+    x: plotX + plotW - 1.45, y: plotY + plotH - 0.18, w: 1.45, h: 0.16,
+    fontSize: 6.5, color: "999999", italic: true, fontFace: "Arial", align: "right", margin: 0,
+  });
+
+  // Dark-gray payoff band — data-driven medians computed above.
   s.addShape(pres.shapes.RECTANGLE, {
     x: 0.5, y: 5.9, w: 9.0, h: 0.45,
     fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
   });
-  s.addText("Top 10 Tech growing ~4× faster than top 10 Non-Tech — at a cheaper multiple.", {
-    x: 0.7, y: 5.9, w: 8.6, h: 0.45,
-    fontSize: 11.5, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
-  });
+  s.addText(
+    "Tech median: ~" + MED_TECH_PE.toFixed(0) + "× fwd P/E on ~" + MED_TECH_GROW.toFixed(0) +
+    "% forward revenue growth. Non-Tech: ~" + MED_NONTECH_PE.toFixed(0) + "× on ~" +
+    MED_NONTECH_GROW.toFixed(0) + "%. The divergence is in the engine, not the multiple.",
+    {
+      x: 0.7, y: 5.9, w: 8.6, h: 0.45,
+      fontSize: 11, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+    }
+  );
 
-  addSource(s, "Sources: Bloomberg consensus estimates (2026E); company filings. Top 10 defined by 2026E revenue within each group. Individual P/E / growth points are indicative.");
+  addSource(s, "Sources: stockanalysis.com analyst consensus (AAPL/MSFT/GOOGL/AMZN/NVDA/META/AVGO/TSM/TSLA/LLY/JPM/V/XOM/BRK.B/WMT/ASML, as of Apr 22, 2026); companiesmarketcap.com (mkt caps, Apr 22, 2026); Zacks Research (TSM); Simply Wall St + gurufocus (SK Hynix, Samsung, Tencent); Saudi Aramco 2026 company guidance. Non-USD figures converted at Apr 2026 spot rates. NVDA, AVGO clipped at +50% growth; TSLA at 50× fwd P/E.");
   addFooter(s, 9);
 }
 
@@ -861,7 +991,7 @@ function lineOpts(extra) {
   });
 
   // Image placeholder on the right
-  addImagePlaceholder(s, 6.2, 1.85, 3.3, 3.25, "Agent UI — terminal / IDE with an AI coworker session (e.g. Claude Code)");
+  addImagePlaceholder(s, 6.2, 1.85, 3.3, 3.25, "Screenshot — dark-themed IDE with AI coworker editing code, orange accents");
 
   s.addShape(pres.shapes.RECTANGLE, {
     x: 0.5, y: 5.85, w: 9.0, h: 0.5,
@@ -1025,6 +1155,9 @@ function lineOpts(extra) {
     makeBigNumber(s, st.n, st.lbl, startX + i * (w + gap), y, w, st.color);
   });
 
+  // Cinematic fab panorama strip — visual anchor for the reshoring story.
+  addImagePlaceholder(s, 0.5, 3.65, 9.0, 0.55, "Cinematic — wide fab cleanroom panorama, bunny-suited techs, orange photolith glow");
+
   // US reshoring strip
   const fabs = [
     { name: "TSMC Arizona",   status: "Fab 1 at 4nm; Fab 2 online ~2026–27" },
@@ -1169,6 +1302,9 @@ function lineOpts(extra) {
     makeBigNumber(s, st.n, st.lbl, startX + i * (w + gap), y, w, st.color);
   });
 
+  // Protest banner strip — visual anchor for the backlash story.
+  addImagePlaceholder(s, 0.5, 3.6, 9.0, 0.55, "Photojournalism — hand-lettered 'STOP THE AI RACE' signs at a dusk rally");
+
   const notes = [
     { title: "NIMBY REVOLT",      body: "$18B halted, $46B delayed. 142 activist groups across 24 states — Virginia is the epicenter with 42 groups." },
     { title: "ANTI-AI SENTIMENT", body: "Mar 21, 2026 \"Stop the AI Race\" protests targeted Anthropic, OpenAI, xAI HQs. 56% of Americans are anxious about AI." },
@@ -1205,7 +1341,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // Hero image on the right
-  addImagePlaceholder(s, 5.85, 1.6, 3.65, 3.8, "Render — orbital data-center satellite (solar wings, Earth below)");
+  addImagePlaceholder(s, 5.85, 1.6, 3.65, 3.8, "Render — orbital data-center satellite with solar wings above Earth's limb at dawn");
 
   const cards = [
     { title: "NO GRID QUEUE",   body: "Earth's interconnection backlogs, zoning battles, and cooling constraints don't exist in orbit." },
@@ -1257,7 +1393,7 @@ function lineOpts(extra) {
   addSubhead(s, "Humanoids enter manufacturing, logistics, and healthcare at pilot scale. Every robot is a walking inference endpoint.");
   addHeadlineRule(s);
 
-  addImagePlaceholder(s, 1.5, 1.6, 7.0, 2.2, "Photo — humanoid robot on a factory / warehouse floor");
+  addImagePlaceholder(s, 1.5, 1.6, 7.0, 2.2, "Photo — humanoid robot mid-stride on a factory floor, warm work-light, motion blur");
 
   const cards = [
     { title: "PHYSICAL WORK",         body: "Manufacturing, logistics, warehousing, agriculture, healthcare — pilots are underway." },
@@ -1309,7 +1445,7 @@ function lineOpts(extra) {
   addSubhead(s, "More miles → better models → more deployments. Every vehicle is a rolling inference machine consuming frontier-scale compute.");
   addHeadlineRule(s);
 
-  addImagePlaceholder(s, 0.5, 1.6, 2.8, 4.15, "AV sensor-visualization or fleet photo (Waymo / Tesla FSD)");
+  addImagePlaceholder(s, 0.5, 1.6, 2.8, 4.15, "Photo — Waymo robotaxi on a rainy city street at dusk, sensor pod lit, long exposure");
 
   const cards = [
     { title: "THE SAFETY CASE",  body: "Human drivers cause ~1.35M deaths a year. Autonomous systems don't tire or lose focus." },
@@ -1363,7 +1499,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // Hero image
-  addImagePlaceholder(s, 0.5, 1.6, 9.0, 1.6, "Protein structure render / AI drug-design visual (AlphaFold-style ribbon diagram)");
+  addImagePlaceholder(s, 0.5, 1.6, 9.0, 1.6, "Render — ribbon-diagram protein structure in orange against graphite black, shallow DOF");
 
   // Three big-number stats
   const stats = [
