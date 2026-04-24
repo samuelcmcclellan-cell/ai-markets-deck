@@ -184,6 +184,24 @@ function addSource(slide, text, x, y, w) {
   });
 }
 
+// Numbered citation block — single inline wrapped paragraph, 7pt gray.
+// items: [{ n: "1", text: "Source string without trailing punctuation" }, ...]
+// Renders as: "(1) Source, (2) Source, (3) Source." Bold parenthesized numeral, plain text.
+function addCitations(slide, items, opts) {
+  const o = opts || {};
+  const y = o.y != null ? o.y : 6.425;
+  const h = o.h != null ? o.h : 0.5;
+  const runs = [];
+  items.forEach((it, i) => {
+    runs.push({ text: "(" + it.n + ") ", options: { color: "999999", bold: true, fontSize: 7 } });
+    const sep = i < items.length - 1 ? ", " : ".";
+    runs.push({ text: it.text + sep, options: { color: "999999", fontSize: 7 } });
+  });
+  slide.addText(runs, {
+    x: 0.5, y: y, w: 9.0, h: h, fontFace: "Arial", valign: "top", margin: 0,
+  });
+}
+
 function makeBigNumber(slide, number, label, x, y, w, color) {
   slide.addText(number, {
     x: x, y: y, w: w, h: 0.75,
@@ -1263,9 +1281,12 @@ function lineOpts(extra) {
     x: heroX, y: heroY + 0.10, w: heroW, h: 0.25,
     fontSize: 10, color: C.medGray, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 3, margin: 0,
   });
-  s.addText("+58 pts", {
+  s.addText([
+    { text: "+58 pts", options: { bold: true, color: C.orange, fontSize: 52 } },
+    { text: " 1",      options: { color: C.orange, fontSize: 18, superscript: true } },
+  ], {
     x: heroX, y: heroY + 0.35, w: heroW, h: 0.70,
-    fontSize: 52, color: C.orange, bold: true, fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
+    fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
   });
   s.addText("Semis +38% vs software −20%, through Apr 17, 2026", {
     x: heroX, y: heroY + 1.07, w: heroW, h: 0.28,
@@ -1274,7 +1295,7 @@ function lineOpts(extra) {
 
   // Driver tiles (side-by-side beneath hero)
   const tileY = 3.50, tileH = 2.20, tileW = 2.10, tileGap = 0.10;
-  const drawTile = (x, accent, header, bigNum, bigColor, sub, prose) => {
+  const drawTile = (x, accent, header, bigNum, markNum, bigColor, sub, prose) => {
     s.addShape(pres.shapes.RECTANGLE, {
       x: x, y: tileY, w: tileW, h: tileH,
       fill: { color: C.white }, line: { color: C.lightGray, width: 0.5 },
@@ -1287,9 +1308,12 @@ function lineOpts(extra) {
       x: x, y: tileY + 0.14, w: tileW, h: 0.26,
       fontSize: 8.5, color: C.darkGray, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
     });
-    s.addText(bigNum, {
+    s.addText([
+      { text: bigNum,         options: { bold: true, color: bigColor, fontSize: 28 } },
+      { text: " " + markNum,  options: { color: bigColor, fontSize: 10, superscript: true } },
+    ], {
       x: x, y: tileY + 0.44, w: tileW, h: 0.60,
-      fontSize: 28, color: bigColor, bold: true, fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
+      fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
     });
     s.addText(sub, {
       x: x + 0.1, y: tileY + 1.08, w: tileW - 0.2, h: 0.34,
@@ -1303,24 +1327,34 @@ function lineOpts(extra) {
 
   drawTile(
     heroX, C.orange,
-    "WHY SEMIS ARE UP", "+47%", C.orange,
+    "WHY SEMIS ARE UP", "+47%", "2", C.orange,
     "Samsung HBM capacity lift in 2026",
     "HBM sold out through 2026 as hyperscalers lock in every GB of AI memory."
   );
   drawTile(
     heroX + tileW + tileGap, C.red,
-    "WHY SOFTWARE IS DOWN", "−21%", C.red,
+    "WHY SOFTWARE IS DOWN", "−21%", "3", C.red,
     "Public SaaS EV/Revenue, Q4'25 → Q1'26",
     "Agentic AI threatens seat pricing; 2026 CIO surveys flag displacement risk."
   );
 
-  // Footnote strip: understated PE/PC mention, not a banner
-  s.addText("BDC credit indices down ~5% YTD — early signs the sell-off is bleeding into private credit and PE-held SaaS.", {
-    x: 0.5, y: 5.85, w: 9.0, h: 0.35,
+  // Footnote strip with inline marker on the BDC stat
+  s.addText([
+    { text: "BDC credit indices down ~5%", options: {} },
+    { text: " 4", options: { fontSize: 7, superscript: true } },
+    { text: " YTD — early signs the sell-off is bleeding into private credit and PE-held SaaS.", options: {} },
+  ], {
+    x: 0.5, y: 5.85, w: 9.0, h: 0.3,
     fontSize: 9.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: Yahoo Finance YTD returns (Apr 17, 2026); TrendForce / DCD on HBM capacity; multiples.vc public software multiples (Apr 2026); VanEck BIZD; Morgan Stanley CIO Survey; PitchBook PE marks.");
+  addCitations(s, [
+    { n: "1", text: "Yahoo Finance, Apr 17, 2026 (SOX, IGV)" },
+    { n: "2", text: "TrendForce via Data Center Dynamics, 2026" },
+    { n: "3", text: "multiples.vc public software multiples, Apr 2026" },
+    { n: "4", text: "VanEck BIZD / Yahoo Finance" },
+  ]);
+
   addFooter(s, 13);
 }
 
@@ -1399,32 +1433,18 @@ function lineOpts(extra) {
     fontFace: "Arial", bold: true, valign: "middle", margin: 0,
   });
 
-  // Numbered citation list — two columns, 1–4 left, 5–8 right. Source attribution only;
-  // the stat being cited is already visible next to each superscript marker above.
-  const citations = [
-    { n: "1", text: "Harding Loevner retrospective." },
-    { n: "2", text: "GuruFocus (Apr 17, 2026)." },
-    { n: "3", text: "Jay Ritter, Univ. of Florida IPO data." },
-    { n: "4", text: "Bloomberg / company filings, 2025 TTM." },
-    { n: "5", text: "FCC / industry retrospectives." },
-    { n: "6", text: "CoreWeave / 2nd-market trackers, 2026." },
-    { n: "7", text: "Public filings / press retrospectives, 2001–02." },
-    { n: "8", text: "Bloomberg, 2025 YE." },
-  ];
-  const buildCiteRuns = (items) => {
-    const runs = [];
-    items.forEach((c, i) => {
-      runs.push({ text: c.n + "  ", options: { color: "999999", bold: true, fontSize: 7 } });
-      runs.push({ text: c.text, options: { color: "999999", fontSize: 7, breakLine: i < items.length - 1 } });
-    });
-    return runs;
-  };
-  s.addText(buildCiteRuns(citations.slice(0, 4)), {
-    x: 0.5, y: 6.05, w: 4.4, h: 0.8, fontFace: "Arial", valign: "top", margin: 0, paraSpaceAfter: 1,
-  });
-  s.addText(buildCiteRuns(citations.slice(4, 8)), {
-    x: 5.1, y: 6.05, w: 4.4, h: 0.8, fontFace: "Arial", valign: "top", margin: 0, paraSpaceAfter: 1,
-  });
+  // Numbered citation list — source attribution only; the stat being cited is visible
+  // next to each superscript marker above.
+  addCitations(s, [
+    { n: "1", text: "Harding Loevner retrospective" },
+    { n: "2", text: "GuruFocus (Apr 17, 2026)" },
+    { n: "3", text: "Jay Ritter, Univ. of Florida IPO data" },
+    { n: "4", text: "Bloomberg / company filings, 2025 TTM" },
+    { n: "5", text: "FCC / industry retrospectives" },
+    { n: "6", text: "CoreWeave / 2nd-market trackers, 2026" },
+    { n: "7", text: "Public filings / press retrospectives, 2001–02" },
+    { n: "8", text: "Bloomberg, 2025 YE" },
+  ]);
 
   addFooter(s, 14);
 }
@@ -1444,17 +1464,34 @@ function lineOpts(extra) {
 
   // RIGHT: two hero stats + concentration narrative
   const stats = [
-    { n: "~90%",  lbl: "TSMC share of advanced-node chips",     color: C.red },
-    { n: "76%",   lbl: "SK Hynix + Samsung DRAM share",          color: C.red },
+    { n: "~90%",  mark: "1", lbl: "TSMC share of advanced-node chips",     color: C.red },
+    { n: "76%",   mark: "2", lbl: "SK Hynix + Samsung DRAM share",          color: C.red },
   ];
   const statY = 1.95, statW = 2.6, statGap = 0.2;
   const statsStartX = 4.25;
   stats.forEach((st, i) => {
-    makeBigNumber(s, st.n, st.lbl, statsStartX + i * (statW + statGap), statY, statW, st.color);
+    const x = statsStartX + i * (statW + statGap);
+    s.addText([
+      { text: st.n,             options: { bold: true, color: st.color, fontSize: 40 } },
+      { text: " " + st.mark,    options: { color: st.color, fontSize: 14, superscript: true } },
+    ], {
+      x: x, y: statY, w: statW, h: 0.75,
+      fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
+    });
+    s.addText(st.lbl, {
+      x: x, y: statY + 0.8, w: statW, h: 0.55,
+      fontSize: 11, color: C.medGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+    });
   });
 
-  // Short narrative
-  s.addText("A single leading-edge chip crosses 70+ borders and six countries before reaching a data center. ASML builds fewer than 100 EUV machines a year.", {
+  // Short narrative with inline citation markers
+  s.addText([
+    { text: "A single leading-edge chip crosses 70+ borders and six countries", options: {} },
+    { text: " 3", options: { fontSize: 8, superscript: true } },
+    { text: " before reaching a data center. ASML builds fewer than 100 EUV machines a year", options: {} },
+    { text: " 4", options: { fontSize: 8, superscript: true } },
+    { text: ".", options: {} },
+  ], {
     x: 4.25, y: 3.7, w: 5.25, h: 1.2,
     fontSize: 12, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
   });
@@ -1490,7 +1527,13 @@ function lineOpts(extra) {
     });
   });
 
-  addSource(s, "Sources: TSMC, Samsung, Micron, Intel filings; US Commerce Dept CHIPS Program Office (Nov 2025 — $36B+ committed of $52.7B); SIA.");
+  addCitations(s, [
+    { n: "1", text: "TrendForce / Counterpoint, 2025" },
+    { n: "2", text: "TrendForce, 2025" },
+    { n: "3", text: "SIA semiconductor supply-chain report" },
+    { n: "4", text: "ASML 2025 annual report" },
+  ]);
+
   addFooter(s, 15);
 }
 
@@ -1508,28 +1551,28 @@ function lineOpts(extra) {
     {
       x: 0.5, accent: C.red, title: "EXPORT CONTROLS", icon: "▣",
       items: [
-        "H100 / H200 / Blackwell banned from China.",
-        "H20 reinstated with a 15% Treasury fee.",
-        "$5.5B NVIDIA H20 writedown.",
-        "ASML DUV banned; China ~20% of revenue.",
+        { text: "H100 / H200 / Blackwell banned from China.", mark: "1" },
+        { text: "H20 reinstated with a 15% Treasury fee.",     mark: "2" },
+        { text: "$5.5B NVIDIA H20 writedown.",                  mark: "3" },
+        { text: "ASML DUV banned; China ~20% of revenue.",      mark: "4" },
       ],
     },
     {
       x: 3.6, accent: C.orange, title: "AI REGULATION", icon: "§",
       items: [
-        "EU AI Act enforcement: Aug 2, 2026.",
-        "Fines up to €35M or 7% of global revenue.",
-        "Initial compliance: $8–15M per system.",
-        "Only 36% of enterprises feel prepared.",
+        { text: "EU AI Act enforcement: Aug 2, 2026.",          mark: "5" },
+        { text: "Fines up to €35M or 7% of global revenue.",    mark: "6" },
+        { text: "Initial compliance: $8–15M per system.",       mark: "7" },
+        { text: "Only 36% of enterprises feel prepared.",       mark: "8" },
       ],
     },
     {
       x: 6.7, accent: C.gold, title: "TRADE & RESHORING", icon: "⚒",
       items: [
-        "CHIPS Act: ~$36B committed of $52.7B.",
-        "China controls ~90% of rare-earth processing.",
-        "Gallium / germanium controls since Jul 2023.",
-        "SMIC 5nm yield ~20% vs >70% threshold.",
+        { text: "CHIPS Act: ~$36B committed of $52.7B.",        mark: "9"  },
+        { text: "China controls ~90% of rare-earth processing.", mark: "10" },
+        { text: "Gallium / germanium controls since Jul 2023.", mark: "11" },
+        { text: "SMIC 5nm yield ~20% vs >70% threshold.",       mark: "12" },
       ],
     },
   ];
@@ -1558,17 +1601,36 @@ function lineOpts(extra) {
       x: col.x + 0.4, y: 3.6, w: 2.0, h: 0,
       line: { color: col.accent, width: 1.5 },
     });
-    // Bulleted items
-    s.addText(col.items.map((t, i) => ({
-      text: t,
-      options: { bullet: true, breakLine: i < col.items.length - 1 },
-    })), {
-      x: col.x + 0.2, y: 3.75, w: 2.45, h: 2.35,
+    // Bulleted items with inline superscript citation markers
+    const runs = [];
+    col.items.forEach((it, i) => {
+      runs.push({ text: it.text, options: { bullet: true } });
+      runs.push({
+        text: " " + it.mark,
+        options: { superscript: true, fontSize: 7, breakLine: i < col.items.length - 1 },
+      });
+    });
+    s.addText(runs, {
+      x: col.x + 0.2, y: 3.75, w: 2.45, h: 2.05,
       fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "top", paraSpaceAfter: 5,
     });
   });
 
-  addSource(s, "Sources: NVIDIA 10-Q; ASML filings; EU AI Act Article 99 / Chapter V (Aug 2, 2026 enforcement); US Bureau of Industry and Security; Commerce Dept (Nov 2025).");
+  addCitations(s, [
+    { n: "1",  text: "US BIS export rules, 2023–25" },
+    { n: "2",  text: "US Treasury / NVIDIA, Jul 2025" },
+    { n: "3",  text: "NVIDIA 10-Q, FY26 Q1" },
+    { n: "4",  text: "ASML 2025 annual report" },
+    { n: "5",  text: "EU AI Act, Article 99" },
+    { n: "6",  text: "EU AI Act, Article 99" },
+    { n: "7",  text: "EU Commission / law firm analyses, 2025" },
+    { n: "8",  text: "Gartner enterprise AI readiness, 2026" },
+    { n: "9",  text: "US Commerce Dept CHIPS Office, Nov 2025" },
+    { n: "10", text: "IEA / USGS rare-earth reports, 2025" },
+    { n: "11", text: "China MOFCOM, Jul 2023" },
+    { n: "12", text: "TechInsights / trade press, 2025–26" },
+  ]);
+
   addFooter(s, 16);
 }
 
