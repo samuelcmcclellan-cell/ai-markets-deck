@@ -1349,12 +1349,8 @@ function lineOpts(extra) {
     ]
   );
 
-  // Italic synthesis strip — credit spillover into private markets
-  s.addText([
-    { text: "BDC credit indices are softening", options: {} },
-    { text: " 3", options: { fontSize: 7, superscript: true } },
-    { text: " — the first sign the SaaS sell-off is bleeding into private credit and PE-held software.", options: {} },
-  ], {
+  // Italic synthesis strip — divergence summary + private-market spillover
+  s.addText("One theme, two outcomes — and software's pain is now bleeding into private equity and private credit, both anchored in SaaS.", {
     x: 0.5, y: 5.85, w: 9.0, h: 0.3,
     fontSize: 9.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
   });
@@ -1362,7 +1358,6 @@ function lineOpts(extra) {
   addCitations(s, [
     { n: "1", text: "TrendForce via Data Center Dynamics, 2026" },
     { n: "2", text: "multiples.vc public software multiples, Apr 2026" },
-    { n: "3", text: "VanEck BIZD / Yahoo Finance" },
   ]);
 
   addFooter(s, 13);
