@@ -1281,90 +1281,88 @@ function lineOpts(extra) {
     lineOpts({ x: 0.5, y: 1.95, w: 4.3, h: 3.75 })
   );
 
-  // RIGHT: hero spread + two driver tiles
-  const heroX = 5.2, heroW = 4.3;
-  const heroY = 1.95, heroH = 1.4;
-
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: heroX, y: heroY, w: heroW, h: heroH,
-    fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
-  });
-  s.addText("YTD SPREAD — SOX vs IGV", {
-    x: heroX, y: heroY + 0.10, w: heroW, h: 0.25,
-    fontSize: 10, color: C.medGray, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 3, margin: 0,
-  });
-  s.addText([
-    { text: "+58 pts", options: { bold: true, color: C.orange, fontSize: 52 } },
-    { text: " 1",      options: { color: C.orange, fontSize: 18, superscript: true } },
-  ], {
-    x: heroX, y: heroY + 0.35, w: heroW, h: 0.70,
-    fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
-  });
-  s.addText("Semis +38% vs software −20%, through Apr 17, 2026", {
-    x: heroX, y: heroY + 1.07, w: heroW, h: 0.28,
-    fontSize: 10.5, color: C.darkGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
-  });
-
-  // Driver tiles (side-by-side beneath hero)
-  const tileY = 3.50, tileH = 2.20, tileW = 2.10, tileGap = 0.10;
-  const drawTile = (x, accent, header, bigNum, markNum, bigColor, sub, prose) => {
+  // RIGHT: two stacked qualitative panels — language + iconography, no hero stat
+  const panelX = 5.2, panelW = 4.3, panelH = 1.80;
+  const drawPanel = (panelY, accent, eyebrow, thesis, drivers) => {
+    // Card chrome — white fill, light border, accent bar flush along the top
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: tileY, w: tileW, h: tileH,
+      x: panelX, y: panelY, w: panelW, h: panelH,
       fill: { color: C.white }, line: { color: C.lightGray, width: 0.5 },
     });
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: tileY, w: tileW, h: 0.06,
+      x: panelX, y: panelY, w: panelW, h: 0.06,
       fill: { color: accent }, line: { color: accent, width: 0 },
     });
-    s.addText(header, {
-      x: x, y: tileY + 0.14, w: tileW, h: 0.26,
-      fontSize: 8.5, color: C.darkGray, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
+    // Eyebrow
+    s.addText(eyebrow, {
+      x: panelX + 0.20, y: panelY + 0.10, w: panelW - 0.40, h: 0.20,
+      fontSize: 10, color: C.medGray, bold: true, fontFace: "Arial",
+      align: "left", valign: "middle", charSpacing: 3, margin: 0,
     });
-    s.addText([
-      { text: bigNum,         options: { bold: true, color: bigColor, fontSize: 28 } },
-      { text: " " + markNum,  options: { color: bigColor, fontSize: 10, superscript: true } },
-    ], {
-      x: x, y: tileY + 0.44, w: tileW, h: 0.60,
-      fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
+    // Thesis sentence (qualitative headline for the panel)
+    s.addText(thesis, {
+      x: panelX + 0.20, y: panelY + 0.30, w: panelW - 0.40, h: 0.38,
+      fontSize: 12, color: C.darkGray, bold: true, fontFace: "Arial",
+      align: "left", valign: "middle", margin: 0,
     });
-    s.addText(sub, {
-      x: x + 0.1, y: tileY + 1.08, w: tileW - 0.2, h: 0.34,
-      fontSize: 8.5, color: C.medGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
-    });
-    s.addText(prose, {
-      x: x + 0.12, y: tileY + 1.44, w: tileW - 0.24, h: 0.72,
-      fontSize: 9, color: C.darkGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+    // Driver rows: accent-colored circle + white glyph on left, prose on right
+    drivers.forEach((d, i) => {
+      const rowY = panelY + 0.72 + i * 0.36;
+      s.addShape(pres.shapes.OVAL, {
+        x: panelX + 0.20, y: rowY + 0.03, w: 0.30, h: 0.30,
+        fill: { color: accent }, line: { color: accent, width: 0 },
+      });
+      s.addText(d.icon, {
+        x: panelX + 0.20, y: rowY + 0.03, w: 0.30, h: 0.30,
+        fontSize: 11, color: C.white, bold: true, fontFace: "Arial Black",
+        align: "center", valign: "middle", margin: 0,
+      });
+      s.addText(d.text, {
+        x: panelX + 0.60, y: rowY, w: panelW - 0.80, h: 0.36,
+        fontSize: 9.5, color: C.darkGray, fontFace: "Arial",
+        align: "left", valign: "middle", margin: 0,
+      });
     });
   };
 
-  drawTile(
-    heroX, C.orange,
-    "WHY SEMIS ARE UP", "+47%", "2", C.orange,
-    "Samsung HBM capacity lift in 2026",
-    "HBM sold out through 2026 as hyperscalers lock in every GB of AI memory."
-  );
-  drawTile(
-    heroX + tileW + tileGap, C.red,
-    "WHY SOFTWARE IS DOWN", "−21%", "3", C.red,
-    "Public SaaS EV/Revenue, Q4'25 → Q1'26",
-    "Agentic AI threatens seat pricing; 2026 CIO surveys flag displacement risk."
+  drawPanel(1.95, C.orange, "WHY SEMIS ARE UP",
+    "Sold out, with demand still building.",
+    [
+      { icon: "⚙", text: [
+        { text: "HBM sold out through 2026; hyperscalers are locking in every GB of memory they can secure.", options: {} },
+        { text: " 1", options: { color: C.orange, fontSize: 7, superscript: true } },
+      ] },
+      { icon: "⚡", text: "Data-center power demand keeps pulling forward; each new model generation wants more silicon." },
+      { icon: "↑", text: "ASPs and margins are expanding across memory and advanced-node logic." },
+    ]
   );
 
-  // Footnote strip with inline marker on the BDC stat
+  drawPanel(3.85, C.red, "WHY SOFTWARE IS DOWN",
+    "Per-seat pricing is under attack.",
+    [
+      { icon: "◉", text: "Agentic AI threatens per-seat pricing; 2026 CIO surveys flag displacement risk on horizontal SaaS." },
+      { icon: "✕", text: [
+        { text: "Public SaaS multiples re-rated lower as buyers underwrite slower seat growth and pricing pressure.", options: {} },
+        { text: " 2", options: { color: C.red, fontSize: 7, superscript: true } },
+      ] },
+      { icon: "↓", text: "Renewals slowing and deal cycles stretching as customers wait for vendor AI roadmaps to settle." },
+    ]
+  );
+
+  // Italic synthesis strip — credit spillover into private markets
   s.addText([
-    { text: "BDC credit indices down ~5%", options: {} },
-    { text: " 4", options: { fontSize: 7, superscript: true } },
-    { text: " YTD — early signs the sell-off is bleeding into private credit and PE-held SaaS.", options: {} },
+    { text: "BDC credit indices are softening", options: {} },
+    { text: " 3", options: { fontSize: 7, superscript: true } },
+    { text: " — the first sign the SaaS sell-off is bleeding into private credit and PE-held software.", options: {} },
   ], {
     x: 0.5, y: 5.85, w: 9.0, h: 0.3,
     fontSize: 9.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
   });
 
   addCitations(s, [
-    { n: "1", text: "Yahoo Finance, Apr 17, 2026 (SOX, IGV)" },
-    { n: "2", text: "TrendForce via Data Center Dynamics, 2026" },
-    { n: "3", text: "multiples.vc public software multiples, Apr 2026" },
-    { n: "4", text: "VanEck BIZD / Yahoo Finance" },
+    { n: "1", text: "TrendForce via Data Center Dynamics, 2026" },
+    { n: "2", text: "multiples.vc public software multiples, Apr 2026" },
+    { n: "3", text: "VanEck BIZD / Yahoo Finance" },
   ]);
 
   addFooter(s, 13);
