@@ -923,10 +923,10 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   const rows = [
-    { name: "OpenAI",    logo: "logos/openai.png",    val: "$852B",  mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Apr 2026" },
-    { name: "Anthropic", logo: "logos/anthropic.png", val: "$380B",  mult: "~13× ARR",  event: "$30B Series G (Feb); VCs now offering $800B+" },
-    { name: "Google",    logo: "logos/google.png",    val: "$2.3T",  mult: "~20× P/E",  event: "Alphabet (public) · Gemini 3 / DeepMind · ~$85B 2026 capex" },
-    { name: "xAI / SpaceX", logo: "logos/xai.png",    val: "$1.25T", mult: "combined",  event: "All-stock merger closed Feb 2, 2026 — xAI now a SpaceX subsidiary" },
+    { name: "OpenAI",    logo: "logos/openai.png",    val: "$852B",  mark: "1", mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Apr 2026" },
+    { name: "Anthropic", logo: "logos/anthropic.png", val: "$380B",  mark: "2", mult: "~13× ARR",  event: "$30B Series G (Feb); VCs now offering $800B+" },
+    { name: "Google",    logo: "logos/google.png",    val: "$2.3T",  mark: "3", mult: "~20× P/E",  event: "Alphabet (public) · Gemini 3 / DeepMind · ~$85B 2026 capex" },
+    { name: "xAI / SpaceX", logo: "logos/xai.png",    val: "$1.25T", mark: "4", mult: "combined",  event: "All-stock merger closed Feb 2, 2026 — xAI now a SpaceX subsidiary" },
   ];
 
   // Larger, airier layout — each row is its own card with more breathing room
@@ -953,7 +953,10 @@ function lineOpts(extra) {
       fontSize: 15, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
     });
     // Valuation
-    s.addText(r.val, {
+    s.addText([
+      { text: r.val },
+      { text: " " + r.mark, options: { superscript: true, fontSize: 10, bold: false, color: C.orange } },
+    ], {
       x: TABLE_X + 3.0, y: y, w: 1.4, h: ROW_H - 0.05,
       fontSize: 20, color: C.orange, bold: true, fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
     });
@@ -970,15 +973,24 @@ function lineOpts(extra) {
   });
 
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.65, w: 9.0, h: 0.6,
+    x: 0.5, y: 5.65, w: 9.0, h: 0.55,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
-  s.addText("Q1 2026 funding to foundational AI startups was 2× all of 2025.", {
-    x: 0.7, y: 5.65, w: 8.6, h: 0.6,
+  s.addText([
+    { text: "Q1 2026 funding to foundational AI startups was 2× all of 2025." },
+    { text: " 5", options: { superscript: true, fontSize: 8 } },
+  ], {
+    x: 0.7, y: 5.65, w: 8.6, h: 0.55,
     fontSize: 14, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: TechCrunch, CNBC (Feb 2, 2026 xAI/SpaceX merger); Crunchbase Q1 2026 VC data; Sacra ARR run-rates; Bloomberg; Alphabet 10-K & 2026 capex guide.");
+  addCitations(s, [
+    { n: "1", text: "Bloomberg / CNBC — OpenAI $122B round, Apr 2026" },
+    { n: "2", text: "Sacra / Bloomberg — Anthropic Series G, Feb 2026" },
+    { n: "3", text: "Alphabet 10-K + 2026 capex guide" },
+    { n: "4", text: "TechCrunch / CNBC — xAI-SpaceX merger, Feb 2, 2026" },
+    { n: "5", text: "Crunchbase Q1 2026 VC data" },
+  ]);
   addFooter(s, 10);
 }
 
@@ -1654,10 +1666,21 @@ function lineOpts(extra) {
   });
 
   // Three narrative cards — taller, better spaced
+  const supMark = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 7 } });
   const notes = [
-    { title: "NIMBY REVOLT",      body: "$18B halted, $46B delayed. 142 activist groups across 24 states — Virginia leads with 42 chapters." },
-    { title: "ANTI-AI SENTIMENT", body: "Only 26% of Americans view AI positively. March 2026 \"Stop the AI Race\" protests hit lab HQs in SF and DC." },
-    { title: "LABOR SHORTAGE",    body: "A ~480K data-center workforce gap against 400+ sites under construction. Talent, not capital, is binding." },
+    { title: "NIMBY REVOLT", body: [
+      { text: "$18B halted, $46B delayed. 142 activist groups across 24 states — Virginia leads with 42 chapters." },
+      supMark("1"),
+    ]},
+    { title: "ANTI-AI SENTIMENT", body: [
+      { text: "Only 26%" }, supMark("2"),
+      { text: " of Americans view AI positively. March 2026 \"Stop the AI Race\" protests" }, supMark("3"),
+      { text: " hit lab HQs in SF and DC." },
+    ]},
+    { title: "LABOR SHORTAGE", body: [
+      { text: "A ~480K data-center workforce gap against 400+ sites under construction." }, supMark("4"),
+      { text: " Talent, not capital, is binding." },
+    ]},
   ];
   const CARD_X = 4.25, CARD_W = 5.25, CARD_Y0 = 2.75, CARD_H = 0.95, CARD_GAP = 0.08;
   notes.forEach((n, i) => {
@@ -1692,7 +1715,12 @@ function lineOpts(extra) {
     fontSize: 11, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: Data Center Watch ($18B halted, $46B delayed, 142 groups); Echelon Insights; Stop the AI Race; Fortune; TIME; CNN; NBC News; Data Center Frontier.");
+  addCitations(s, [
+    { n: "1", text: "Data Center Watch, 2026 NIMBY tracker" },
+    { n: "2", text: "Echelon Insights, Mar 2026 AI sentiment poll" },
+    { n: "3", text: "Fortune / TIME / CNN / NBC News — Stop the AI Race coverage" },
+    { n: "4", text: "Data Center Frontier — workforce gap analysis" },
+  ]);
   addFooter(s, 17);
 }
 
@@ -1703,7 +1731,11 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
   addHeadline(s, "Beyond the grid.");
-  addSubhead(s, "No interconnection queue. No permits. No water. 1,361 W/m² of unfiltered solar, 24/7. Orbital compute sidesteps Earth's bottlenecks.");
+  addSubhead(s, [
+    { text: "No interconnection queue. No permits. No water. 1,361 W/m²" },
+    { text: " 1", options: { superscript: true, fontSize: 7 } },
+    { text: " of unfiltered solar, 24/7. Orbital compute sidesteps Earth's bottlenecks." },
+  ]);
   addHeadlineRule(s);
 
   // Hero image on the right
@@ -1741,11 +1773,15 @@ function lineOpts(extra) {
   s.addText([
     { text: "PLAYERS   ", options: { bold: true, color: C.gold, fontSize: 9.5, charSpacing: 3 } },
     { text: "Starcloud · SpaceX · Google Suncatcher · Aetherflux", options: { color: C.white, fontSize: 11, bold: true } },
+    { text: " 2", options: { color: C.white, fontSize: 8, superscript: true } },
   ], {
     x: 0.7, y: 5.85, w: 8.6, h: 0.4, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Source: FCC filings; Starcloud, Google, SpaceX announcements; CNBC.");
+  addCitations(s, [
+    { n: "1", text: "NASA solar constant, 1,361 W/m² at 1 AU" },
+    { n: "2", text: "FCC filings; Starcloud, SpaceX, Google Suncatcher, Aetherflux announcements; CNBC" },
+  ]);
   addFooter(s, 18);
 }
 
@@ -1761,10 +1797,19 @@ function lineOpts(extra) {
 
   addImagePlaceholder(s, 1.5, 1.6, 7.0, 2.2, "Panoramic photo — humanoid robot mid-stride on a factory floor, matte-white body with violet joint accents, motion blur on limbs, amber work-lights, a blurred human worker in a safety vest in the background");
 
+  const supMark19 = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 6.5 } });
   const cards = [
-    { title: "PHYSICAL WORK",         body: "Manufacturing, logistics, warehousing, agriculture, healthcare — pilots are underway." },
-    { title: "TIRELESS COWORKERS",    body: "Humanoids take hazardous and ergonomically punishing tasks. Humans keep judgment." },
-    { title: "INFERENCE AT THE EDGE", body: "Every robot runs foundation models in real time. At scale, rivals LLM compute." },
+    { title: "PHYSICAL WORK", body: [
+      { text: "Manufacturing, logistics, warehousing, agriculture, healthcare — pilots are underway." },
+      supMark19("1"),
+    ]},
+    { title: "TIRELESS COWORKERS", body: [
+      { text: "Humanoids take hazardous and ergonomically punishing tasks. Humans keep judgment." },
+    ]},
+    { title: "INFERENCE AT THE EDGE", body: [
+      { text: "Every robot runs foundation models in real time. At scale, rivals LLM compute." },
+      supMark19("2"),
+    ]},
   ];
   cards.forEach((c, i) => {
     const x = 0.5 + i * 3.1;
@@ -1793,11 +1838,16 @@ function lineOpts(extra) {
   s.addText([
     { text: "PLAYERS   ", options: { bold: true, color: C.gold, fontSize: 9.5, charSpacing: 3 } },
     { text: "Tesla Optimus · Figure · Boston Dynamics · Unitree · Agility", options: { color: C.white, fontSize: 11, bold: true } },
+    { text: " 3", options: { color: C.white, fontSize: 8, superscript: true } },
   ], {
     x: 0.7, y: 5.85, w: 8.6, h: 0.4, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Source: Goldman Sachs; Figure AI, Tesla, Hyundai, NVIDIA; company announcements.");
+  addCitations(s, [
+    { n: "1", text: "Goldman Sachs — humanoid robotics market outlook" },
+    { n: "2", text: "NVIDIA FY2026 — robotics compute keynotes" },
+    { n: "3", text: "Tesla, Figure AI, Hyundai/Boston Dynamics, Unitree, Agility — company announcements" },
+  ]);
   addFooter(s, 19);
 }
 
@@ -1813,10 +1863,19 @@ function lineOpts(extra) {
 
   addImagePlaceholder(s, 0.5, 1.6, 2.8, 4.15, "Long-exposure photo — white minivan robotaxi with a violet-glowing roof lidar on a rainy dusk city street, red and white traffic light trails, wet asphalt reflecting neon storefronts, tall portrait");
 
+  const supMark20 = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 7 } });
   const cards = [
-    { title: "THE SAFETY CASE",  body: "Human drivers cause ~1.35M deaths a year. Autonomous systems don't tire or lose focus." },
-    { title: "DATA FLYWHEEL",    body: "Every mile generates training data. Better models unlock more cities. Flywheel self-reinforces." },
-    { title: "EDGE INFERENCE",   body: "Each AV runs thousands of AI ops / second across cameras, lidar, radar — frontier-scale compute." },
+    { title: "THE SAFETY CASE", body: [
+      { text: "Human drivers cause ~1.35M deaths a year." }, supMark20("1"),
+      { text: " Autonomous systems don't tire or lose focus." },
+    ]},
+    { title: "DATA FLYWHEEL", body: [
+      { text: "Every mile generates training data. Better models unlock more cities. Flywheel self-reinforces." },
+    ]},
+    { title: "EDGE INFERENCE", body: [
+      { text: "Each AV runs thousands of AI ops / second across cameras, lidar, radar — frontier-scale compute." },
+      supMark20("2"),
+    ]},
   ];
   cards.forEach((c, i) => {
     const y = 1.6 + i * 1.4;
@@ -1846,11 +1905,16 @@ function lineOpts(extra) {
   s.addText([
     { text: "PLAYERS   ", options: { bold: true, color: C.gold, fontSize: 9.5, charSpacing: 3 } },
     { text: "Waymo · Tesla FSD · Baidu Apollo · Aurora", options: { color: C.white, fontSize: 11, bold: true } },
+    { text: " 3", options: { color: C.white, fontSize: 8, superscript: true } },
   ], {
     x: 0.7, y: 5.9, w: 8.6, h: 0.35, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Source: Waymo, Tesla, Baidu, Aurora; WHO Global Road Safety; NVIDIA FY2026.");
+  addCitations(s, [
+    { n: "1", text: "WHO Global Road Safety report" },
+    { n: "2", text: "NVIDIA FY2026 — automotive/DRIVE platform" },
+    { n: "3", text: "Waymo, Tesla, Baidu Apollo, Aurora — company disclosures" },
+  ]);
   addFooter(s, 20);
 }
 
@@ -1868,21 +1932,32 @@ function lineOpts(extra) {
   addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.67, "Render — protein ribbon diagram in a violet-to-magenta-to-gold gradient on graphite black, razor-sharp front with softly-blurred back, faint electron-density mesh around the structure, no labels or annotations");
 
   // Three educational mechanism cards stacked on the right
+  const supMark21 = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 6.5 } });
   const stages = [
     {
       num: "01",
       title: "STRUCTURE PREDICTION",
-      body: "Predicting a protein's 3D shape from its amino-acid sequence was a 50-year unsolved problem. Crystallography took months per protein. Deep learning now infers structure in seconds — unlocking every drug target at once.",
+      body: [
+        { text: "Predicting a protein's 3D shape from its amino-acid sequence was a 50-year unsolved problem. Crystallography took months per protein. Deep learning now infers structure in seconds" },
+        supMark21("1"),
+        { text: " — unlocking every drug target at once." },
+      ],
     },
     {
       num: "02",
       title: "GENERATIVE MOLECULE DESIGN",
-      body: "There are ~10⁶⁰ drug-like small molecules. Wet labs can screen millions. Generative models search the rest — proposing novel binders optimized for selectivity, potency, and drug-like properties.",
+      body: [
+        { text: "There are ~10⁶⁰ drug-like small molecules." },
+        supMark21("2"),
+        { text: " Wet labs can screen millions. Generative models search the rest — proposing novel binders optimized for selectivity, potency, and drug-like properties." },
+      ],
     },
     {
       num: "03",
       title: "IN SILICO VALIDATION",
-      body: "Molecular dynamics and binding-affinity prediction filter candidates before synthesis. Weeks of bench work become hours of GPU compute. Far fewer molecules reach animal testing.",
+      body: [
+        { text: "Molecular dynamics and binding-affinity prediction filter candidates before synthesis. Weeks of bench work become hours of GPU compute. Far fewer molecules reach animal testing." },
+      ],
     },
   ];
 
@@ -1919,12 +1994,20 @@ function lineOpts(extra) {
     x: 0.5, y: 5.68, w: 9.0, h: 0.42,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
-  s.addText("Traditional pharma: 10–15 years, ~$2.6B per approved drug, <10% Phase I success. AI collapses the design stage — clinical trials are still bound by biology and the FDA.", {
+  s.addText([
+    { text: "Traditional pharma: 10–15 years, ~$2.6B per approved drug, <10% Phase I success." },
+    { text: " 3", options: { superscript: true, fontSize: 7 } },
+    { text: " AI collapses the design stage — clinical trials are still bound by biology and the FDA." },
+  ], {
     x: 0.7, y: 5.68, w: 8.6, h: 0.42,
     fontSize: 10, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: Jumper et al. (AlphaFold, Nature 2020); Tufts CSDD drug-development cost and timeline studies; Hughes et al., Br. J. Pharmacol. on screening scale; Strategy Research.");
+  addCitations(s, [
+    { n: "1", text: "Jumper et al., AlphaFold, Nature 2020" },
+    { n: "2", text: "Hughes et al., Br. J. Pharmacol. — screening scale" },
+    { n: "3", text: "Tufts CSDD — drug-development cost and timeline" },
+  ]);
   addFooter(s, 21);
 }
 
