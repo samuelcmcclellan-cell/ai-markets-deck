@@ -1455,88 +1455,148 @@ function lineOpts(extra) {
 }
 
 // ===================================================================
-// SLIDE 15 — Supply chain fragility (redesigned: 2 hero numbers, taller image, fab grid)
+// SLIDE 15 — Supply chain fragility (redesigned: 4-link chain + reshoring timeline, no hero stats)
 // ===================================================================
 {
   const s = pres.addSlide();
   addThemeTag(s, "RISKS");
-  addHeadline(s, "Supply chain fragility.");
-  addSubhead(s, "Four countries control the advanced semiconductor stack. US reshoring is real but slow — most leading-edge fabs come online 2027+.");
+  addHeadline(s, "Four single points of failure.");
+  addSubhead(s, "Three of the four sit in Asia, and all four are single-sourced. US reshoring is real — but most leading-edge capacity doesn't ship until 2027+.");
   addHeadlineRule(s);
 
-  // LEFT: taller-aspect image anchor (~4:3 vertical)
-  addImagePlaceholder(s, 0.5, 1.85, 3.5, 3.3, "Cinematic — two bunny-suited technicians in front of an EUV lithography tool, warm amber photolith glow, shallow DOF on a gloved hand at a control, stainless-steel cleanroom, near-square");
-
-  // RIGHT: two hero stats + concentration narrative
-  const stats = [
-    { n: "~90%",  mark: "1", lbl: "TSMC share of advanced-node chips",     color: C.red },
-    { n: "76%",   mark: "2", lbl: "SK Hynix + Samsung DRAM share",          color: C.red },
+  // CHAIN — four chokepoint cards across the top
+  const links = [
+    {
+      country: "NETHERLANDS", icon: "▲", layer: "EUV Litho",
+      prose: "Only firm in the world building EUV scanners — new machines ship in dozens per year, not hundreds.",
+      mark: "1",
+    },
+    {
+      country: "TAIWAN", icon: "▦", layer: "Leading Logic",
+      prose: "Virtually every advanced-node chip runs through TSMC fabs in Hsinchu and Tainan — no real volume alternative exists.",
+      mark: "2",
+    },
+    {
+      country: "KOREA", icon: "☰", layer: "HBM Memory",
+      prose: "Two Korean firms supply nearly all the high-bandwidth memory AI accelerators depend on — both booked through 2026.",
+      mark: "3",
+    },
+    {
+      country: "TAIWAN", icon: "◫", layer: "Advanced Packaging",
+      prose: "TSMC's CoWoS step fuses the GPU die to its HBM stack — the only volume supplier, sold out through 2026.",
+      mark: "4",
+    },
   ];
-  const statY = 1.95, statW = 2.6, statGap = 0.2;
-  const statsStartX = 4.25;
-  stats.forEach((st, i) => {
-    const x = statsStartX + i * (statW + statGap);
-    s.addText([
-      { text: st.n,             options: { bold: true, color: st.color, fontSize: 40 } },
-      { text: " " + st.mark,    options: { color: st.color, fontSize: 14, superscript: true } },
-    ], {
-      x: x, y: statY, w: statW, h: 0.75,
-      fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
-    });
-    s.addText(st.lbl, {
-      x: x, y: statY + 0.8, w: statW, h: 0.55,
-      fontSize: 11, color: C.medGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
-    });
-  });
 
-  // Short narrative with inline citation markers
-  s.addText([
-    { text: "A single leading-edge chip crosses 70+ borders and six countries", options: {} },
-    { text: " 3", options: { fontSize: 8, superscript: true } },
-    { text: " before reaching a data center. ASML builds fewer than 100 EUV machines a year", options: {} },
-    { text: " 4", options: { fontSize: 8, superscript: true } },
-    { text: ".", options: {} },
-  ], {
-    x: 4.25, y: 3.7, w: 5.25, h: 1.2,
-    fontSize: 12, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
-  });
-
-  // BOTTOM: US reshoring strip (full width)
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.25, w: 9.0, h: 0.35,
-    fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
-  });
-  s.addText("US RESHORING — ACTUAL STATUS", {
-    x: 0.5, y: 5.25, w: 9.0, h: 0.35,
-    fontSize: 10, color: C.orange, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 3, margin: 0,
-  });
-  const fabs = [
-    { name: "TSMC Arizona",   status: "Fab 1 at 4nm; Fab 2 ~2026–27" },
-    { name: "Samsung Taylor", status: "2nm fab, pushed to 2026" },
-    { name: "Micron Clay NY", status: "Ground broken; online ~2028–30" },
-    { name: "Intel Ohio",     status: "Two fabs; online ~2027–28" },
-  ];
-  fabs.forEach((f, i) => {
-    const x = 0.5 + (i % 4) * 2.225;
+  const cardW = 2.10, cardH = 2.10, cardGap = 0.10;
+  const cardStartX = 0.5;
+  const cardY = 1.95;
+  links.forEach((lk, i) => {
+    const x = cardStartX + i * (cardW + cardGap);
+    // Header bar — country code in white on red
     s.addShape(pres.shapes.RECTANGLE, {
-      x: x + 0.05, y: 5.6, w: 2.125, h: 0.75,
-      fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
+      x: x, y: cardY, w: cardW, h: 0.30,
+      fill: { color: C.red }, line: { color: C.red, width: 0 },
     });
+    s.addText(lk.country, {
+      x: x, y: cardY, w: cardW, h: 0.30,
+      fontSize: 10, color: C.white, bold: true, fontFace: "Arial",
+      align: "center", valign: "middle", charSpacing: 3, margin: 0,
+    });
+    // Body card
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: x, y: cardY + 0.30, w: cardW, h: cardH - 0.30,
+      fill: { color: C.white }, line: { color: C.lightGray, width: 0.5 },
+    });
+    // Big icon glyph
+    s.addText(lk.icon, {
+      x: x, y: cardY + 0.35, w: cardW, h: 0.50,
+      fontSize: 36, color: C.red, bold: true, fontFace: "Arial Black",
+      align: "center", valign: "middle", margin: 0,
+    });
+    // Layer name
+    s.addText(lk.layer, {
+      x: x, y: cardY + 0.88, w: cardW, h: 0.30,
+      fontSize: 13, color: C.darkGray, bold: true, fontFace: "Arial",
+      align: "center", valign: "middle", margin: 0,
+    });
+    // Accent rule under layer name
+    s.addShape(pres.shapes.LINE, {
+      x: x + 0.55, y: cardY + 1.23, w: 1.00, h: 0,
+      line: { color: C.red, width: 1.5 },
+    });
+    // Qualitative prose with citation marker
+    s.addText([
+      { text: lk.prose, options: {} },
+      { text: " " + lk.mark, options: { color: C.red, fontSize: 7, superscript: true } },
+    ], {
+      x: x + 0.12, y: cardY + 1.33, w: cardW - 0.24, h: 0.70,
+      fontSize: 9, color: C.darkGray, fontFace: "Arial",
+      align: "left", valign: "top", margin: 0,
+    });
+  });
+
+  // RESHORING TIMELINE — horizontal year axis with US fab milestones
+  s.addText("US RESHORING — WHEN LEADING-EDGE CAPACITY COMES ONLINE", {
+    x: 0.5, y: 4.30, w: 9.0, h: 0.25,
+    fontSize: 10, color: C.darkGray, bold: true, fontFace: "Arial",
+    align: "left", valign: "middle", charSpacing: 3, margin: 0,
+  });
+
+  const axisY = 5.00;
+  s.addShape(pres.shapes.LINE, {
+    x: 0.7, y: axisY, w: 8.6, h: 0,
+    line: { color: C.darkGray, width: 1.5 },
+  });
+
+  const fabs = [
+    { name: "TSMC AZ Fab 1",   year: "2025",  x: 0.70 },
+    { name: "Samsung Taylor",  year: "2026",  x: 2.85 },
+    { name: "TSMC AZ Fab 2",   year: "2027",  x: 5.00 },
+    { name: "Intel Ohio",      year: "2028",  x: 7.15 },
+    { name: "Micron Clay NY",  year: "2030+", x: 9.30 },
+  ];
+
+  fabs.forEach((f, i) => {
+    // Dot marker straddling the axis
+    s.addShape(pres.shapes.OVAL, {
+      x: f.x - 0.08, y: axisY - 0.08, w: 0.16, h: 0.16,
+      fill: { color: C.red }, line: { color: C.red, width: 0 },
+    });
+    // Fab name above the axis (asymmetric alignment so end labels stay in margins)
+    let labelX, labelW, labelAlign;
+    if (i === 0) { labelX = 0.50; labelW = 1.40; labelAlign = "left"; }
+    else if (i === fabs.length - 1) { labelX = 8.10; labelW = 1.40; labelAlign = "right"; }
+    else { labelX = f.x - 0.85; labelW = 1.70; labelAlign = "center"; }
     s.addText(f.name, {
-      x: x + 0.1, y: 5.62, w: 2.0, h: 0.3,
-      fontSize: 10.5, color: C.black, bold: true, fontFace: "Arial", margin: 0,
+      x: labelX, y: 4.60, w: labelW, h: 0.30,
+      fontSize: 10, color: C.darkGray, bold: true, fontFace: "Arial",
+      align: labelAlign, valign: "bottom", margin: 0,
     });
-    s.addText(f.status, {
-      x: x + 0.1, y: 5.9, w: 2.0, h: 0.45,
-      fontSize: 9, color: C.darkGray, fontFace: "Arial", margin: 0,
+    // Year label below the axis
+    let yearX, yearW, yearAlign;
+    if (i === 0) { yearX = 0.40; yearW = 0.70; yearAlign = "left"; }
+    else if (i === fabs.length - 1) { yearX = 8.70; yearW = 0.80; yearAlign = "right"; }
+    else { yearX = f.x - 0.40; yearW = 0.80; yearAlign = "center"; }
+    s.addText(f.year, {
+      x: yearX, y: 5.15, w: yearW, h: 0.25,
+      fontSize: 10, color: C.red, bold: true, fontFace: "Arial",
+      align: yearAlign, valign: "top", margin: 0,
     });
+  });
+
+  // Italic synthesis strip
+  s.addText("Each link is single-sourced — and there is no spare capacity in the chain to absorb a shock at any one of them.", {
+    x: 0.5, y: 5.85, w: 9.0, h: 0.3,
+    fontSize: 9.5, color: C.medGray, italic: true, fontFace: "Arial",
+    align: "center", valign: "middle", margin: 0,
   });
 
   addCitations(s, [
-    { n: "1", text: "TrendForce / Counterpoint, 2025" },
-    { n: "2", text: "TrendForce, 2025" },
-    { n: "3", text: "SIA semiconductor supply-chain report" },
-    { n: "4", text: "ASML 2025 annual report" },
+    { n: "1", text: "ASML 2025 annual report" },
+    { n: "2", text: "TrendForce / Counterpoint, 2025" },
+    { n: "3", text: "TrendForce HBM tracker; SK Hynix Q1 2026 commentary" },
+    { n: "4", text: "TSMC Q4 2025 earnings commentary" },
   ]);
 
   addFooter(s, 15);
