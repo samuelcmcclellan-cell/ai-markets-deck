@@ -1231,15 +1231,16 @@ function lineOpts(extra) {
 }
 
 // ===================================================================
-// SLIDE 13 — The divergence (semis vs software + PE/credit spillover)
+// SLIDE 13 — The divergence (semis vs software)
 // ===================================================================
 {
   const s = pres.addSlide();
   addThemeTag(s, "SHIFTS");
   addHeadline(s, "The divergence.");
-  addSubhead(s, "Semis are up, software is down — a ~58-point spread inside one theme. Private credit and PE-owned software names are now selling off in sympathy.");
+  addSubhead(s, "Semis are up, software is down — a wide spread inside one theme. The sell-off is starting to bleed into private credit and PE-held SaaS.");
   addHeadlineRule(s);
 
+  // LEFT: line chart (unchanged anchor)
   addChartTitle(s, "YTD price return, rebased to 100", 0.5, 1.55);
   s.addChart(pres.charts.LINE,
     [
@@ -1250,80 +1251,76 @@ function lineOpts(extra) {
     lineOpts({ x: 0.5, y: 1.95, w: 4.3, h: 3.75 })
   );
 
-  // ---- Right-side panels: cleaner container + consistent spacing ----
-  const P_X = 5.2, P_W = 4.3;
-  const HEAD_H = 0.30, ROW_H = 0.30;
-  const drawPanel = (y, title, headerColor, rows, pctColor) => {
-    const h = HEAD_H + rows.length * ROW_H + 0.05;
-    // Container
+  // RIGHT: hero spread + two driver tiles
+  const heroX = 5.2, heroW = 4.3;
+  const heroY = 1.95, heroH = 1.4;
+
+  s.addShape(pres.shapes.RECTANGLE, {
+    x: heroX, y: heroY, w: heroW, h: heroH,
+    fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
+  });
+  s.addText("YTD SPREAD — SOX vs IGV", {
+    x: heroX, y: heroY + 0.10, w: heroW, h: 0.25,
+    fontSize: 10, color: C.medGray, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 3, margin: 0,
+  });
+  s.addText("+58 pts", {
+    x: heroX, y: heroY + 0.35, w: heroW, h: 0.70,
+    fontSize: 52, color: C.orange, bold: true, fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
+  });
+  s.addText("Semis +38% vs software −20%, through Apr 17, 2026", {
+    x: heroX, y: heroY + 1.07, w: heroW, h: 0.28,
+    fontSize: 10.5, color: C.darkGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+  });
+
+  // Driver tiles (side-by-side beneath hero)
+  const tileY = 3.50, tileH = 2.20, tileW = 2.10, tileGap = 0.10;
+  const drawTile = (x, accent, header, bigNum, bigColor, sub, prose) => {
     s.addShape(pres.shapes.RECTANGLE, {
-      x: P_X, y: y, w: P_W, h: h,
+      x: x, y: tileY, w: tileW, h: tileH,
       fill: { color: C.white }, line: { color: C.lightGray, width: 0.5 },
     });
-    // Colored header bar
     s.addShape(pres.shapes.RECTANGLE, {
-      x: P_X, y: y, w: P_W, h: HEAD_H,
-      fill: { color: headerColor }, line: { color: headerColor, width: 0 },
+      x: x, y: tileY, w: tileW, h: 0.06,
+      fill: { color: accent }, line: { color: accent, width: 0 },
     });
-    s.addText(title, {
-      x: P_X, y: y, w: P_W, h: HEAD_H,
-      fontSize: 9.5, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
+    s.addText(header, {
+      x: x, y: tileY + 0.14, w: tileW, h: 0.26,
+      fontSize: 8.5, color: C.darkGray, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
     });
-    // Rows with aligned columns and subtle row dividers
-    rows.forEach((r, i) => {
-      const ry = y + HEAD_H + 0.04 + i * ROW_H;
-      s.addText(r.ticker, {
-        x: P_X + 0.18, y: ry, w: 1.3, h: ROW_H,
-        fontSize: 10, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
-      });
-      s.addText(r.pct, {
-        x: P_X + 1.48, y: ry, w: 0.82, h: ROW_H,
-        fontSize: 12, color: pctColor, bold: true, fontFace: "Arial Black", align: "right", valign: "middle", margin: 0,
-      });
-      s.addText(r.note, {
-        x: P_X + 2.42, y: ry, w: 1.72, h: ROW_H,
-        fontSize: 8.5, color: C.medGray, fontFace: "Arial", valign: "middle", margin: 0,
-      });
-      if (i < rows.length - 1) {
-        s.addShape(pres.shapes.LINE, {
-          x: P_X + 0.18, y: ry + ROW_H - 0.005, w: P_W - 0.36, h: 0,
-          line: { color: C.lightGray, width: 0.4 },
-        });
-      }
+    s.addText(bigNum, {
+      x: x, y: tileY + 0.44, w: tileW, h: 0.60,
+      fontSize: 28, color: bigColor, bold: true, fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
     });
-    return h;
+    s.addText(sub, {
+      x: x + 0.1, y: tileY + 1.08, w: tileW - 0.2, h: 0.34,
+      fontSize: 8.5, color: C.medGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+    });
+    s.addText(prose, {
+      x: x + 0.12, y: tileY + 1.44, w: tileW - 0.24, h: 0.72,
+      fontSize: 9, color: C.darkGray, fontFace: "Arial", align: "center", valign: "top", margin: 0,
+    });
   };
 
-  const PANEL_GAP = 0.10;
-  let py = 1.9;
-  py += drawPanel(py, "MEMORY SUPERCYCLE", C.green, [
-    { ticker: "Samsung",  pct: "+72%", note: "HBM capacity +50% in 2026" },
-    { ticker: "Micron",   pct: "+68%", note: "HBM sold out; $8B run-rate" },
-    { ticker: "SK Hynix", pct: "+62%", note: "60% HBM share; HBM4 ramp" },
-  ], C.green) + PANEL_GAP;
+  drawTile(
+    heroX, C.orange,
+    "WHY SEMIS ARE UP", "+47%", C.orange,
+    "Samsung HBM capacity lift in 2026",
+    "HBM sold out through 2026 as hyperscalers lock in every GB of AI memory."
+  );
+  drawTile(
+    heroX + tileW + tileGap, C.red,
+    "WHY SOFTWARE IS DOWN", "−21%", C.red,
+    "Public SaaS EV/Revenue, Q4'25 → Q1'26",
+    "Agentic AI threatens seat pricing; 2026 CIO surveys flag displacement risk."
+  );
 
-  py += drawPanel(py, "SOFTWARE UNDER PRESSURE", C.red, [
-    { ticker: "Salesforce", pct: "–22%", note: "Seat model under agent threat" },
-    { ticker: "Adobe",      pct: "–24%", note: "Gen-AI erodes content moat" },
-    { ticker: "ServiceNow", pct: "–19%", note: "Workflows disrupted by agents" },
-  ], C.red) + PANEL_GAP;
-
-  py += drawPanel(py, "PRIVATE CREDIT & PE", C.darkGray, [
-    { ticker: "BDC index", pct: "–11%", note: "Software loan books re-marked" },
-    { ticker: "PE SaaS",   pct: "–15%", note: "2021 marks written down in Q1" },
-  ], C.red);
-
-  // Bottom payoff banner
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.78, w: 9.0, h: 0.42,
-    fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
-  });
-  s.addText("The software sell-off is now a private-credit problem — PE shops are writing down 2021-marked SaaS.", {
-    x: 0.7, y: 5.78, w: 8.6, h: 0.42,
-    fontSize: 11, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  // Footnote strip: understated PE/PC mention, not a banner
+  s.addText("BDC credit indices down ~5% YTD — early signs the sell-off is bleeding into private credit and PE-held SaaS.", {
+    x: 0.5, y: 5.85, w: 9.0, h: 0.35,
+    fontSize: 9.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: Yahoo Finance YTD total returns (Apr 17, 2026); Counterpoint Research; Morgan Stanley CIO Survey; Bloomberg BDC and PE secondary marks; PitchBook. Single-stock YTDs indicative.");
+  addSource(s, "Sources: Yahoo Finance YTD returns (Apr 17, 2026); TrendForce / DCD on HBM capacity; multiples.vc public software multiples (Apr 2026); VanEck BIZD; Morgan Stanley CIO Survey; PitchBook PE marks.");
   addFooter(s, 13);
 }
 
@@ -1338,10 +1335,10 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   const tests = [
-    { icon: "$",  test: "PRICE PER DOLLAR OF EARNINGS",  y2000: "131×", y2000sub: "Cisco fwd P/E, Mar 2000",       y2026: "~24×",   y2026sub: "NVIDIA fwd P/E, Apr 17, 2026" },
-    { icon: "%",  test: "LEADER PROFITABILITY",          y2000: "14%",  y2000sub: "of tech IPOs were profitable",  y2026: "26%",    y2026sub: "Mag 7 avg net margin (2× S&P)" },
-    { icon: "⇅",  test: "SUPPLY VS. DEMAND",             y2000: "Oversupply", y2000sub: "$500B dark fiber unused", y2026: "Sold out", y2026sub: "GPU 2nd market 90–95% of list" },
-    { icon: "◨",  test: "BUYER BALANCE SHEETS",          y2000: "20+",  y2000sub: "major telcos went bankrupt",    y2026: "~48%",   y2026sub: "hyperscaler net debt/EBITDA (vs ~80% S&P)" },
+    { icon: "$",  test: "PRICE PER DOLLAR OF EARNINGS",  y2000: "131×", y2000mark: "1", y2000sub: "Cisco fwd P/E, Mar 2000",       y2026: "~24×",   y2026mark: "2", y2026sub: "NVIDIA fwd P/E, Apr 17, 2026" },
+    { icon: "%",  test: "LEADER PROFITABILITY",          y2000: "14%",  y2000mark: "3", y2000sub: "of tech IPOs were profitable",  y2026: "26%",    y2026mark: "4", y2026sub: "Mag 7 avg net margin (2× S&P)" },
+    { icon: "⇅",  test: "SUPPLY VS. DEMAND",             y2000: "Oversupply", y2000mark: "5", y2000sub: "$500B dark fiber unused", y2026: "Sold out", y2026mark: "6", y2026sub: "GPU 2nd market 90–95% of list" },
+    { icon: "◨",  test: "BUYER BALANCE SHEETS",          y2000: "20+",  y2000mark: "7", y2000sub: "major telcos went bankrupt",    y2026: "~48%",   y2026mark: "8", y2026sub: "hyperscaler net debt/EBITDA (vs ~80% S&P)" },
   ];
 
   // Header row
@@ -1373,27 +1370,61 @@ function lineOpts(extra) {
       x: 1.15, y: y, w: 2.75, h: 0.72,
       fontSize: 10, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
     });
-    s.addText([{ text: t.y2000 + "  ", options: { bold: true, color: C.red, fontSize: 16 } }, { text: t.y2000sub, options: { color: C.medGray, fontSize: 9 } }], {
+    s.addText([
+      { text: t.y2000, options: { bold: true, color: C.red, fontSize: 16 } },
+      { text: " " + t.y2000mark, options: { color: C.red, fontSize: 9, superscript: true } },
+      { text: "  " + t.y2000sub, options: { color: C.medGray, fontSize: 9 } },
+    ], {
       x: 3.95, y: y, w: 2.7, h: 0.72, fontFace: "Arial", valign: "middle", margin: 0.08,
     });
-    s.addText([{ text: t.y2026 + "  ", options: { bold: true, color: C.green, fontSize: 16 } }, { text: t.y2026sub, options: { color: C.medGray, fontSize: 9 } }], {
+    s.addText([
+      { text: t.y2026, options: { bold: true, color: C.green, fontSize: 16 } },
+      { text: " " + t.y2026mark, options: { color: C.green, fontSize: 9, superscript: true } },
+      { text: "  " + t.y2026sub, options: { color: C.medGray, fontSize: 9 } },
+    ], {
       x: 6.7, y: y, w: 2.8, h: 0.72, fontFace: "Arial", valign: "middle", margin: 0.08,
     });
   });
 
+  // Summary banner — pushed up slightly to make room for citation block
   s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.85, w: 9.0, h: 0.5,
+    x: 0.5, y: 5.55, w: 9.0, h: 0.4,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
   });
   s.addText([
-    { text: "Corrections happen. Bubbles require stretched valuations AND supply exceeding demand. ", options: { color: C.black, fontSize: 11.5 } },
-    { text: "Neither condition holds today.", options: { color: C.red, fontSize: 12, bold: true } },
+    { text: "Corrections happen. Bubbles require stretched valuations AND supply exceeding demand. ", options: { color: C.black, fontSize: 11 } },
+    { text: "Neither condition holds today.", options: { color: C.red, fontSize: 11.5, bold: true } },
   ], {
-    x: 0.7, y: 5.85, w: 8.6, h: 0.5,
+    x: 0.7, y: 5.55, w: 8.6, h: 0.4,
     fontFace: "Arial", bold: true, valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: Harding Loevner (Cisco); GuruFocus (NVDA fwd P/E Apr 17, 2026); Jay Ritter / UF; Bloomberg; CoreWeave 2nd market; FCC dark fiber data.");
+  // Numbered citation list — two columns, 1–4 left, 5–8 right
+  const citations = [
+    { n: "1", text: "Cisco fwd P/E 131× (Mar 2000) — Harding Loevner retrospective." },
+    { n: "2", text: "NVDA fwd P/E ~24× (Apr 17, 2026) — GuruFocus." },
+    { n: "3", text: "14% of tech IPOs profitable (2000) — Jay Ritter, Univ. of Florida IPO data." },
+    { n: "4", text: "Mag 7 avg net margin 26% (2× S&P) — Bloomberg / company filings, 2025 TTM." },
+    { n: "5", text: "$500B dark fiber unused (2000 era) — FCC / industry retrospectives." },
+    { n: "6", text: "GPU 2nd-market 90–95% of list — CoreWeave / 2nd-market trackers, 2026." },
+    { n: "7", text: "20+ major telcos bankrupt (2001–02) — public filings / press retrospectives." },
+    { n: "8", text: "Hyperscaler net debt/EBITDA ~48% vs ~80% S&P — Bloomberg, 2025 YE." },
+  ];
+  const buildCiteRuns = (items) => {
+    const runs = [];
+    items.forEach((c, i) => {
+      runs.push({ text: c.n + "  ", options: { color: C.orange, bold: true, fontSize: 7 } });
+      runs.push({ text: c.text, options: { color: "999999", fontSize: 7, breakLine: i < items.length - 1 } });
+    });
+    return runs;
+  };
+  s.addText(buildCiteRuns(citations.slice(0, 4)), {
+    x: 0.5, y: 6.05, w: 4.4, h: 0.8, fontFace: "Arial", valign: "top", margin: 0, paraSpaceAfter: 1,
+  });
+  s.addText(buildCiteRuns(citations.slice(4, 8)), {
+    x: 5.1, y: 6.05, w: 4.4, h: 0.8, fontFace: "Arial", valign: "top", margin: 0, paraSpaceAfter: 1,
+  });
+
   addFooter(s, 14);
 }
 
