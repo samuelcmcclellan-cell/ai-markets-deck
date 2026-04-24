@@ -1399,21 +1399,22 @@ function lineOpts(extra) {
     fontFace: "Arial", bold: true, valign: "middle", margin: 0,
   });
 
-  // Numbered citation list — two columns, 1–4 left, 5–8 right
+  // Numbered citation list — two columns, 1–4 left, 5–8 right. Source attribution only;
+  // the stat being cited is already visible next to each superscript marker above.
   const citations = [
-    { n: "1", text: "Cisco fwd P/E 131× (Mar 2000) — Harding Loevner retrospective." },
-    { n: "2", text: "NVDA fwd P/E ~24× (Apr 17, 2026) — GuruFocus." },
-    { n: "3", text: "14% of tech IPOs profitable (2000) — Jay Ritter, Univ. of Florida IPO data." },
-    { n: "4", text: "Mag 7 avg net margin 26% (2× S&P) — Bloomberg / company filings, 2025 TTM." },
-    { n: "5", text: "$500B dark fiber unused (2000 era) — FCC / industry retrospectives." },
-    { n: "6", text: "GPU 2nd-market 90–95% of list — CoreWeave / 2nd-market trackers, 2026." },
-    { n: "7", text: "20+ major telcos bankrupt (2001–02) — public filings / press retrospectives." },
-    { n: "8", text: "Hyperscaler net debt/EBITDA ~48% vs ~80% S&P — Bloomberg, 2025 YE." },
+    { n: "1", text: "Harding Loevner retrospective." },
+    { n: "2", text: "GuruFocus (Apr 17, 2026)." },
+    { n: "3", text: "Jay Ritter, Univ. of Florida IPO data." },
+    { n: "4", text: "Bloomberg / company filings, 2025 TTM." },
+    { n: "5", text: "FCC / industry retrospectives." },
+    { n: "6", text: "CoreWeave / 2nd-market trackers, 2026." },
+    { n: "7", text: "Public filings / press retrospectives, 2001–02." },
+    { n: "8", text: "Bloomberg, 2025 YE." },
   ];
   const buildCiteRuns = (items) => {
     const runs = [];
     items.forEach((c, i) => {
-      runs.push({ text: c.n + "  ", options: { color: C.orange, bold: true, fontSize: 7 } });
+      runs.push({ text: c.n + "  ", options: { color: "999999", bold: true, fontSize: 7 } });
       runs.push({ text: c.text, options: { color: "999999", fontSize: 7, breakLine: i < items.length - 1 } });
     });
     return runs;
