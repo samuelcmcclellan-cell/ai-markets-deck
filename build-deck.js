@@ -883,14 +883,30 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   const rows = [
-    { name: "OpenAI",    logo: "logos/openai.png",    val: "$852B",  mark: "1", mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Apr 2026" },
-    { name: "Anthropic", logo: "logos/anthropic.png", val: "$380B",  mark: "2", mult: "~13× ARR",  event: "$30B Series G (Feb); VCs now offering $800B+" },
-    { name: "Google",    logo: "logos/google.png",    val: "$2.3T",  mark: "3", mult: "~20× P/E",  event: "Alphabet (public) · Gemini 3 / DeepMind · ~$85B 2026 capex" },
+    { name: "OpenAI",    logo: "logos/openai.png",    val: "$852B",  mark: "1", mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Mar 2026" },
+    { name: "Anthropic", logo: "logos/anthropic.png", val: "$380B",  mark: "2", mult: "~13× ARR",  event: "$30B Series G (Feb); Google $40B (Apr); VCs offering $800B+" },
+    { name: "Google",    logo: "logos/google.png",    val: "$4.0T",  mark: "3", mult: "~31× P/E",  event: "Alphabet (public) · Gemini 3 / DeepMind · ~$180B 2026 capex" },
     { name: "xAI / SpaceX", logo: "logos/xai.png",    val: "$1.25T", mark: "4", mult: "combined",  event: "All-stock merger closed Feb 2, 2026 — xAI now a SpaceX subsidiary" },
   ];
 
+  // Column headers
+  const TABLE_X = 0.5;
+  const HEADER_Y = 1.55, HEADER_H = 0.22;
+  const headerStyle = {
+    fontSize: 9, color: C.medGray, bold: true, fontFace: "Arial",
+    charSpacing: 2, valign: "middle", margin: 0,
+  };
+  s.addText("LAB",          { x: TABLE_X + 0.2,  y: HEADER_Y, w: 2.7, h: HEADER_H, ...headerStyle });
+  s.addText("VALUATION",    { x: TABLE_X + 3.0,  y: HEADER_Y, w: 1.4, h: HEADER_H, align: "center", ...headerStyle });
+  s.addText("MULTIPLE",     { x: TABLE_X + 4.4,  y: HEADER_Y, w: 1.3, h: HEADER_H, align: "center", ...headerStyle });
+  s.addText("RECENT EVENT", { x: TABLE_X + 5.8,  y: HEADER_Y, w: 3.1, h: HEADER_H, ...headerStyle });
+  s.addShape(pres.shapes.LINE, {
+    x: TABLE_X, y: 1.80, w: 9.0, h: 0,
+    line: { color: C.lightGray, width: 0.5 },
+  });
+
   // Larger, airier layout — each row is its own card with more breathing room
-  const TABLE_X = 0.5, TABLE_Y = 1.85, ROW_H = 0.88, LOGO_SIZE = 0.55;
+  const TABLE_Y = 1.85, ROW_H = 0.88, LOGO_SIZE = 0.55;
   rows.forEach((r, i) => {
     const y = TABLE_Y + i * ROW_H;
     // Zebra background
@@ -950,7 +966,7 @@ function lineOpts(extra) {
   });
 
   addCitations(s, [
-    { n: "1", text: "Bloomberg / CNBC — OpenAI $122B round, Apr 2026" },
+    { n: "1", text: "Bloomberg / CNBC — OpenAI $122B round, Mar 2026" },
     { n: "2", text: "Sacra / Bloomberg — Anthropic Series G, Feb 2026" },
     { n: "3", text: "Alphabet 10-K + 2026 capex guide" },
     { n: "4", text: "TechCrunch / CNBC — xAI-SpaceX merger, Feb 2, 2026" },
@@ -2137,7 +2153,7 @@ function lineOpts(extra) {
         { slide: "Slide 9",  fig: "TMI reopening",                        src: "Microsoft / Constellation (Sept 2024)" },
         { slide: "Slide 10", fig: "OpenAI $852B @ ~35× ARR",              src: "TechCrunch, Sacra ARR run-rates" },
         { slide: "Slide 10", fig: "Anthropic $380B",                      src: "TechCrunch, Bloomberg (Feb 2026)" },
-        { slide: "Slide 10", fig: "Alphabet $2.3T / ~$85B 2026 capex",    src: "Alphabet 10-K and 2026 capex guide" },
+        { slide: "Slide 10", fig: "Alphabet $4.0T / ~$180B 2026 capex",   src: "companiesmarketcap; Alphabet 2026 capex guide (Q4 2025 call)" },
         { slide: "Slide 10", fig: "xAI / SpaceX $1.25T merger",           src: "CNBC, TechCrunch (Feb 2, 2026)" },
         { slide: "Slide 10", fig: "Q1 2026 funding 2× all of 2025",       src: "Crunchbase Q1 2026 VC data" },
         { slide: "Slide 11", fig: "Top 10 Tech vs Non-Tech metrics",      src: "stockanalysis.com consensus (Apr 22, 2026)" },
