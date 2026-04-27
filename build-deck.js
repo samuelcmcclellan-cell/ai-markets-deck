@@ -293,15 +293,16 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   const items = [
-    { n: "01", label: "LANDSCAPE", accent: C.teal,   pages: "3 – 6"   },
-    { n: "02", label: "MARKET",    accent: C.gold,   pages: "7 – 11"  },
-    { n: "03", label: "SHIFTS",    accent: C.orange, pages: "12 – 13" },
-    { n: "04", label: "RISKS",     accent: C.red,    pages: "14 – 17" },
-    { n: "05", label: "FRONTIER",  accent: C.purple, pages: "18 – 21" },
-    { n: "06", label: "TAKEAWAYS", accent: C.black,  pages: "22"      },
+    { n: "01", label: "LANDSCAPE", accent: C.teal,    pages: "3 – 6"   },
+    { n: "02", label: "MARKET",    accent: C.gold,    pages: "7 – 11"  },
+    { n: "03", label: "SHIFTS",    accent: C.orange,  pages: "12 – 13" },
+    { n: "04", label: "RISKS",     accent: C.red,     pages: "14 – 17" },
+    { n: "05", label: "FRONTIER",  accent: C.purple,  pages: "18 – 21" },
+    { n: "06", label: "TAKEAWAYS", accent: C.black,   pages: "22"      },
+    { n: "07", label: "APPENDIX",  accent: C.medGray, pages: "23 – 24" },
   ];
 
-  const rowY0 = 1.9, rowH = 0.72, rowW = 9.0, rowX = 0.5;
+  const rowY0 = 1.9, rowH = 0.62, rowW = 9.0, rowX = 0.5;
   items.forEach((it, i) => {
     const y = rowY0 + i * rowH;
     // Accent block on the left
@@ -333,7 +334,7 @@ function lineOpts(extra) {
     }
   });
 
-  addSource(s, "Source: Strategy Research. 22 slides, read top to bottom.");
+  addSource(s, "Source: Strategy Research. 24 slides, read top to bottom.");
   addFooter(s, 2);
 }
 
@@ -401,7 +402,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "LANDSCAPE");
-  addHeadline(s, "AI evolution from chatbots to agents.");
+  addHeadline(s, "Sixty years of AI in six steps — and we are now in step six");
   addSubhead(s, "Software that learns from data, reasons through problems, and — increasingly — takes action without human direction.");
   addHeadlineRule(s);
 
@@ -462,7 +463,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "LANDSCAPE");
-  addHeadline(s, "The AI stack.");
+  addHeadline(s, "Eleven layers, four power blocs — your exposure depends on which layer you own");
   addHeadlineRule(s);
 
   // Left rail — group labels
@@ -606,7 +607,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Semiconductors, explained.");
+  addHeadline(s, "Logic and memory absorb the capex — ASML and TSMC decide who ships");
   addSubhead(s, "Chips pass through four making stages before reaching six product markets. AI capex piles into just two categories — but flows through bottlenecks at every stage.");
   addHeadlineRule(s);
 
@@ -735,7 +736,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Who's buying the chips.");
+  addHeadline(s, "Five hyperscalers fund ~60% of AI chip demand — their capex IS the market");
   addSubhead(s, "Five hyperscalers fund roughly 60% of advanced-AI chip demand — sovereigns, enterprise, and edge devices split the rest.");
   addHeadlineRule(s);
 
@@ -853,7 +854,7 @@ function lineOpts(extra) {
 
   // Three stat cards
   const stats = [
-    { n: "~12%", lbl: "of US electricity demand will go to data centers by 2028 — up from ~4% in 2023", color: C.orange },
+    { n: "~12%", lbl: "of US electricity demand will go to data centers by 2028 — up from ~4% in 2023 (EPRI high case, 2024)", color: C.orange },
     { n: "1 GW",  lbl: "typical new AI campus — the draw of ~750K US homes",                             color: C.orange },
     { n: "~5 yr", lbl: "avg wait for a new grid interconnection in PJM & ERCOT",                         color: C.red },
   ];
@@ -918,7 +919,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "The labs.");
+  addHeadline(s, "Q1 funding doubled all of 2025 — two giants, one public, one merger");
   addSubhead(s, "Two independent private labs, one public giant, and xAI — now inside SpaceX after February's $1.25T all-stock merger.");
   addHeadlineRule(s);
 
@@ -972,6 +973,11 @@ function lineOpts(extra) {
     });
   });
 
+  s.addText("All valuations as of Apr 22, 2026.", {
+    x: 0.5, y: 5.38, w: 9.0, h: 0.20,
+    fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", align: "right", valign: "top", margin: 0,
+  });
+
   s.addShape(pres.shapes.RECTANGLE, {
     x: 0.5, y: 5.65, w: 9.0, h: 0.55,
     fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
@@ -1000,8 +1006,8 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Earnings & valuations.");
-  addSubhead(s, "Top 10 Tech firms are growing 4× faster than the top 10 Non-Tech — at a lower multiple. The divergence in fundamentals has not been priced into valuations.");
+  addHeadline(s, "Top 10 Tech grow 4× faster than Top 10 Non-Tech — at a similar multiple");
+  addSubhead(s, "Top 10 Tech firms are growing 4× faster than the top 10 Non-Tech — at a similar multiple. The divergence in fundamentals has not been priced into valuations.");
   addHeadlineRule(s);
 
   // --- LEFT PANEL: three mini grouped bars (Rev Growth / Op Margin / P/E) ---
@@ -1197,7 +1203,7 @@ function lineOpts(extra) {
   s.addText(
     "Tech median: ~" + MED_TECH_PE.toFixed(0) + "× fwd P/E on ~" + MED_TECH_GROW.toFixed(0) +
     "% forward revenue growth. Non-Tech: ~" + MED_NONTECH_PE.toFixed(0) + "× on ~" +
-    MED_NONTECH_GROW.toFixed(0) + "%. The divergence is in the engine, not the multiple.",
+    MED_NONTECH_GROW.toFixed(0) + "% (consensus, Apr 22, 2026). The divergence is in the engine, not the multiple.",
     {
       x: 0.7, y: 5.9, w: 8.6, h: 0.45,
       fontSize: 11, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
@@ -1214,7 +1220,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "SHIFTS");
-  addHeadline(s, "What is agentic AI?");
+  addHeadline(s, "Agentic AI uses 10–100× the compute per session — that's the capex thesis");
   addSubhead(s, "Agents set goals, use tools, and complete tasks end-to-end. Each session uses 10–100× the compute of a chatbot query.");
   addHeadlineRule(s);
 
@@ -1266,8 +1272,8 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "SHIFTS");
-  addHeadline(s, "The divergence.");
-  addSubhead(s, "Semis are up, software is down — a wide spread inside one theme. The sell-off is starting to bleed into private credit and PE-held SaaS.");
+  addHeadline(s, "Semis up, software down — one theme, two outcomes");
+  addSubhead(s, "A 50+ point spread inside a single theme — and the pain is now bleeding into private credit and PE-held SaaS.");
   addHeadlineRule(s);
 
   // LEFT: line chart (unchanged anchor)
@@ -1608,7 +1614,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "RISKS");
-  addHeadline(s, "Policy & regulation.");
+  addHeadline(s, "Export controls, EU rules, and rare-earths decide who sells what");
   addSubhead(s, "Export controls, EU compliance, and reshoring subsidies now decide who can sell what, to whom, from where.");
   addHeadlineRule(s);
 
@@ -1705,7 +1711,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "RISKS");
-  addHeadline(s, "AI backlash.");
+  addHeadline(s, "Communities, voters, and labor are pricing the AI infrastructure bet lower");
   addSubhead(s, "NIMBY revolt, anti-AI sentiment, and a labor shortage are each capable of pricing the infrastructure bet lower.");
   addHeadlineRule(s);
 
@@ -1727,7 +1733,7 @@ function lineOpts(extra) {
     ]},
     { title: "ANTI-AI SENTIMENT", body: [
       { text: "Only 26%" }, supMark("2"),
-      { text: " of Americans view AI positively. March 2026 \"Stop the AI Race\" protests" }, supMark("3"),
+      { text: " (Echelon Insights, Mar 2026) of Americans view AI positively. March 2026 \"Stop the AI Race\" protests" }, supMark("3"),
       { text: " hit lab HQs in SF and DC." },
     ]},
     { title: "LABOR SHORTAGE", body: [
@@ -1783,7 +1789,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
-  addHeadline(s, "Beyond the grid.");
+  addHeadline(s, "Orbital compute sidesteps Earth-bound bottlenecks — pilot stage today");
   addSubhead(s, [
     { text: "No interconnection queue. No permits. No water. 1,361 W/m²" },
     { text: " 1", options: { superscript: true, fontSize: 7 } },
@@ -1844,7 +1850,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
-  addHeadline(s, "Physical AI.");
+  addHeadline(s, "Humanoids hit pilot scale — every robot is a walking inference endpoint");
   addSubhead(s, "Humanoids enter manufacturing, logistics, and healthcare at pilot scale. Every robot is a walking inference endpoint.");
   addHeadlineRule(s);
 
@@ -1910,7 +1916,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
-  addHeadline(s, "Autonomous mobility.");
+  addHeadline(s, "Every autonomous mile compounds — every AV runs frontier edge compute");
   addSubhead(s, "More miles → better models → more deployments. Every vehicle is a rolling inference machine consuming frontier-scale compute.");
   addHeadlineRule(s);
 
@@ -2069,7 +2075,7 @@ function lineOpts(extra) {
 // ===================================================================
 {
   const s = pres.addSlide();
-  addHeadline(s, "Key takeaways.");
+  addHeadline(s, "Capex on credit, basket over, bottleneck moves, exposure is a thesis");
   addSubhead(s, "The thesis, distilled. Each with the number that makes it investable.");
   addHeadlineRule(s);
 
@@ -2078,7 +2084,7 @@ function lineOpts(extra) {
       body: "~$750B hyperscaler capex in 2026, up ~$300B YoY. Amazon FCF turns negative; Meta FCF down ~90%. ~75% of that capex is AI-specific. The story has shifted from cash flow to balance sheet.",
       accent: C.teal },
     { n: "02", title: "The market is picking winners — the basket trade is over.",
-      body: "AI stock correlation collapsed from ~80% to ~20%. Semis +38% YTD, software –20% YTD — a 58-point spread. Memory oligopolies with pricing power outperform cloud providers burning cash.",
+      body: "AI stock correlation collapsed from ~80% to ~20%. Semis +38% YTD, software –20% YTD — a 58-point spread (YTD through Apr 17, 2026). Memory oligopolies with pricing power outperform cloud providers burning cash.",
       accent: C.gold },
     { n: "03", title: "The bottleneck keeps moving — and that is the opportunity.",
       body: "CoWoS packaging (2023–24) → HBM / silicon wafer supply (now) → EUV lithography (<100 machines/yr) by 2028. Each shift reprices a different part of the stack. HBM TAM on a path from $35B (2025) to $100B (2028).",
@@ -2206,7 +2212,7 @@ function lineOpts(extra) {
   });
 
   addSource(s, "Appendix 1 of 2 — continues on the next page with RISKS, FRONTIER, and TAKEAWAYS.");
-  addFooter(s, "A1");
+  addFooter(s, 23);
 }
 
 // ===================================================================
@@ -2309,7 +2315,7 @@ function lineOpts(extra) {
   });
 
   addSource(s, "Appendix 2 of 2. End of deck.");
-  addFooter(s, "A2");
+  addFooter(s, 24);
 }
 
 // ---------- Write ----------
