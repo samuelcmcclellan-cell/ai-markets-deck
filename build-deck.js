@@ -602,131 +602,99 @@ function lineOpts(extra) {
 }
 
 // ===================================================================
-// SLIDE 7 — Semiconductors, explained (teaching primer)
+// SLIDE 7: How an AI chip is made (educational primer)
 // ===================================================================
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Logic and memory absorb the capex — ASML and TSMC decide who ships");
-  addSubhead(s, "Chips pass through four making stages before reaching six product markets. AI capex piles into just two categories — but flows through bottlenecks at every stage.");
+  addHeadline(s, "How an AI chip is made");
+  addSubhead(s, "Every AI accelerator inside a data center, from training GPUs to custom inference silicon, passes through the same four stages.");
   addHeadlineRule(s);
 
-  // ---- Top strip: four-stage value chain with flow arrows ----
-  const stages = [
-    { k: "DESIGN",     v: "architects the chip", players: "NVIDIA · Apple · AMD · Broadcom",       color: C.purple   },
-    { k: "EQUIPMENT",  v: "builds the tools",    players: "ASML · Applied Materials · Lam · KLA",  color: C.pink     },
-    { k: "FOUNDRY",    v: "prints the wafer",    players: "TSMC · Samsung · Intel Foundry",        color: C.darkGray },
-    { k: "PACKAGING",  v: "stacks the dies",     players: "TSMC CoWoS · ASE · Amkor",              color: C.black    },
-  ];
-  const STRIP_X = 0.5, STRIP_Y = 1.85, STRIP_H = 0.85, STRIP_W = 9.0;
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: STRIP_X, y: STRIP_Y, w: STRIP_W, h: STRIP_H,
-    fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
+  // ---- Left: photo placeholder ----
+  addImagePlaceholder(s, 0.5, 1.70, 4.40, 4.30,
+    "Photo: AI accelerator package close-up, NVIDIA H100/H200 or Blackwell style. Large central logic die surrounded by HBM memory stacks on a CoWoS substrate, gold contact pads visible, dramatic studio lighting on dark backdrop, square framing.");
+  s.addText("An AI accelerator package: a large logic die surrounded by HBM memory stacks on a CoWoS substrate.", {
+    x: 0.5, y: 6.08, w: 4.40, h: 0.30,
+    fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
   });
-  const stageW = STRIP_W / stages.length;
+
+  // ---- Right: four-stage list ----
+  const stages = [
+    { n: "01", name: "DESIGN",      color: C.purple,
+      desc: "Engineers blueprint the AI chip's tens of billions of transistors in software.",
+      players: "NVIDIA · AMD · Broadcom · Google TPU" },
+    { n: "02", name: "EQUIPMENT",   color: C.pink,
+      desc: "Specialized tools, especially EUV lithography, are built to print at atomic scale.",
+      players: "ASML · Applied Materials · Lam · KLA" },
+    { n: "03", name: "FABRICATION", color: C.teal,
+      desc: "Inside a $20B fab, silicon wafers are processed through 1,000+ steps.",
+      players: "TSMC · Samsung · Intel" },
+    { n: "04", name: "PACKAGING",   color: C.navy,
+      desc: "Logic dies are stacked with HBM memory using advanced packaging like CoWoS.",
+      players: "TSMC CoWoS · ASE · Amkor" },
+  ];
+
+  const RIGHT_X = 5.05;
+  const RIGHT_W = 4.45;
+
+  // Mini header
+  s.addText("THE FOUR STAGES", {
+    x: RIGHT_X, y: 1.70, w: RIGHT_W, h: 0.24,
+    fontSize: 9, color: C.medGray, bold: true, fontFace: "Arial", valign: "middle", charSpacing: 2, margin: 0,
+  });
+  s.addShape(pres.shapes.LINE, {
+    x: RIGHT_X, y: 1.95, w: RIGHT_W, h: 0,
+    line: { color: C.lightGray, width: 0.5 },
+  });
+
+  const ROW_Y0 = 2.05;
+  const rowH = 1.05;
+  const circleSize = 0.42;
+
   stages.forEach((st, i) => {
-    const cx = STRIP_X + i * stageW;
-    // Colored dot
+    const ry = ROW_Y0 + i * rowH;
+
+    // Number circle
     s.addShape(pres.shapes.OVAL, {
-      x: cx + 0.20, y: STRIP_Y + 0.11, w: 0.14, h: 0.14,
+      x: RIGHT_X, y: ry + 0.04, w: circleSize, h: circleSize,
       fill: { color: st.color }, line: { color: st.color, width: 0 },
     });
-    // Row 1: Stage label (bold caps)
-    s.addText(st.k, {
-      x: cx + 0.40, y: STRIP_Y + 0.02, w: stageW - 0.5, h: 0.26,
-      fontSize: 11, bold: true, color: C.black, charSpacing: 2,
-      fontFace: "Arial", valign: "middle", margin: 0,
+    s.addText(st.n, {
+      x: RIGHT_X, y: ry + 0.04, w: circleSize, h: circleSize,
+      fontSize: 11, color: C.white, bold: true, fontFace: "Arial Black",
+      align: "center", valign: "middle", margin: 0,
     });
-    // Row 2: italic action (its own line, no wrap)
-    s.addText(st.v, {
-      x: cx + 0.20, y: STRIP_Y + 0.28, w: stageW - 0.3, h: 0.20,
-      fontSize: 9.5, italic: true, color: C.medGray,
-      fontFace: "Arial", valign: "middle", margin: 0,
+
+    // Stage name
+    const TX = RIGHT_X + circleSize + 0.18;
+    const TW = RIGHT_W - circleSize - 0.18;
+    s.addText(st.name, {
+      x: TX, y: ry, w: TW, h: 0.30,
+      fontSize: 13, color: C.black, bold: true, fontFace: "Arial",
+      valign: "middle", charSpacing: 1.5, margin: 0,
     });
-    // Divider beneath description
-    s.addShape(pres.shapes.LINE, {
-      x: cx + 0.22, y: STRIP_Y + 0.50, w: stageW - 0.5, h: 0,
-      line: { color: C.lightGray, width: 0.5 },
+    // Description
+    s.addText(st.desc, {
+      x: TX, y: ry + 0.30, w: TW, h: 0.50,
+      fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
     });
-    // Player list (can wrap to 2 lines)
+    // Examples
     s.addText(st.players, {
-      x: cx + 0.20, y: STRIP_Y + 0.52, w: stageW - 0.30, h: 0.32,
-      fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
+      x: TX, y: ry + 0.78, w: TW, h: 0.20,
+      fontSize: 9, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
     });
-    // Flow arrow (chevron) between stages
+
+    // Subtle divider between rows (skip last)
     if (i < stages.length - 1) {
-      const ax = cx + stageW - 0.05;
-      const ay = STRIP_Y + STRIP_H / 2;
-      s.addText("›", {
-        x: ax - 0.12, y: ay - 0.20, w: 0.24, h: 0.40,
-        fontSize: 24, color: C.medGray, bold: true, fontFace: "Arial",
-        align: "center", valign: "middle", margin: 0,
+      s.addShape(pres.shapes.LINE, {
+        x: RIGHT_X, y: ry + rowH - 0.02, w: RIGHT_W, h: 0,
+        line: { color: C.lightGray, width: 0.5 },
       });
     }
   });
 
-  // ---- Six category cards (2 rows × 3 cols) ----
-  const types = [
-    { name: "LOGIC",            desc: "Where computation happens — the chips that run code and move data.",      use: "GPUs, AI accelerators, ASICs, FPGAs", players: "NVIDIA · AMD · Broadcom · TSMC",    color: C.orange },
-    { name: "MEMORY",           desc: "Stores data so logic can read it at terabit speeds.",                     use: "DRAM, HBM, NAND — every AI server",   players: "SK Hynix · Samsung · Micron",        color: C.gold },
-    { name: "PROCESSORS",       desc: "General-purpose silicon that runs your operating system.",                use: "CPUs in every phone and PC",          players: "Intel · AMD · Apple · Qualcomm",     color: C.teal },
-    { name: "ANALOG",           desc: "The bridge between silicon and the real world — voltages, signals, RF.",  use: "Power management, radio, audio",      players: "TI · Analog Devices · Infineon",     color: C.navy },
-    { name: "SENSORS + OPTO",   desc: "How chips see, hear, and communicate with photons.",                      use: "Phone cameras, lidar, fiber optics",  players: "Sony · Samsung · STMicro",            color: C.green },
-    { name: "DISCRETE + POWER", desc: "Heavy-current switching for machines, grids, and vehicles.",              use: "EVs, industrial motors, chargers",    players: "Infineon · ON Semi · Wolfspeed",      color: C.medGray },
-  ];
-  const GRID_X = 0.5, GRID_Y = 2.85;
-  const cardW = 2.90, cardH = 1.40, hgap = 0.15, vgap = 0.10;
-
-  types.forEach((t, i) => {
-    const col = i % 3;
-    const row = Math.floor(i / 3);
-    const x = GRID_X + col * (cardW + hgap);
-    const y = GRID_Y + row * (cardH + vgap);
-
-    s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: y, w: cardW, h: cardH,
-      fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
-    });
-    s.addShape(pres.shapes.RECTANGLE, {
-      x: x, y: y, w: cardW, h: 0.28,
-      fill: { color: t.color }, line: { color: t.color, width: 0 },
-    });
-    s.addText(t.name, {
-      x: x, y: y, w: cardW, h: 0.28,
-      fontSize: 10, color: t.color === C.gold ? C.black : C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
-    });
-    // Plain-English function
-    s.addText(t.desc, {
-      x: x + 0.15, y: y + 0.34, w: cardW - 0.3, h: 0.5,
-      fontSize: 9.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
-    });
-    // Representative use (italic, medGray)
-    s.addText(t.use, {
-      x: x + 0.15, y: y + 0.86, w: cardW - 0.3, h: 0.26,
-      fontSize: 8.5, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
-    });
-    // Players divider + line
-    s.addShape(pres.shapes.LINE, {
-      x: x + 0.2, y: y + cardH - 0.26, w: cardW - 0.4, h: 0,
-      line: { color: C.lightGray, width: 0.5 },
-    });
-    s.addText(t.players, {
-      x: x, y: y + cardH - 0.24, w: cardW, h: 0.22,
-      fontSize: 7.5, color: C.medGray, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
-    });
-  });
-
-  // Bottom payoff banner — ties both axes together
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.78, w: 9.0, h: 0.44,
-    fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
-  });
-  s.addText("Logic and memory absorb the AI capex — but every chip flows through ASML tools, TSMC fabs, and advanced packaging, where bottlenecks decide who ships.", {
-    x: 0.7, y: 5.78, w: 8.6, h: 0.44,
-    fontSize: 11.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
-  });
-
-  addSource(s, "Sources: SIA category taxonomy; WSTS Fall 2025; SEMI World Fab Forecast; TrendForce; company disclosures. Category descriptions are plain-English simplifications.");
+  addSource(s, "Source: SIA / SEMI industry taxonomy; SEMI World Fab Forecast; TSMC, NVIDIA, ASML disclosures. Process descriptions are plain-English simplifications.");
   addFooter(s, 7);
 }
 
@@ -2071,51 +2039,49 @@ function lineOpts(extra) {
 }
 
 // ===================================================================
-// SLIDE 22 — Key takeaways
+// SLIDE 22: Big-picture takeaways
 // ===================================================================
 {
   const s = pres.addSlide();
-  addHeadline(s, "Capex on credit, basket over, bottleneck moves, exposure is a thesis");
-  addSubhead(s, "The thesis, distilled. Each with the number that makes it investable.");
+  addHeadline(s, "Capex on credit. Basket over. Bottleneck moves. Exposure is a thesis.", { w: 9.0 });
+  addSubhead(s, "Four big-picture takeaways.");
   addHeadlineRule(s);
 
   const items = [
-    { n: "01", title: "The largest capex cycle in history — and it's going on credit.",
-      body: "~$750B hyperscaler capex in 2026, up ~$300B YoY. Amazon FCF turns negative; Meta FCF down ~90%. ~75% of that capex is AI-specific. The story has shifted from cash flow to balance sheet.",
-      accent: C.teal },
-    { n: "02", title: "The market is picking winners — the basket trade is over.",
-      body: "AI stock correlation collapsed from ~80% to ~20%. Semis +38% YTD, software –20% YTD — a 58-point spread (YTD through Apr 17, 2026). Memory oligopolies with pricing power outperform cloud providers burning cash.",
-      accent: C.gold },
-    { n: "03", title: "The bottleneck keeps moving — and that is the opportunity.",
-      body: "CoWoS packaging (2023–24) → HBM / silicon wafer supply (now) → EUV lithography (<100 machines/yr) by 2028. Each shift reprices a different part of the stack. HBM TAM on a path from $35B (2025) to $100B (2028).",
-      accent: C.red },
-    { n: "04", title: "The question isn't whether you have AI exposure — it's whether you chose it.",
-      body: "AI-linked stocks are ~30%+ of US large-cap benchmarks. Passive exposure to a ~$750B capex cycle is not neutral — it's a thesis. Own the layer with pricing power for today's bottleneck.",
-      accent: C.purple },
+    { n: "01", statement: "The largest capex cycle in history is going on credit.",        accent: C.teal   },
+    { n: "02", statement: "The basket trade is over. The market picks winners.",            accent: C.gold   },
+    { n: "03", statement: "The bottleneck keeps moving. That is the opportunity.",          accent: C.red    },
+    { n: "04", statement: "If you index, you own the thesis. Choose it deliberately.",      accent: C.purple },
   ];
 
-  const y0 = 1.7, rowH = 1.05;
+  const y0 = 1.85;
+  const rowH = 1.05;
+  const blockW = 0.95;
+  const blockH = 0.95;
+
   items.forEach((it, i) => {
     const y = y0 + i * rowH;
+
+    // Number block (left)
     s.addShape(pres.shapes.RECTANGLE, {
-      x: 0.5, y: y, w: 0.7, h: rowH - 0.12,
+      x: 0.5, y: y, w: blockW, h: blockH,
       fill: { color: it.accent }, line: { color: it.accent, width: 0 },
     });
     s.addText(it.n, {
-      x: 0.5, y: y, w: 0.7, h: rowH - 0.12,
-      fontSize: 20, color: C.white, bold: true, fontFace: "Arial Black", align: "center", valign: "middle", margin: 0,
+      x: 0.5, y: y, w: blockW, h: blockH,
+      fontSize: 26, color: C.white, bold: true, fontFace: "Arial Black",
+      align: "center", valign: "middle", margin: 0,
     });
-    s.addText(it.title, {
-      x: 1.3, y: y, w: 8.2, h: 0.3,
-      fontSize: 13, color: C.black, bold: true, fontFace: "Arial", valign: "top", margin: 0,
-    });
-    s.addText(it.body, {
-      x: 1.3, y: y + 0.3, w: 8.2, h: rowH - 0.42,
-      fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
+
+    // Big statement (right)
+    s.addText(it.statement, {
+      x: 1.65, y: y, w: 7.85, h: blockH,
+      fontSize: 18, color: C.darkGray, bold: true, fontFace: "Arial",
+      valign: "middle", margin: 0,
     });
   });
 
-  addSource(s, "Sources: company filings; CreditSights / MUFG hyperscaler capex 2026 (Apr 2026); Goldman Sachs correlation data; Yahoo Finance YTD (Apr 17, 2026); SemiAnalysis; BofA HBM TAM; TrendForce.", 0.5, 6.15, 9.0);
+  addSource(s, "Sources: company filings; CreditSights / MUFG; Goldman Sachs; SemiAnalysis; BofA; TrendForce. See appendix for figure-by-figure citations.", 0.5, 6.15, 9.0);
   addFooter(s, 22);
 }
 
@@ -2155,8 +2121,9 @@ function lineOpts(extra) {
     {
       x: 0.5 + COL_W + GAP, label: "MARKET  ·  7–11", color: C.gold,
       entries: [
-        { slide: "Slide 7",  fig: "\"$975B 2026E semi market\"",          src: "WSTS Fall 2025 forecast (Nov 2025 release)" },
-        { slide: "Slide 7",  fig: "Six-category chip taxonomy",           src: "SIA market-structure breakdown" },
+        { slide: "Slide 7",  fig: "Four-stage AI chipmaking process",     src: "SIA / SEMI industry taxonomy" },
+        { slide: "Slide 7",  fig: "\"$20B fab\" cost benchmark",           src: "SEMI World Fab Forecast; TSMC / Samsung capex disclosures" },
+        { slide: "Slide 7",  fig: "HBM + CoWoS advanced packaging",        src: "TrendForce; TSMC CoWoS capacity disclosures" },
         { slide: "Slide 8",  fig: "\"~60% hyperscaler share of AI chips\"", src: "SemiAnalysis / Omdia 2026E estimates" },
         { slide: "Slide 8",  fig: "Hyperscaler 2026 capex guides",        src: "AWS, MSFT, GOOGL, META, ORCL filings" },
         { slide: "Slide 9",  fig: "\"~12% US electricity by 2028\"",      src: "EPRI (2024) data-center load forecast" },
