@@ -2040,16 +2040,16 @@ function lineOpts(extra) {
 
   const items = [
     { n: "01", accent: C.teal,
-      statement: "The AI buildout has no modern precedent in scale.",
+      statement: "AI is the largest single-technology capex cycle in modern history.",
       support: "In 2026 alone, hyperscalers will spend more on AI infrastructure than the inflation-adjusted cost of the entire Apollo program, and roughly three times peak dot-com telecom capex. The scale itself is the story." },
     { n: "02", accent: C.gold,
-      statement: "The basket trade is over. The market picks winners.",
+      statement: "The basket trade is over. Stock selection now drives AI returns.",
       support: "Returns inside the AI complex have dispersed sharply. Owning the whole space no longer works; alpha now sits in choosing which layer of the stack, and which name within it, you actually want to own." },
     { n: "03", accent: C.red,
-      statement: "The bottleneck keeps moving. That is the opportunity.",
+      statement: "The bottleneck moves through the AI stack. Own the next one.",
       support: "From foundry capacity to memory to advanced packaging to power and the grid, the binding constraint keeps shifting. Whoever owns the next bottleneck captures the margin until the next one forms." },
     { n: "04", accent: C.purple,
-      statement: "If you index, you own the thesis. Choose it deliberately.",
+      statement: "If you index, you already own the AI capex thesis.",
       support: "US large-cap indices already embed AI capex exposure at concentrated weights. Recognize that exposure, size it, or hedge it, but the position should be a deliberate choice rather than a default." },
   ];
 
