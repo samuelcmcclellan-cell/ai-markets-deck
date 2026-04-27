@@ -2034,14 +2034,14 @@ function lineOpts(extra) {
 // ===================================================================
 {
   const s = pres.addSlide();
-  addHeadline(s, "Capex on credit. Basket over. Bottleneck moves. Exposure is a thesis.", { w: 9.0 });
+  addHeadline(s, "Generational scale. Basket over. Bottleneck moves. Exposure is a thesis.", { w: 9.0 });
   addSubhead(s, "Four big-picture takeaways.");
   addHeadlineRule(s);
 
   const items = [
     { n: "01", accent: C.teal,
-      statement: "The largest capex cycle in history is going on credit.",
-      support: "Hyperscalers fund a record AI buildout with rising leverage, not free cash flow. The cycle's risk shifts from operations onto balance sheets, and credit conditions now matter as much as compute demand." },
+      statement: "The AI buildout has no modern precedent in scale.",
+      support: "In 2026 alone, hyperscalers will spend more on AI infrastructure than the inflation-adjusted cost of the entire Apollo program, and roughly three times peak dot-com telecom capex. The scale itself is the story." },
     { n: "02", accent: C.gold,
       statement: "The basket trade is over. The market picks winners.",
       support: "Returns inside the AI complex have dispersed sharply. Owning the whole space no longer works; alpha now sits in choosing which layer of the stack, and which name within it, you actually want to own." },
@@ -2086,7 +2086,7 @@ function lineOpts(extra) {
     });
   });
 
-  addSource(s, "Sources: company filings; CreditSights / MUFG; Goldman Sachs; SemiAnalysis; BofA; TrendForce. See appendix for figure-by-figure citations.", 0.5, 6.15, 9.0);
+  addSource(s, "Sources: company filings; Planetary Society / NASA Apollo cost data; Richmond Fed dot-com telecom capex; Goldman Sachs; SemiAnalysis; BofA; TrendForce. See appendix for figure-by-figure citations.", 0.5, 6.15, 9.0);
   addFooter(s, 22);
 }
 
