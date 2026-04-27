@@ -2040,8 +2040,8 @@ function lineOpts(extra) {
 
   const items = [
     { n: "01", accent: C.teal,
-      statement: "AI is the largest single-technology capex cycle in modern history.",
-      support: "In 2026 alone, hyperscalers will spend more on AI infrastructure than the inflation-adjusted cost of the entire Apollo program, and roughly three times peak dot-com telecom capex. The scale itself is the story." },
+      statement: "AI is the defining capital-allocation event of this decade.",
+      support: "A handful of hyperscalers are deploying capital fast enough to reshape power grids, real estate, and global supply chains all at once. AI capex has become the dominant driver of US business investment, and the scale itself is the story." },
     { n: "02", accent: C.gold,
       statement: "The basket trade is over. Stock selection now drives AI returns.",
       support: "Returns inside the AI complex have dispersed sharply. Owning the whole space no longer works; alpha now sits in choosing which layer of the stack, and which name within it, you actually want to own." },
@@ -2086,7 +2086,7 @@ function lineOpts(extra) {
     });
   });
 
-  addSource(s, "Sources: company filings; Planetary Society / NASA Apollo cost data; Richmond Fed dot-com telecom capex; Goldman Sachs; SemiAnalysis; BofA; TrendForce. See appendix for figure-by-figure citations.", 0.5, 6.15, 9.0);
+  addSource(s, "Sources: company filings; Goldman Sachs; SemiAnalysis; BofA; TrendForce. See appendix for figure-by-figure citations.", 0.5, 6.15, 9.0);
   addFooter(s, 22);
 }
 
