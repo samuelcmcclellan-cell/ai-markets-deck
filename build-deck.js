@@ -614,7 +614,7 @@ function lineOpts(extra) {
   // ---- Left: photo placeholder ----
   addImagePlaceholder(s, 0.5, 1.70, 4.40, 4.30,
     "Photo: AI accelerator package close-up, NVIDIA H100/H200 or Blackwell style. Large central logic die surrounded by HBM memory stacks on a CoWoS substrate, gold contact pads visible, dramatic studio lighting on dark backdrop, square framing.");
-  s.addText("An AI accelerator package: a large logic die surrounded by HBM memory stacks on a CoWoS substrate.", {
+  s.addText("An AI accelerator package: a large processor chip surrounded by high-speed memory chips, all wired into one unit.", {
     x: 0.5, y: 6.08, w: 4.40, h: 0.30,
     fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
   });
@@ -622,17 +622,13 @@ function lineOpts(extra) {
   // ---- Right: four-stage list ----
   const stages = [
     { n: "01", name: "DESIGN",      color: C.purple,
-      desc: "Engineers blueprint the AI chip's tens of billions of transistors in software.",
-      players: "NVIDIA · AMD · Broadcom · Google TPU" },
+      desc: "Engineers draft the chip's blueprint in software, mapping where each of tens of billions of microscopic switches will sit." },
     { n: "02", name: "EQUIPMENT",   color: C.pink,
-      desc: "Specialized tools, especially EUV lithography, are built to print at atomic scale.",
-      players: "ASML · Applied Materials · Lam · KLA" },
+      desc: "Highly specialized machines are built to print circuit patterns at near-atomic scale using ultraviolet light." },
     { n: "03", name: "FABRICATION", color: C.teal,
-      desc: "Inside a $20B fab, silicon wafers are processed through 1,000+ steps.",
-      players: "TSMC · Samsung · Intel" },
+      desc: "Silicon wafers pass through more than a thousand precise steps inside ultra-clean factories that take years to build." },
     { n: "04", name: "PACKAGING",   color: C.navy,
-      desc: "Logic dies are stacked with HBM memory using advanced packaging like CoWoS.",
-      players: "TSMC CoWoS · ASE · Amkor" },
+      desc: "The finished chip is bonded with high-speed memory into a single package ready to plug into a server." },
   ];
 
   const RIGHT_X = 5.05;
@@ -676,13 +672,8 @@ function lineOpts(extra) {
     });
     // Description
     s.addText(st.desc, {
-      x: TX, y: ry + 0.30, w: TW, h: 0.50,
+      x: TX, y: ry + 0.30, w: TW, h: 0.65,
       fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
-    });
-    // Examples
-    s.addText(st.players, {
-      x: TX, y: ry + 0.78, w: TW, h: 0.20,
-      fontSize: 9, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
     });
 
     // Subtle divider between rows (skip last)
