@@ -2034,7 +2034,7 @@ function lineOpts(extra) {
 // ===================================================================
 {
   const s = pres.addSlide();
-  addHeadline(s, "Generational scale. Basket over. Bottleneck moves. Exposure is a thesis.", { w: 9.0 });
+  addHeadline(s, "Generational scale. Winners diverge. Trade evolves. Exposure is a thesis.", { w: 9.0 });
   addSubhead(s, "Four big-picture takeaways.");
   addHeadlineRule(s);
 
@@ -2043,13 +2043,13 @@ function lineOpts(extra) {
       statement: "AI is the defining capital-allocation event of this decade.",
       support: "A handful of hyperscalers are deploying capital fast enough to reshape power grids, real estate, and global supply chains all at once. AI capex has become the dominant driver of US business investment, and the scale itself is the story." },
     { n: "02", accent: C.gold,
-      statement: "The basket trade is over. Stock selection now drives AI returns.",
-      support: "Returns inside the AI complex have dispersed sharply. Owning the whole space no longer works; alpha now sits in choosing which layer of the stack, and which name within it, you actually want to own." },
+      statement: "The AI buildout is producing sharp winners and sharp losers.",
+      support: "Foundries, memory, and the picks-and-shovels of AI infrastructure are surging, while parts of legacy software and SaaS are getting cannibalized by AI-native competitors. Returns inside the AI complex have dispersed sharply, and the spread keeps widening." },
     { n: "03", accent: C.red,
-      statement: "The bottleneck moves through the AI stack. Own the next one.",
-      support: "From foundry capacity to memory to advanced packaging to power and the grid, the binding constraint keeps shifting. Whoever owns the next bottleneck captures the margin until the next one forms." },
+      statement: "The AI trade keeps evolving as bottlenecks shift through the stack.",
+      support: "Yesterday it was foundry capacity. Today it is memory and advanced packaging. Tomorrow it will be power and the grid. The binding constraint keeps moving, and the names that lead the trade move with it." },
     { n: "04", accent: C.purple,
-      statement: "If you index, you already own the AI capex thesis.",
+      statement: "The question isn't whether you have AI exposure. It's whether you chose it.",
       support: "US large-cap indices already embed AI capex exposure at concentrated weights. Recognize that exposure, size it, or hedge it, but the position should be a deliberate choice rather than a default." },
   ];
 
