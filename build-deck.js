@@ -2039,14 +2039,22 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   const items = [
-    { n: "01", statement: "The largest capex cycle in history is going on credit.",        accent: C.teal   },
-    { n: "02", statement: "The basket trade is over. The market picks winners.",            accent: C.gold   },
-    { n: "03", statement: "The bottleneck keeps moving. That is the opportunity.",          accent: C.red    },
-    { n: "04", statement: "If you index, you own the thesis. Choose it deliberately.",      accent: C.purple },
+    { n: "01", accent: C.teal,
+      statement: "The largest capex cycle in history is going on credit.",
+      support: "Hyperscalers fund a record AI buildout with rising leverage, not free cash flow. The cycle's risk shifts from operations onto balance sheets, and credit conditions now matter as much as compute demand." },
+    { n: "02", accent: C.gold,
+      statement: "The basket trade is over. The market picks winners.",
+      support: "Returns inside the AI complex have dispersed sharply. Owning the whole space no longer works; alpha now sits in choosing which layer of the stack, and which name within it, you actually want to own." },
+    { n: "03", accent: C.red,
+      statement: "The bottleneck keeps moving. That is the opportunity.",
+      support: "From foundry capacity to memory to advanced packaging to power and the grid, the binding constraint keeps shifting. Whoever owns the next bottleneck captures the margin until the next one forms." },
+    { n: "04", accent: C.purple,
+      statement: "If you index, you own the thesis. Choose it deliberately.",
+      support: "US large-cap indices already embed AI capex exposure at concentrated weights. Recognize that exposure, size it, or hedge it, but the position should be a deliberate choice rather than a default." },
   ];
 
-  const y0 = 1.85;
-  const rowH = 1.05;
+  const y0 = 1.60;
+  const rowH = 1.12;
   const blockW = 0.95;
   const blockH = 0.95;
 
@@ -2064,11 +2072,17 @@ function lineOpts(extra) {
       align: "center", valign: "middle", margin: 0,
     });
 
-    // Big statement (right)
+    // Statement (top of right column)
     s.addText(it.statement, {
-      x: 1.65, y: y, w: 7.85, h: blockH,
-      fontSize: 18, color: C.darkGray, bold: true, fontFace: "Arial",
-      valign: "middle", margin: 0,
+      x: 1.65, y: y + 0.02, w: 7.85, h: 0.36,
+      fontSize: 15, color: C.darkGray, bold: true, fontFace: "Arial",
+      valign: "top", margin: 0,
+    });
+    // Supporting paragraph (below statement)
+    s.addText(it.support, {
+      x: 1.65, y: y + 0.40, w: 7.85, h: 0.68,
+      fontSize: 10.5, color: C.medGray, fontFace: "Arial",
+      valign: "top", margin: 0,
     });
   });
 
