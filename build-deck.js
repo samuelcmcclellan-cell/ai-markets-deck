@@ -475,7 +475,8 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "LANDSCAPE");
-  addHeadline(s, "Eleven layers, four power blocs — your exposure depends on which layer you own");
+  addHeadline(s, "Eleven layers, four power blocs.");
+  addSubhead(s, "Your exposure depends on which layer of the stack you own.");
   addHeadlineRule(s);
 
   // Left rail — group labels
@@ -1061,7 +1062,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Top 10 Tech grow ~3× faster than Non-Tech — at a similar multiple");
+  addHeadline(s, "Top-10 Tech grows ~3× faster — at a similar multiple");
   addSubhead(s, "Top 10 Tech firms are growing ~3× faster than the top 10 Non-Tech — at a similar multiple. The divergence in fundamentals has not been priced into valuations.");
   addHeadlineRule(s);
 
@@ -1194,18 +1195,18 @@ function lineOpts(extra) {
   const NAME_OFFSETS = {
     "NVDA":  { dx: -0.72, dy: -0.07 },
     "AVGO":  { dx: -0.82, dy: -0.07 },
-    "TSLA":  { dx:  0.08, dy:  0.04 },
-    "MSFT":  { dx:  0.08, dy:  0.06 },
-    "GOOGL": { dx:  0.08, dy: -0.15 },
-    "LLY":   { dx: -0.52, dy:  0.05 },
-    "META":  { dx: -0.40, dy: -0.07 },
-    "AAPL":  { dx: -0.42, dy: -0.07 },
-    "AMZN":  { dx:  0.08, dy: -0.07 },
-    "WMT":   { dx:  0.08, dy:  0.06 },
-    "BRK.B": { dx:  0.08, dy:  0.06 },
-    "JPM":   { dx:  0.08, dy: -0.07 },
-    "XOM":   { dx: -0.40, dy: -0.07 },
-    "V":     { dx:  0.08, dy:  0.06 },
+    "TSLA":  { dx:  0.10, dy: -0.02 },
+    "MSFT":  { dx:  0.30, dy:  0.01 },
+    "GOOGL": { dx:  0.30, dy: -0.20 },
+    "LLY":   { dx:  0.30, dy: -0.13 },
+    "META":  { dx:  0.14, dy:  0.01 },
+    "AAPL":  { dx: -0.33, dy: -0.10 },
+    "AMZN":  { dx: -0.38, dy: -0.16 },
+    "WMT":   { dx: -0.05, dy: -0.16 },
+    "BRK.B": { dx: -0.50, dy:  0.00 },
+    "JPM":   { dx:  0.10, dy:  0.00 },
+    "XOM":   { dx: -0.05, dy:  0.10 },
+    "V":     { dx: -0.28, dy:  0.02 },
   };
 
   // Draw uniform bubbles
@@ -1467,7 +1468,7 @@ function lineOpts(extra) {
     s.addShape(pres.shapes.RECTANGLE, { x: PX, y: py, w: PW, h: 1.45, fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 } });
     s.addShape(pres.shapes.RECTANGLE, { x: PX, y: py, w: PW, h: 0.30, fill: { color: p.color }, line: { color: p.color, width: 0 } });
     s.addText(p.title, { x: PX, y: py, w: PW, h: 0.30, fontSize: 9.5, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 1, margin: 0.12 });
-    s.addText(p.body, { x: PX + 0.15, y: py + 0.38, w: PW - 0.3, h: 1.0, fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0 });
+    s.addText(p.body, { x: PX + 0.15, y: py + 0.34, w: PW - 0.3, h: 1.06, fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0 });
     py += 1.55;
   });
   s.addText("Counter-case (Ben Thompson): value may instead accrue to integrated model-plus-harness players, not modular layers.", {
@@ -1786,7 +1787,7 @@ function lineOpts(extra) {
     });
     // Body card
     s.addShape(pres.shapes.RECTANGLE, {
-      x: col.x, y: 2.4, w: 2.8, h: 3.8,
+      x: col.x, y: 2.4, w: 2.8, h: 3.4,
       fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
     });
     // Large icon glyph
@@ -1925,7 +1926,7 @@ function lineOpts(extra) {
     { title: "BEYOND BORDERS",  body: "Sidesteps data-localization laws, export controls, and the jurisdictional patchwork." },
   ];
   cards.forEach((c, i) => {
-    const y = 1.6 + i * 1.3;
+    const y = 1.6 + i * 1.35;
     s.addShape(pres.shapes.RECTANGLE, {
       x: 0.5, y: y, w: 5.15, h: 0.35,
       fill: { color: C.darkGray }, line: { color: C.darkGray, width: 0 },
@@ -1935,11 +1936,11 @@ function lineOpts(extra) {
       fontSize: 11, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 3, margin: 0.30,
     });
     s.addShape(pres.shapes.RECTANGLE, {
-      x: 0.5, y: y + 0.35, w: 5.15, h: 0.8,
+      x: 0.5, y: y + 0.35, w: 5.15, h: 0.95,
       fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
     });
     s.addText(c.body, {
-      x: 0.75, y: y + 0.4, w: 4.75, h: 0.72,
+      x: 0.75, y: y + 0.4, w: 4.75, h: 0.87,
       fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
     });
   });
@@ -1969,8 +1970,8 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
-  addHeadline(s, "Humanoids hit pilot scale — every robot is a walking inference endpoint");
-  addSubhead(s, "Humanoids enter manufacturing, logistics, and healthcare at pilot scale. Every robot is a walking inference endpoint.");
+  addHeadline(s, "Humanoids hit pilot scale — every robot is an inference endpoint");
+  addSubhead(s, "Humanoids enter manufacturing, logistics, and healthcare at pilot scale. Every robot is an inference endpoint.");
   addHeadlineRule(s);
 
   addImageOrPlaceholder(s, "slides-images/humanoid.png", 1.5, 1.6, 7.0, 2.2, "Panoramic photo — humanoid robot mid-stride on a factory floor, matte-white body with violet joint accents, motion blur on limbs, amber work-lights, a blurred human worker in a safety vest in the background");
@@ -2005,7 +2006,7 @@ function lineOpts(extra) {
     });
     s.addText(c.body, {
       x: x + 0.15, y: 4.45, w: 2.65, h: 1.15,
-      fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
+      fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
     });
   });
 
@@ -2035,7 +2036,7 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "FRONTIER");
-  addHeadline(s, "Every autonomous mile compounds — every AV runs frontier edge compute");
+  addHeadline(s, "Every autonomous mile compounds — each AV runs frontier compute");
   addSubhead(s, "More miles → better models → more deployments. Every vehicle is a rolling inference machine consuming frontier-scale compute.");
   addHeadlineRule(s);
 
