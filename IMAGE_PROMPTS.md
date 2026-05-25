@@ -6,7 +6,45 @@ Seven images need to be generated for the deck. Each is positioned in a specific
 - **RISKS** (slides 15, 17) → red `#CC0000` and amber restraint
 - **FRONTIER** (slides 18, 19, 20, 21) → violet `#6B46C1`
 
-Use ChatGPT's image tool and copy each prompt as-is. When asked for an aspect ratio, use the one noted under each prompt. Once generated, drop the JPGs or PNGs into `slides-images/` (filenames like `slide12.jpg`, `slide15.jpg`, etc.) and we'll wire them into the .pptx.
+Use ChatGPT's image tool (or Midjourney / FLUX / Imagen) and copy each prompt as-is. When asked for an aspect ratio, use the one noted under each prompt.
+
+---
+
+## ⚡ STATUS & WIRING (updated May 22, 2026 — build v2, 25 slides)
+
+**Wiring is now automatic.** `build-deck.js` calls `addImageOrPlaceholder(...)` for every art slot: drop a file at the exact path below into `slides-images/`, run `node build-deck.js`, and it swaps in (cover-fit, no distortion). If the file is absent it falls back to the dashed placeholder, so the build never breaks. Re-render with `powershell -ExecutionPolicy Bypass -File export-slides.ps1`.
+
+**Four images still needed** (filename → rendered page → subject → prompt):
+
+| Save as `slides-images/…` | Page | Subject | Prompt |
+|---|---|---|---|
+| `orbital.jpg` | 19 | Orbital data center | §4 ("Slide 18") |
+| `humanoid.jpg` | 20 | Humanoid on factory floor | §5 ("Slide 19") |
+| `robotaxi.jpg` | 21 | Robotaxi, rainy dusk | §6 ("Slide 20") |
+| `protein.jpg` | 22 | Protein ribbon | §7 ("Slide 21") |
+
+**Done / obsolete:** `slide12.png` is generated and wired (page 12 IDE shot, §1). **Slide 7 is now a code-drawn schematic — `chip.jpg` is no longer used (§0 superseded).** The old **§2 (fab cleanroom)** and **§3 (protest)** prompts are also **obsolete** — slide 15 has no image and the backlash slide (now page 18) uses a sentiment chart, not a photo.
+
+> The section numbers below (§1–§7) keep their OLD slide labels ("Slide 12/15/17/18/19/20/21"). Use the table above to map them to filenames and current pages.
+
+---
+
+## §0. chip.jpg — AI accelerator package (page 7) — ⛔ SUPERSEDED
+
+> Slide 7 now uses a **code-drawn labeled schematic** (built in `build-deck.js`), not an image. No `chip.jpg` needed. Prompt kept below for reference only.
+
+- **Box:** `4.40" × 4.30"` at `(0.5, 1.70)` — ~1:1 square.
+- **Mood:** reverent studio product macro — engineering as object of beauty (Bloomberg Businessweek / FT Weekend), not slick CGI.
+
+**Variant A — package close-up (matches the slide caption; recommended):**
+> A photorealistic studio macro photograph of a modern AI accelerator package on a dark matte backdrop, shot slightly from above. A single large square processor die sits centered, flanked symmetrically by tall stacks of high-bandwidth memory chips on a green-gold interposer substrate with thousands of fine gold contact pads visible. Dramatic low-key lighting rakes across the surface, catching the metallic die lid and gold connectors; deep shadows fall to black. Extremely shallow depth of field — front edge razor-sharp, back softly blurred. Editorial product-photo register, not slick CGI. No logos, no text, no watermarks. Graphite-black dominant, warm gold + muted green substrate, cool steel highlights. Square 1:1, high resolution.
+
+**Variant B — wafer macro detail:**
+> A photorealistic extreme macro of a freshly diced silicon wafer section under raking light, the repeating mirror-like dies showing faint rainbow diffraction across their micro-circuitry, one die razor-sharp and the rest dissolving into bokeh. A gloved hand (blue nitrile, out of focus) at the frame edge for scale. Editorial, reverent, FT-Weekend register. Graphite + steel palette with a single warm amber highlight. No logos or text. Square 1:1, high resolution.
+
+**Variant C — fab cleanroom:** reuse the cinematic cleanroom/lithography prompt in §2 below (it fits "How an AI chip is made"); save the output as `chip.jpg`.
+
+Append the shared-negatives block to whichever variant you choose.
 
 Overall art direction: **editorial research aesthetic — Bloomberg Businessweek / FT Weekend / The Atlantic cover stock, not slick corporate CGI.** Photographic realism or high-end cinematic render preferred over illustration or flat-vector. Restrained color palettes with one clear accent per image keyed to the slide theme.
 

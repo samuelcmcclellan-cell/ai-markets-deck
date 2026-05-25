@@ -3,6 +3,7 @@
 // Run: node build-deck.js  →  outputs ai-markets-deck.pptx
 
 const pptxgen = require("pptxgenjs");
+const fs = require("fs");
 const pres = new pptxgen();
 pres.layout = "LAYOUT_4x3";
 pres.author = "Strategy";
@@ -165,6 +166,17 @@ function addImagePlaceholder(slide, x, y, w, h, description) {
   });
 }
 
+// Use a real image if it exists in slides-images/, otherwise fall back to the
+// dashed placeholder so the build never breaks while art is still being made.
+// Drop the JPG/PNG at imgPath and re-run `node build-deck.js` to swap it in.
+function addImageOrPlaceholder(slide, imgPath, x, y, w, h, description) {
+  if (fs.existsSync(imgPath)) {
+    slide.addImage({ path: imgPath, x: x, y: y, w: w, h: h, sizing: { type: "cover", w: w, h: h } });
+  } else {
+    addImagePlaceholder(slide, x, y, w, h, description);
+  }
+}
+
 function addChartTitle(slide, text, x, y) {
   const ty = y != null ? y : 1.55;
   slide.addText(text, {
@@ -295,11 +307,11 @@ function lineOpts(extra) {
   const items = [
     { n: "01", label: "LANDSCAPE", accent: C.teal,    pages: "3 – 6"   },
     { n: "02", label: "MARKET",    accent: C.gold,    pages: "7 – 11"  },
-    { n: "03", label: "SHIFTS",    accent: C.orange,  pages: "12 – 13" },
-    { n: "04", label: "RISKS",     accent: C.red,     pages: "14 – 17" },
-    { n: "05", label: "FRONTIER",  accent: C.purple,  pages: "18 – 21" },
-    { n: "06", label: "TAKEAWAYS", accent: C.black,   pages: "22"      },
-    { n: "07", label: "APPENDIX",  accent: C.medGray, pages: "23 – 24" },
+    { n: "03", label: "SHIFTS",    accent: C.orange,  pages: "12 – 14" },
+    { n: "04", label: "RISKS",     accent: C.red,     pages: "15 – 18" },
+    { n: "05", label: "FRONTIER",  accent: C.purple,  pages: "19 – 22" },
+    { n: "06", label: "TAKEAWAYS", accent: C.black,   pages: "23"      },
+    { n: "07", label: "APPENDIX",  accent: C.medGray, pages: "24 – 25" },
   ];
 
   const rowY0 = 1.9, rowH = 0.62, rowW = 9.0, rowX = 0.5;
@@ -334,7 +346,7 @@ function lineOpts(extra) {
     }
   });
 
-  addSource(s, "Source: Strategy Research. 24 slides, read top to bottom.");
+  addSource(s, "Source: Strategy Research.");
   addFooter(s, 2);
 }
 
@@ -351,7 +363,7 @@ function lineOpts(extra) {
     {
       n: "01",
       title: "The largest capex cycle in history.",
-      body: "Big 5 hyperscalers are pouring roughly $750B into AI infrastructure in 2026 alone — more than the entire US energy buildout at its peak.",
+      body: "Big 5 hyperscalers are pouring roughly $750B into AI infrastructure in 2026 alone — more than the entire US energy buildout at its peak, and now over half debt- or lease-financed.",
       accent: C.orange,
     },
     {
@@ -402,17 +414,17 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "LANDSCAPE");
-  addHeadline(s, "Sixty years of AI in six steps — and we are now in step six");
+  addHeadline(s, "Seventy years of AI in six steps — and we are now in step six");
   addSubhead(s, "Software that learns from data, reasons through problems, and — increasingly — takes action without human direction.");
   addHeadlineRule(s);
 
   const phases = [
-    { date: "1950s–80s",   title: "Symbolic AI",       desc: "Hand-coded rules. Expert systems with narrow recall.",          color: C.medGray, hero: false },
+    { date: "1950s–80s",   title: "Symbolic AI",       desc: "Hand-coded rules. Expert systems with narrow scope.",           color: C.medGray, hero: false },
     { date: "1990s–2000s", title: "Machine Learning",  desc: "Systems learn patterns from data, not rules.",                  color: C.teal,    hero: false },
     { date: "2012",        title: "Deep Learning",     desc: "Neural networks go deep. AlexNet, the first breakthrough.",     color: C.gold,    hero: false },
     { date: "2022–24",     title: "LLM chatbots",      desc: "ChatGPT hits 100M users in 2 months. Claude, Gemini follow.",   color: C.orange,  hero: true  },
     { date: "2023–24",     title: "Reasoning",         desc: "Multi-step logic, chain-of-thought. o1, DeepSeek R1.",          color: C.pink,    hero: false },
-    { date: "2025+",       title: "Agentic AI",        desc: "AI that uses tools and acts autonomously. Claude Code, agents.", color: C.red,     hero: true  },
+    { date: "2025–26",     title: "Agentic AI",        desc: "AI that uses tools and acts autonomously. GPT-5.5, Claude Opus 4.7, Gemini 3.5.", color: C.red,     hero: true  },
   ];
 
   const lineY = 2.2;
@@ -611,10 +623,78 @@ function lineOpts(extra) {
   addSubhead(s, "Every AI accelerator inside a data center, from training GPUs to custom inference silicon, passes through the same four stages.");
   addHeadlineRule(s);
 
-  // ---- Left: photo placeholder ----
-  addImagePlaceholder(s, 0.5, 1.70, 4.40, 4.30,
-    "Photo: AI accelerator package close-up, NVIDIA H100/H200 or Blackwell style. Large central logic die surrounded by HBM memory stacks on a CoWoS substrate, gold contact pads visible, dramatic studio lighting on dark backdrop, square framing.");
-  s.addText("An AI accelerator package: a large processor chip surrounded by high-speed memory chips, all wired into one unit.", {
+  // ---- Left: code-drawn schematic of an AI accelerator package (top-down) ----
+  // Framing card + eyebrow (mirrors the right panel's "THE FOUR STAGES" header)
+  s.addShape(pres.shapes.RECTANGLE, {
+    x: 0.5, y: 1.70, w: 4.40, h: 4.30,
+    fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
+  });
+  s.addText("WHAT'S INSIDE THE PACKAGE", {
+    x: 0.7, y: 1.82, w: 4.0, h: 0.22,
+    fontSize: 9, color: C.medGray, bold: true, fontFace: "Arial", valign: "middle", charSpacing: 2, margin: 0,
+  });
+
+  // Nested anatomy: package substrate → silicon interposer → logic die + HBM
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+    x: 1.05, y: 2.30, w: 3.30, h: 1.70, rectRadius: 0.06,
+    fill: { color: C.lightGray }, line: { color: C.medGray, width: 0.75 },
+  });
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+    x: 1.25, y: 2.48, w: 2.90, h: 1.34, rectRadius: 0.05,
+    fill: { color: "D8D8D8" }, line: { color: C.medGray, width: 0.5 },
+  });
+
+  // HBM memory stacks — two on each side of the die, with thin "layer" lines
+  const hbmX = [1.42, 1.80, 3.30, 3.68];
+  const hbmY = 2.66, hbmW = 0.34, hbmH = 0.98;
+  hbmX.forEach((hx) => {
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: hx, y: hbmY, w: hbmW, h: hbmH,
+      fill: { color: C.teal }, line: { color: C.white, width: 0.5 },
+    });
+    [0.26, 0.51, 0.76].forEach((dy) => {
+      s.addShape(pres.shapes.LINE, { x: hx, y: hbmY + dy, w: hbmW, h: 0, line: { color: C.white, width: 0.5 } });
+    });
+  });
+
+  // Logic die (center), gold-edged to read as the hero component
+  s.addShape(pres.shapes.RECTANGLE, {
+    x: 2.25, y: 2.66, w: 0.90, h: 0.98,
+    fill: { color: C.navy }, line: { color: C.gold, width: 1 },
+  });
+  s.addText("LOGIC\nDIE", {
+    x: 2.25, y: 2.66, w: 0.90, h: 0.98,
+    fontSize: 8.5, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0, lineSpacingMultiple: 0.9,
+  });
+
+  // Contact pads / BGA along the substrate base (gold MARKET accent — "plugs in")
+  for (let i = 0; i < 12; i++) {
+    s.addShape(pres.shapes.OVAL, {
+      x: 1.30 + i * 0.245, y: 3.86, w: 0.09, h: 0.09,
+      fill: { color: C.gold }, line: { color: C.gold, width: 0 },
+    });
+  }
+
+  // Legend — every part named (the "explainable" key)
+  const legend = [
+    { c: C.navy,   name: "Logic die",          desc: " — the GPU/ASIC that does the math" },
+    { c: C.teal,   name: "HBM stacks",         desc: " — high-bandwidth memory beside the die" },
+    { c: "D8D8D8", name: "Interposer (CoWoS)", desc: " — silicon bridge wiring die ↔ memory" },
+    { c: C.gold,   name: "Substrate + pads",   desc: " — the base that plugs into the board" },
+  ];
+  legend.forEach((lg, i) => {
+    const ly = 4.25 + i * 0.40;
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: 0.75, y: ly + 0.02, w: 0.16, h: 0.16,
+      fill: { color: lg.c }, line: { color: C.medGray, width: 0.5 },
+    });
+    s.addText([
+      { text: lg.name, options: { bold: true, color: C.black } },
+      { text: lg.desc, options: { color: C.darkGray } },
+    ], { x: 1.00, y: ly, w: 3.75, h: 0.28, fontSize: 9.5, fontFace: "Arial", valign: "middle", margin: 0 });
+  });
+
+  s.addText("Schematic of an AI accelerator package — one logic die surrounded by HBM memory on a silicon interposer.", {
     x: 0.5, y: 6.08, w: 4.40, h: 0.30,
     fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
   });
@@ -717,7 +797,7 @@ function lineOpts(extra) {
     if (seg.showLabel) {
       s.addText(seg.name, {
         x: cx, y: BAR_Y, w: w, h: BAR_H,
-        fontSize: 10, color: seg.labelColor, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0,
+        fontSize: 8, color: seg.labelColor, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 0, margin: 0,
       });
     }
     cx += w;
@@ -808,7 +888,7 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
   addHeadline(s, "Power is the new bottleneck.");
-  addSubhead(s, "A single hyperscale AI campus now draws as much electricity as a mid-sized city. The grid, not the chip, is starting to set the pace of buildouts.");
+  addSubhead(s, "Jensen Huang: the energy needed for compute is \"probably 1,000× more than we have today.\" The grid, not the chip, now sets the pace of buildouts.");
   addHeadlineRule(s);
 
   // Three stat cards
@@ -868,7 +948,7 @@ function lineOpts(extra) {
     fontSize: 12.5, color: C.black, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Sources: EPRI (US data-center load forecast, 2024); DOE; Lawrence Berkeley National Lab; Microsoft / Constellation TMI announcement (Sep 2024); PJM, ERCOT interconnection queues.");
+  addSource(s, "Sources: EPRI (US data-center load forecast, 2024); DOE; Lawrence Berkeley National Lab; Microsoft / Constellation TMI announcement (Sep 2024); PJM, ERCOT interconnection queues; Jensen Huang (Stanford CS153, Apr 2026).");
   addFooter(s, 9);
 }
 
@@ -879,14 +959,14 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
   addHeadline(s, "Q1 funding doubled all of 2025 — two giants, one public, one merger");
-  addSubhead(s, "Two independent private labs, one public giant, and xAI — now inside SpaceX after February's $1.25T all-stock merger.");
+  addSubhead(s, "Two independent private labs, one public giant, and xAI — now inside SpaceX, which has filed to go public at ~$1.75T.");
   addHeadlineRule(s);
 
   const rows = [
     { name: "OpenAI",    logo: "logos/openai.png",    val: "$852B",  mark: "1", mult: "~35× ARR",  event: "$122B round · AMZN / NVDA / SoftBank · Mar 2026" },
-    { name: "Anthropic", logo: "logos/anthropic.png", val: "$380B",  mark: "2", mult: "~13× ARR",  event: "$30B Series G (Feb); Google $40B (Apr); VCs offering $800B+" },
-    { name: "Google",    logo: "logos/google.png",    val: "$4.0T",  mark: "3", mult: "~31× P/E",  event: "Alphabet (public) · Gemini 3 / DeepMind · ~$180B 2026 capex" },
-    { name: "xAI / SpaceX", logo: "logos/xai.png",    val: "$1.25T", mark: "4", mult: "combined",  event: "All-stock merger closed Feb 2, 2026 — xAI now a SpaceX subsidiary" },
+    { name: "Anthropic", logo: "logos/anthropic.png", val: "$900B",  mark: "2", mult: "~31× ARR",  event: "$30B Series G (Feb); Google +$40B (Apr); ~$900B round reported closing (May)" },
+    { name: "Google",    logo: "logos/google.png",    val: "$4.6T",  mark: "3", mult: "~33× P/E",  event: "Alphabet (public) · Gemini 3.5 / DeepMind · ~$185B 2026 capex" },
+    { name: "xAI / SpaceX", logo: "logos/xai.png",    val: "$1.25T", mark: "4", mult: "combined",  event: "Feb 2 all-stock merger; SpaceX filed to IPO at ~$1.75T (May 20)" },
   ];
 
   // Column headers
@@ -948,7 +1028,7 @@ function lineOpts(extra) {
     });
   });
 
-  s.addText("All valuations as of Apr 22, 2026.", {
+  s.addText("Valuations as of late May 2026 unless noted.", {
     x: 0.5, y: 5.38, w: 9.0, h: 0.20,
     fontSize: 8, color: C.medGray, italic: true, fontFace: "Arial", align: "right", valign: "top", margin: 0,
   });
@@ -967,9 +1047,9 @@ function lineOpts(extra) {
 
   addCitations(s, [
     { n: "1", text: "Bloomberg / CNBC — OpenAI $122B round, Mar 2026" },
-    { n: "2", text: "Sacra / Bloomberg — Anthropic Series G, Feb 2026" },
-    { n: "3", text: "Alphabet 10-K + 2026 capex guide" },
-    { n: "4", text: "TechCrunch / CNBC — xAI-SpaceX merger, Feb 2, 2026" },
+    { n: "2", text: "Bloomberg — Anthropic Series G (Feb) & ~$900B round reported May 2026" },
+    { n: "3", text: "companiesmarketcap.com; Alphabet 2026 capex guide" },
+    { n: "4", text: "CNBC / Bloomberg — xAI–SpaceX merger (Feb 2) & SpaceX S-1 (May 20)" },
     { n: "5", text: "Crunchbase Q1 2026 VC data" },
   ]);
   addFooter(s, 10);
@@ -981,8 +1061,8 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "MARKET");
-  addHeadline(s, "Top 10 Tech grow 4× faster than Top 10 Non-Tech — at a similar multiple");
-  addSubhead(s, "Top 10 Tech firms are growing 4× faster than the top 10 Non-Tech — at a similar multiple. The divergence in fundamentals has not been priced into valuations.");
+  addHeadline(s, "Top 10 Tech grow ~3× faster than Non-Tech — at a similar multiple");
+  addSubhead(s, "Top 10 Tech firms are growing ~3× faster than the top 10 Non-Tech — at a similar multiple. The divergence in fundamentals has not been priced into valuations.");
   addHeadlineRule(s);
 
   // --- LEFT PANEL: three mini grouped bars (Rev Growth / Op Margin / P/E) ---
@@ -994,9 +1074,9 @@ function lineOpts(extra) {
   });
 
   const metrics = [
-    { key: "Revenue Growth", tech: 22, non: 5,  suffix: "%", max: 50 },
+    { key: "Revenue Growth", tech: Math.round(MED_TECH_GROW), non: Math.round(MED_NONTECH_GROW), suffix: "%", max: 50 },
     { key: "Op Margin",      tech: 41, non: 20, suffix: "%", max: 50 },
-    { key: "P/E",            tech: 23, non: 27, suffix: "x", max: 35 },
+    { key: "P/E",            tech: Math.round(MED_TECH_PE),   non: Math.round(MED_NONTECH_PE),    suffix: "x", max: 35 },
   ];
   const panelX = 0.5, panelY = 2.2, panelW = 4.3, panelH = 3.2;
   const colGap = 0.1;
@@ -1196,7 +1276,7 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "SHIFTS");
   addHeadline(s, "Agentic AI uses 10–100× the compute per session — that's the capex thesis");
-  addSubhead(s, "Agents set goals, use tools, and complete tasks end-to-end. Each session uses 10–100× the compute of a chatbot query.");
+  addSubhead(s, "Agents set goals, use tools, and complete tasks end-to-end — each session uses 10–100× the compute of a chatbot query (analyst estimates), and inference demand is scaling with it.");
   addHeadlineRule(s);
 
   const hdr = (t) => ({ text: t, options: { fill: { color: C.black }, color: C.white, bold: true, fontSize: 9.5, fontFace: "Arial", align: "center", valign: "middle" } });
@@ -1216,8 +1296,8 @@ function lineOpts(extra) {
      cell("None",                { align: "left" }),
      cell("Code, APIs, browsers, databases", { align: "left", bold: true, color: C.black })],
   ];
-  // Image placeholder on the left
-  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.25, "Screenshot — dark-mode IDE, AI agent editing Python code live, glowing orange cursor, 'Claude is editing' pill, streaming test output in a terminal pane, square framing");
+  // Generated image on the left (see IMAGE_PROMPTS.md, slide 12)
+  s.addImage({ path: "slides-images/slide12.png", x: 0.5, y: 1.85, w: 3.3, h: 3.25, sizing: { type: "cover", w: 3.3, h: 3.25 } });
 
   // Table on the right
   s.addTable(tableData, {
@@ -1228,16 +1308,24 @@ function lineOpts(extra) {
     fontFace: "Arial",
   });
 
+  s.addText([
+    { text: "“AI compute demand has risen roughly a million-fold in two years; the inference inflection has arrived.”", options: {} },
+    { text: "  — Jensen Huang, NVIDIA GTC 2026", options: { color: C.medGray } },
+  ], {
+    x: 3.95, y: 5.18, w: 5.55, h: 0.55,
+    fontSize: 9, color: C.darkGray, italic: true, fontFace: "Arial", valign: "middle", margin: 0,
+  });
+
   s.addShape(pres.shapes.RECTANGLE, {
     x: 0.5, y: 5.85, w: 9.0, h: 0.5,
     fill: { color: C.orange }, line: { color: C.orange, width: 0 },
   });
-  s.addText("The 10–100× compute step-up per session is what every AI capex forecast is pricing in.", {
+  s.addText("This 10–100× step-up per session is what every 2026 AI capex number is pricing in.", {
     x: 0.7, y: 5.85, w: 8.6, h: 0.5,
     fontSize: 13, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
-  addSource(s, "Source: Anthropic, OpenAI, GitHub Trending; Morgan Stanley CIO Survey; Strategy Research.");
+  addSource(s, "Sources: Jensen Huang (NVIDIA GTC 2026); IDC inference-demand forecast; Salesforce Agentforce & Microsoft Copilot disclosures; Morgan Stanley CIO Survey.");
   addFooter(s, 12);
 }
 
@@ -1248,16 +1336,16 @@ function lineOpts(extra) {
   const s = pres.addSlide();
   addThemeTag(s, "SHIFTS");
   addHeadline(s, "Semis up, software down — one theme, two outcomes");
-  addSubhead(s, "A 50+ point spread inside a single theme — and the pain is now bleeding into private credit and PE-held SaaS.");
+  addSubhead(s, "A ~90-point spread inside one theme — software's Feb-2026 \"SaaSpocalypse\" wiped ~$285B in 48 hours, and the pain is bleeding into private credit and PE-held SaaS.");
   addHeadlineRule(s);
 
   // LEFT: line chart (unchanged anchor)
   addChartTitle(s, "YTD price return, rebased to 100", 0.5, 1.55);
   s.addChart(pres.charts.LINE,
     [
-      { name: "Semis",    labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100, 110, 118, 128, 138] },
-      { name: "Nasdaq",   labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100,  98,  96,  99, 104] },
-      { name: "Software", labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 17"], values: [100,  88,  78,  76,  80] },
+      { name: "Semis",    labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 30", "May 22"], values: [100, 112, 124, 144, 160, 174] },
+      { name: "Nasdaq",   labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 30", "May 22"], values: [100,  99,  95, 100, 104, 106] },
+      { name: "Software", labels: ["Jan 1", "Jan 31", "Feb 28", "Mar 31", "Apr 30", "May 22"], values: [100,  92,  70,  74,  79,  83] },
     ],
     lineOpts({ x: 0.5, y: 1.95, w: 4.3, h: 3.75 })
   );
@@ -1321,7 +1409,7 @@ function lineOpts(extra) {
   drawPanel(3.85, C.red, "WHY SOFTWARE IS DOWN",
     "Per-seat pricing is under attack.",
     [
-      { icon: "◉", text: "Agentic AI threatens per-seat pricing; 2026 CIO surveys flag displacement risk on horizontal SaaS." },
+      { icon: "◉", text: "Anthropic's \"Cowork\" launch triggered a ~$285B SaaS selloff (Feb 2026); Atlassian booked its first-ever seat decline." },
       { icon: "✕", text: [
         { text: "Public SaaS multiples re-rated lower as buyers underwrite slower seat growth and pricing pressure.", options: {} },
         { text: " 2", options: { color: C.red, fontSize: 7, superscript: true } },
@@ -1338,20 +1426,72 @@ function lineOpts(extra) {
 
   addCitations(s, [
     { n: "1", text: "TrendForce via Data Center Dynamics, 2026" },
-    { n: "2", text: "multiples.vc public software multiples, Apr 2026" },
+    { n: "2", text: "multiples.vc software multiples; SaaS selloff coverage, Feb–May 2026" },
   ]);
 
   addFooter(s, 13);
 }
 
 // ===================================================================
-// SLIDE 14 — The bubble question (vs 2000, with icons)
+// SLIDE 14 — Inference economics (NEW): the model is no longer the moat
+// ===================================================================
+{
+  const s = pres.addSlide();
+  addThemeTag(s, "SHIFTS");
+  addHeadline(s, "The model is no longer the moat — distribution is");
+  addSubhead(s, "Frontier-class token prices have fallen ~99% in three years even as total AI bills rise. Intelligence is commoditizing; value migrates to whoever owns the customer and the workflow.");
+  addHeadlineRule(s);
+
+  // LEFT: cost-collapse column chart
+  addChartTitle(s, "Cost per 1M tokens, frontier-class ($)", 0.5, 1.6);
+  s.addChart(pres.charts.BAR,
+    [{ name: "Cost per 1M tokens", labels: ["2023", "2024", "2025", "2026"], values: [36, 10, 2, 0.4] }],
+    barOpts({
+      x: 0.5, y: 2.05, w: 4.3, h: 3.05,
+      showValue: true, dataLabelColor: C.darkGray, dataLabelFontSize: 10, dataLabelFontBold: true, dataLabelPosition: "outEnd", dataLabelFormatCode: "[<1]$0.0;$#,##0",
+      valAxisHidden: true, valGridLine: { style: "none" }, catAxisLabelFontSize: 10,
+    })
+  );
+  s.addText("~99% cheaper in three years.", {
+    x: 0.5, y: 5.15, w: 4.3, h: 0.3, fontSize: 11, color: C.orange, bold: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0,
+  });
+
+  // RIGHT: what's commoditizing vs what's compounding
+  const ecoPanels = [
+    { title: "COMMODITIZING — the model", color: C.medGray, body: "Open weights (DeepSeek V4, Llama) reach frontier within months · price wars among labs · switching costs near zero." },
+    { title: "COMPOUNDING — where value goes", color: C.orange, body: "Distribution and proprietary data · the compute / inference layer · workflow lock-in and agents that take action." },
+  ];
+  const PX = 4.95, PW = 4.55;
+  let py = 2.05;
+  ecoPanels.forEach((p) => {
+    s.addShape(pres.shapes.RECTANGLE, { x: PX, y: py, w: PW, h: 1.45, fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 } });
+    s.addShape(pres.shapes.RECTANGLE, { x: PX, y: py, w: PW, h: 0.30, fill: { color: p.color }, line: { color: p.color, width: 0 } });
+    s.addText(p.title, { x: PX, y: py, w: PW, h: 0.30, fontSize: 9.5, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 1, margin: 0.12 });
+    s.addText(p.body, { x: PX + 0.15, y: py + 0.38, w: PW - 0.3, h: 1.0, fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0 });
+    py += 1.55;
+  });
+  s.addText("Counter-case (Ben Thompson): value may instead accrue to integrated model-plus-harness players, not modular layers.", {
+    x: PX, y: py, w: PW, h: 0.5, fontSize: 8.5, color: C.medGray, italic: true, fontFace: "Arial", valign: "top", margin: 0,
+  });
+
+  // Bottom band — the causal link between "semis up" and "software down"
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: 5.9, w: 9.0, h: 0.5, fill: { color: C.orange }, line: { color: C.orange, width: 0 } });
+  s.addText("Falling unit cost × exploding usage = the capex boom AND the SaaS margin squeeze. One mechanism, two outcomes.", {
+    x: 0.7, y: 5.9, w: 8.6, h: 0.5, fontSize: 12.5, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  });
+
+  addSource(s, "Sources: a16z / SemiAnalysis inference-economics; Stratechery, “Agents Over Bubbles” (Mar 2026); Strategy Research.");
+  addFooter(s, 14);
+}
+
+// ===================================================================
+// SLIDE 15 — The bubble question (vs 2000, with icons)
 // ===================================================================
 {
   const s = pres.addSlide();
   addThemeTag(s, "RISKS");
-  addHeadline(s, "The bubble question.");
-  addSubhead(s, "Four tests. Same questions investors asked about Cisco and the dotcoms. Different answers today.");
+  addHeadline(s, "Stretched, not yet irrational — and supply is the reason");
+  addSubhead(s, "Four tests investors asked about Cisco and the dotcoms — with what the bulls and bears say in 2026.");
   addHeadlineRule(s);
 
   const tests = [
@@ -1406,18 +1546,28 @@ function lineOpts(extra) {
     });
   });
 
-  // Summary banner — pushed up slightly to make room for citation block
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.55, w: 9.0, h: 0.4,
-    fill: { color: C.yellow }, line: { color: C.yellow, width: 0 },
+  // Bull / Bear / Verdict block (the debate, in named voices)
+  const dbY = 5.22, dbH = 0.62, dbW = 4.35, bx = 5.15;
+  // Bulls (left)
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: dbY, w: dbW, h: 0.2, fill: { color: C.green }, line: { color: C.green, width: 0 } });
+  s.addText("THE BULLS", { x: 0.5, y: dbY, w: dbW, h: 0.2, fontSize: 8.5, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0 });
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: dbY + 0.2, w: dbW, h: dbH - 0.2, fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 } });
+  s.addText("Huang: AI “factories” · Gerstner: capex is “locked in, not speculative” · Baker: the wafer shortage itself prevents a bubble.", {
+    x: 0.6, y: dbY + 0.22, w: dbW - 0.2, h: dbH - 0.24, fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
   });
+  // Bears (right)
+  s.addShape(pres.shapes.RECTANGLE, { x: bx, y: dbY, w: dbW, h: 0.2, fill: { color: C.red }, line: { color: C.red, width: 0 } });
+  s.addText("THE BEARS", { x: bx, y: dbY, w: dbW, h: 0.2, fontSize: 8.5, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", charSpacing: 2, margin: 0 });
+  s.addShape(pres.shapes.RECTANGLE, { x: bx, y: dbY + 0.2, w: dbW, h: dbH - 0.2, fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 } });
+  s.addText("Burry / Chanos: circular financing & 2–3-yr GPU depreciation · The Information: the Nvidia→OpenAI→Oracle loop · PTJ: 252% mkt-cap/GDP vs 170% in 2000.", {
+    x: bx + 0.1, y: dbY + 0.22, w: dbW - 0.2, h: dbH - 0.24, fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
+  });
+  // Verdict band
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: 5.96, w: 9.0, h: 0.36, fill: { color: C.yellow }, line: { color: C.yellow, width: 0 } });
   s.addText([
-    { text: "Corrections happen. Bubbles require stretched valuations AND supply exceeding demand. ", options: { color: C.black, fontSize: 11 } },
-    { text: "Neither condition holds today.", options: { color: C.red, fontSize: 11.5, bold: true } },
-  ], {
-    x: 0.7, y: 5.55, w: 8.6, h: 0.4,
-    fontFace: "Arial", bold: true, valign: "middle", margin: 0,
-  });
+    { text: "Howard Marks: “the question is whether the exuberance is irrational.”  ", options: { color: C.black, fontSize: 10.5 } },
+    { text: "Today — rich, but supply is constrained, not oversupplied.", options: { color: C.red, fontSize: 10.5, bold: true } },
+  ], { x: 0.7, y: 5.96, w: 8.6, h: 0.36, fontFace: "Arial", bold: true, valign: "middle", margin: 0 });
 
   // Numbered citation list — source attribution only; the stat being cited is visible
   // next to each superscript marker above.
@@ -1430,9 +1580,10 @@ function lineOpts(extra) {
     { n: "6", text: "CoreWeave / 2nd-market trackers, 2026" },
     { n: "7", text: "Public filings / press retrospectives, 2001–02" },
     { n: "8", text: "Bloomberg, 2025 YE" },
-  ]);
+    { n: "9", text: "Investor views as attributed: Huang (GTC 2026), Gerstner (Altimeter), Baker (ILTB), Burry/Chanos, The Information, P. Tudor Jones, Marks (Oaktree)" },
+  ], { y: 6.46 });
 
-  addFooter(s, 14);
+  addFooter(s, 15);
 }
 
 // ===================================================================
@@ -1580,7 +1731,7 @@ function lineOpts(extra) {
     { n: "4", text: "TSMC Q4 2025 earnings commentary" },
   ]);
 
-  addFooter(s, 15);
+  addFooter(s, 16);
 }
 
 // ===================================================================
@@ -1677,7 +1828,7 @@ function lineOpts(extra) {
     { n: "12", text: "TechInsights / trade press, 2025–26" },
   ]);
 
-  addFooter(s, 16);
+  addFooter(s, 17);
 }
 
 // ===================================================================
@@ -1686,76 +1837,69 @@ function lineOpts(extra) {
 {
   const s = pres.addSlide();
   addThemeTag(s, "RISKS");
-  addHeadline(s, "Communities, voters, and labor are pricing the AI infrastructure bet lower");
-  addSubhead(s, "NIMBY revolt, anti-AI sentiment, and a labor shortage are each capable of pricing the infrastructure bet lower.");
+  addHeadline(s, "AI is losing the public — and that's now a market risk");
+  addSubhead(s, "Sentiment is sliding, the NIMBY revolt is quantified and accelerating, and AI has become a 2026 political issue.");
   addHeadlineRule(s);
 
-  // LEFT: taller-aspect protest banner image (slightly taller to match right column)
-  addImagePlaceholder(s, 0.5, 1.85, 3.5, 3.5, "Photojournalism — 'STOP THE AI RACE' hand-lettered protest signs at a dusk rally, shoulder-height crowd POV, warm golden-hour sky, faces in shadow, signs in sharp focus, square");
-
-  // RIGHT: short framing paragraph above three narrative cards
-  s.addText("Three forces now price the AI infrastructure bet lower: communities blocking the builds, voters souring on the technology, and a shortage of the skilled workers who wire it all up.", {
-    x: 4.25, y: 1.95, w: 5.25, h: 0.75,
-    fontSize: 11.5, color: C.medGray, fontFace: "Arial", valign: "top", margin: 0,
+  // LEFT: rising-concern trend chart
+  addChartTitle(s, "More concerned than excited about AI (%)", 0.5, 1.6);
+  s.addChart(pres.charts.LINE,
+    [{ name: "% more concerned than excited", labels: ["2021", "2023", "2025"], values: [37, 44, 50] }],
+    {
+      x: 0.5, y: 2.05, w: 4.3, h: 2.15,
+      showTitle: false, showLegend: false,
+      chartColors: [C.red], lineSize: 3.5, lineDataSymbol: "circle", lineDataSymbolSize: 7,
+      showValue: true, dataLabelColor: C.red, dataLabelFontSize: 11, dataLabelFontBold: true, dataLabelPosition: "t",
+      catAxisLabelColor: "999999", valAxisLabelColor: "999999",
+      catAxisLabelFontSize: 9, valAxisLabelFontSize: 9,
+      valAxisMinVal: 0, valAxisMaxVal: 60, valAxisMajorUnit: 20,
+      valGridLine: { color: "E5E5E5", size: 0.5 }, catGridLine: { style: "none" },
+      chartArea: { fill: { color: C.white } },
+    }
+  );
+  // Supporting stat lines under the chart
+  [
+    { n: "70%+", t: "say AI is advancing too quickly (bipartisan)." },
+    { n: "31%",  t: "trust government to regulate AI responsibly." },
+    { n: "18%",  t: "of adults under 30 feel hopeful about AI." },
+  ].forEach((st, i) => {
+    s.addText([
+      { text: st.n + " ", options: { bold: true, color: C.red, fontSize: 14 } },
+      { text: st.t, options: { color: C.darkGray, fontSize: 10.5 } },
+    ], { x: 0.5, y: 4.45 + i * 0.37, w: 4.3, h: 0.3, fontFace: "Arial", valign: "middle", margin: 0 });
   });
 
-  // Three narrative cards — taller, better spaced
-  const supMark = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 7 } });
-  const notes = [
-    { title: "NIMBY REVOLT", body: [
-      { text: "$18B halted, $46B delayed. 142 activist groups across 24 states — Virginia leads with 42 chapters." },
-      supMark("1"),
-    ]},
-    { title: "ANTI-AI SENTIMENT", body: [
-      { text: "Only 26%" }, supMark("2"),
-      { text: " (Echelon Insights, Mar 2026) of Americans view AI positively. March 2026 \"Stop the AI Race\" protests" }, supMark("3"),
-      { text: " hit lab HQs in SF and DC." },
-    ]},
-    { title: "LABOR SHORTAGE", body: [
-      { text: "A ~480K data-center workforce gap against 400+ sites under construction." }, supMark("4"),
-      { text: " Talent, not capital, is binding." },
-    ]},
+  // RIGHT: three compact cards (NIMBY / politics / labor)
+  const rNotes = [
+    { title: "NIMBY — QUANTIFIED & ACCELERATING", h: 1.42, body: "~$64B of data-center projects blocked or delayed — now 188 activist groups across 40 states (was 142 / 24). 71% of Americans oppose a data center in their area — worse than nuclear." },
+    { title: "NOW A 2026 POLITICAL ISSUE", h: 1.42, body: "Pro-AI super PAC “Leading the Future” has raised $125M+ for the midterms; a “Bernie-to-Bannon” coalition and state moratoria (Maine, Georgia, Vermont; an Ohio ballot measure) are forming." },
+    { title: "LABOR", h: 0.72, body: "~480K data-center workforce gap — talent, not capital, binds." },
   ];
-  const CARD_X = 4.25, CARD_W = 5.25, CARD_Y0 = 2.75, CARD_H = 0.95, CARD_GAP = 0.08;
-  notes.forEach((n, i) => {
-    const y = CARD_Y0 + i * (CARD_H + CARD_GAP);
-    // Card body
-    s.addShape(pres.shapes.RECTANGLE, {
-      x: CARD_X, y: y, w: CARD_W, h: CARD_H,
-      fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
-    });
-    // Red title bar
-    s.addShape(pres.shapes.RECTANGLE, {
-      x: CARD_X, y: y, w: CARD_W, h: 0.32,
-      fill: { color: C.red }, line: { color: C.red, width: 0 },
-    });
-    s.addText(n.title, {
-      x: CARD_X, y: y, w: CARD_W, h: 0.32,
-      fontSize: 10, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 2, margin: 0.15,
-    });
-    s.addText(n.body, {
-      x: CARD_X + 0.15, y: y + 0.4, w: CARD_W - 0.3, h: CARD_H - 0.48,
-      fontSize: 10.5, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0,
-    });
+  const RX = 4.95, RW = 4.55;
+  let ry = 2.0;
+  rNotes.forEach((n) => {
+    s.addShape(pres.shapes.RECTANGLE, { x: RX, y: ry, w: RW, h: n.h, fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 } });
+    s.addShape(pres.shapes.RECTANGLE, { x: RX, y: ry, w: RW, h: 0.30, fill: { color: C.red }, line: { color: C.red, width: 0 } });
+    s.addText(n.title, { x: RX, y: ry, w: RW, h: 0.30, fontSize: 9.5, color: C.white, bold: true, fontFace: "Arial", align: "left", valign: "middle", charSpacing: 1, margin: 0.12 });
+    s.addText(n.body, { x: RX + 0.15, y: ry + 0.38, w: RW - 0.3, h: n.h - 0.46, fontSize: 10, color: C.darkGray, fontFace: "Arial", valign: "top", margin: 0 });
+    ry += n.h + 0.1;
   });
 
   // Red payoff band
-  s.addShape(pres.shapes.RECTANGLE, {
-    x: 0.5, y: 5.9, w: 9.0, h: 0.4,
-    fill: { color: C.red }, line: { color: C.red, width: 0 },
-  });
-  s.addText("The permitting layer is the new supply-chain layer — and it is politically, not technically, constrained.", {
-    x: 0.7, y: 5.9, w: 8.6, h: 0.4,
-    fontSize: 11, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
+  s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: 5.9, w: 9.0, h: 0.4, fill: { color: C.red }, line: { color: C.red, width: 0 } });
+  s.addText("The permitting layer is the new supply-chain layer — politically, not technically, constrained.", {
+    x: 0.7, y: 5.9, w: 8.6, h: 0.4, fontSize: 11, color: C.white, bold: true, fontFace: "Arial", valign: "middle", margin: 0,
   });
 
   addCitations(s, [
-    { n: "1", text: "Data Center Watch, 2026 NIMBY tracker" },
-    { n: "2", text: "Echelon Insights, Mar 2026 AI sentiment poll" },
-    { n: "3", text: "Fortune / TIME / CNN / NBC News — Stop the AI Race coverage" },
-    { n: "4", text: "Data Center Frontier — workforce gap analysis" },
+    { n: "1", text: "Pew Research — Americans' views of AI (Mar 2026)" },
+    { n: "2", text: "Economist/YouGov (May 2026); Stanford AI Index 2026; Gallup" },
+    { n: "3", text: "DataCenterWatch; Fortune (May 2026); Gallup data-center poll (Mar 2026)" },
+    { n: "4", text: "“Leading the Future” super PAC — CNBC/NOTUS; MultiState (state measures, May 2026)" },
+    { n: "5", text: "Data Center Frontier — workforce gap" },
+    { n: "6", text: "Escalation: “Stop the AI Race” march (Mar 2026); reported attack on a lab CEO's home (Apr 2026)" },
   ]);
-  addFooter(s, 17);
+  addFooter(s, 18);
 }
 
 // ===================================================================
@@ -1773,7 +1917,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // Hero image on the right
-  addImagePlaceholder(s, 5.85, 1.6, 3.65, 3.8, "Render — modular orbital data-center satellite with 50-meter solar wings catching a violet tint, above Earth's dawn limb with atmospheric glow, deep indigo space, hyperrealistic Octane quality, slightly portrait");
+  addImageOrPlaceholder(s, "slides-images/orbital.png", 5.85, 1.6, 3.65, 3.8, "Render — modular orbital data-center satellite with 50-meter solar wings catching a violet tint, above Earth's dawn limb with atmospheric glow, deep indigo space, hyperrealistic Octane quality, slightly portrait");
 
   const cards = [
     { title: "NO GRID QUEUE",   body: "Earth's interconnection backlogs, zoning battles, and cooling constraints don't exist in orbit." },
@@ -1816,7 +1960,7 @@ function lineOpts(extra) {
     { n: "1", text: "NASA solar constant, 1,361 W/m² at 1 AU" },
     { n: "2", text: "FCC filings; Starcloud, SpaceX, Google Suncatcher, Aetherflux announcements; CNBC" },
   ]);
-  addFooter(s, 18);
+  addFooter(s, 19);
 }
 
 // ===================================================================
@@ -1829,7 +1973,7 @@ function lineOpts(extra) {
   addSubhead(s, "Humanoids enter manufacturing, logistics, and healthcare at pilot scale. Every robot is a walking inference endpoint.");
   addHeadlineRule(s);
 
-  addImagePlaceholder(s, 1.5, 1.6, 7.0, 2.2, "Panoramic photo — humanoid robot mid-stride on a factory floor, matte-white body with violet joint accents, motion blur on limbs, amber work-lights, a blurred human worker in a safety vest in the background");
+  addImageOrPlaceholder(s, "slides-images/humanoid.png", 1.5, 1.6, 7.0, 2.2, "Panoramic photo — humanoid robot mid-stride on a factory floor, matte-white body with violet joint accents, motion blur on limbs, amber work-lights, a blurred human worker in a safety vest in the background");
 
   const supMark19 = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 6.5 } });
   const cards = [
@@ -1882,7 +2026,7 @@ function lineOpts(extra) {
     { n: "2", text: "NVIDIA FY2026 — robotics compute keynotes" },
     { n: "3", text: "Tesla, Figure AI, Hyundai/Boston Dynamics, Unitree, Agility — company announcements" },
   ]);
-  addFooter(s, 19);
+  addFooter(s, 20);
 }
 
 // ===================================================================
@@ -1895,7 +2039,7 @@ function lineOpts(extra) {
   addSubhead(s, "More miles → better models → more deployments. Every vehicle is a rolling inference machine consuming frontier-scale compute.");
   addHeadlineRule(s);
 
-  addImagePlaceholder(s, 0.5, 1.6, 2.8, 4.15, "Long-exposure photo — white minivan robotaxi with a violet-glowing roof lidar on a rainy dusk city street, red and white traffic light trails, wet asphalt reflecting neon storefronts, tall portrait");
+  addImageOrPlaceholder(s, "slides-images/robotaxi.png", 0.5, 1.6, 2.8, 4.15, "Long-exposure photo — white minivan robotaxi with a violet-glowing roof lidar on a rainy dusk city street, red and white traffic light trails, wet asphalt reflecting neon storefronts, tall portrait");
 
   const supMark20 = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 7 } });
   const cards = [
@@ -1949,7 +2093,7 @@ function lineOpts(extra) {
     { n: "2", text: "NVIDIA FY2026 — automotive/DRIVE platform" },
     { n: "3", text: "Waymo, Tesla, Baidu Apollo, Aurora — company disclosures" },
   ]);
-  addFooter(s, 20);
+  addFooter(s, 21);
 }
 
 // ===================================================================
@@ -1963,7 +2107,7 @@ function lineOpts(extra) {
   addHeadlineRule(s);
 
   // Image on the left, taller
-  addImagePlaceholder(s, 0.5, 1.85, 3.3, 3.67, "Render — protein ribbon diagram in a violet-to-magenta-to-gold gradient on graphite black, razor-sharp front with softly-blurred back, faint electron-density mesh around the structure, no labels or annotations");
+  addImageOrPlaceholder(s, "slides-images/protein.png", 0.5, 1.85, 3.3, 3.67, "Render — protein ribbon diagram in a violet-to-magenta-to-gold gradient on graphite black, razor-sharp front with softly-blurred back, faint electron-density mesh around the structure, no labels or annotations");
 
   // Three educational mechanism cards stacked on the right
   const supMark21 = (n) => ({ text: " " + n, options: { superscript: true, fontSize: 6.5 } });
@@ -2042,7 +2186,7 @@ function lineOpts(extra) {
     { n: "2", text: "Hughes et al., Br. J. Pharmacol. — screening scale" },
     { n: "3", text: "Tufts CSDD — drug-development cost and timeline" },
   ]);
-  addFooter(s, 21);
+  addFooter(s, 22);
 }
 
 // ===================================================================
@@ -2057,7 +2201,7 @@ function lineOpts(extra) {
   const items = [
     { n: "01", accent: C.teal,
       statement: "AI is the defining capital-allocation event of this decade.",
-      support: "A handful of hyperscalers are deploying capital fast enough to reshape power grids, real estate, and global supply chains all at once. AI capex has become the dominant driver of US business investment, and the scale itself is the story." },
+      support: "A handful of hyperscalers are deploying capital fast enough to reshape power grids, real estate, and global supply chains all at once. AI capex is now the dominant driver of US business investment — ~70% of hyperscaler operating cash flow, heading above 90% in 2026, increasingly funded by debt and leases. The scale itself is the story." },
     { n: "02", accent: C.gold,
       statement: "The AI buildout is producing sharp winners and sharp losers.",
       support: "Foundries, memory, and the picks-and-shovels of AI infrastructure are surging, while parts of legacy software and SaaS are getting cannibalized by AI-native competitors. Returns inside the AI complex have dispersed sharply, and the spread keeps widening." },
@@ -2103,7 +2247,7 @@ function lineOpts(extra) {
   });
 
   addSource(s, "Sources: company filings; Goldman Sachs; SemiAnalysis; BofA; TrendForce. See appendix for figure-by-figure citations.", 0.5, 6.15, 9.0);
-  addFooter(s, 22);
+  addFooter(s, 23);
 }
 
 // ===================================================================
@@ -2120,7 +2264,7 @@ function lineOpts(extra) {
     x: 0.5, y: 1.55, w: 9.0, h: 0.35,
     fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
   });
-  s.addText("All figures retrieved as of Apr 2026 unless noted. Market caps & consensus: companiesmarketcap.com · stockanalysis.com. YTD returns: Yahoo Finance (Apr 17, 2026).", {
+  s.addText("All figures retrieved Apr–May 2026 unless noted. Market caps & consensus: companiesmarketcap.com · stockanalysis.com. YTD returns: Yahoo Finance (May 22, 2026).", {
     x: 0.7, y: 1.55, w: 8.6, h: 0.35,
     fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
   });
@@ -2143,7 +2287,6 @@ function lineOpts(extra) {
       x: 0.5 + COL_W + GAP, label: "MARKET  ·  7–11", color: C.gold,
       entries: [
         { slide: "Slide 7",  fig: "Four-stage AI chipmaking process",     src: "SIA / SEMI industry taxonomy" },
-        { slide: "Slide 7",  fig: "\"$20B fab\" cost benchmark",           src: "SEMI World Fab Forecast; TSMC / Samsung capex disclosures" },
         { slide: "Slide 7",  fig: "HBM + CoWoS advanced packaging",        src: "TrendForce; TSMC CoWoS capacity disclosures" },
         { slide: "Slide 8",  fig: "\"~60% hyperscaler share of AI chips\"", src: "SemiAnalysis / Omdia 2026E estimates" },
         { slide: "Slide 8",  fig: "Hyperscaler 2026 capex guides",        src: "AWS, MSFT, GOOGL, META, ORCL filings" },
@@ -2151,24 +2294,24 @@ function lineOpts(extra) {
         { slide: "Slide 9",  fig: "\"1 GW typical AI campus\"",           src: "LBNL, DOE" },
         { slide: "Slide 9",  fig: "\"~5 yr interconnection wait\"",       src: "PJM, ERCOT interconnection queues" },
         { slide: "Slide 9",  fig: "TMI reopening",                        src: "Microsoft / Constellation (Sept 2024)" },
-        { slide: "Slide 10", fig: "OpenAI $852B @ ~35× ARR",              src: "TechCrunch, Sacra ARR run-rates" },
-        { slide: "Slide 10", fig: "Anthropic $380B",                      src: "TechCrunch, Bloomberg (Feb 2026)" },
-        { slide: "Slide 10", fig: "Alphabet $4.0T / ~$180B 2026 capex",   src: "companiesmarketcap; Alphabet 2026 capex guide (Q4 2025 call)" },
-        { slide: "Slide 10", fig: "xAI / SpaceX $1.25T merger",           src: "CNBC, TechCrunch (Feb 2, 2026)" },
+        { slide: "Slide 10", fig: "OpenAI $852B @ ~35× ARR",              src: "Bloomberg / CNBC; Sacra ARR run-rates" },
+        { slide: "Slide 10", fig: "Anthropic $380B → ~$900B (reported)",  src: "Bloomberg (Feb & May 2026)" },
+        { slide: "Slide 10", fig: "Alphabet ~$4.6T / ~$185B 2026 capex",  src: "companiesmarketcap; Alphabet guide" },
+        { slide: "Slide 10", fig: "xAI/SpaceX $1.25T; SpaceX S-1 (May 20)", src: "CNBC, Bloomberg (2026)" },
         { slide: "Slide 10", fig: "Q1 2026 funding 2× all of 2025",       src: "Crunchbase Q1 2026 VC data" },
         { slide: "Slide 11", fig: "Top 10 Tech vs Non-Tech metrics",      src: "stockanalysis.com consensus (Apr 22, 2026)" },
         { slide: "Slide 11", fig: "Market caps",                          src: "companiesmarketcap.com (Apr 22, 2026)" },
       ],
     },
     {
-      x: 0.5 + 2 * (COL_W + GAP), label: "SHIFTS  ·  12–13", color: C.orange,
+      x: 0.5 + 2 * (COL_W + GAP), label: "SHIFTS  ·  12–14", color: C.orange,
       entries: [
-        { slide: "Slide 12", fig: "\"10–100× compute per session\"",       src: "Anthropic, OpenAI; Morgan Stanley CIO Survey" },
-        { slide: "Slide 12", fig: "Chatbot vs agent token counts",         src: "Anthropic, OpenAI; GitHub Trending" },
-        { slide: "Slide 13", fig: "YTD prices rebased to 100",             src: "Yahoo Finance (Apr 17, 2026)" },
-        { slide: "Slide 13", fig: "Memory supercycle single-stock YTDs",   src: "Yahoo Finance; Counterpoint Research" },
+        { slide: "Slide 12", fig: "\"10–100× compute per session\"",       src: "analyst est.; Morgan Stanley CIO Survey" },
+        { slide: "Slide 12", fig: "\"million-fold demand / inference inflection\"", src: "Jensen Huang, NVIDIA GTC 2026" },
+        { slide: "Slide 13", fig: "YTD prices rebased to 100",             src: "Yahoo Finance (May 22, 2026)" },
+        { slide: "Slide 13", fig: "\"SaaSpocalypse — ~$285B in 48h\"",      src: "SaaS selloff coverage, Feb 2026" },
         { slide: "Slide 13", fig: "Software single-stock YTDs",            src: "Yahoo Finance; Morgan Stanley CIO Survey" },
-        { slide: "Slide 13", fig: "BDC index / PE SaaS marks",             src: "Bloomberg BDC; PitchBook secondary marks" },
+        { slide: "Slide 14", fig: "Token-cost ~99% decline; commoditization", src: "a16z, SemiAnalysis; Stratechery (Mar 2026)" },
       ],
     },
   ];
@@ -2200,7 +2343,7 @@ function lineOpts(extra) {
   });
 
   addSource(s, "Appendix 1 of 2 — continues on the next page with RISKS, FRONTIER, and TAKEAWAYS.");
-  addFooter(s, 23);
+  addFooter(s, 24);
 }
 
 // ===================================================================
@@ -2217,7 +2360,7 @@ function lineOpts(extra) {
     x: 0.5, y: 1.55, w: 9.0, h: 0.35,
     fill: { color: C.offWhite }, line: { color: C.lightGray, width: 0.5 },
   });
-  s.addText("All figures retrieved as of Apr 2026 unless noted. Market caps & consensus: companiesmarketcap.com · stockanalysis.com. YTD returns: Yahoo Finance (Apr 17, 2026).", {
+  s.addText("All figures retrieved Apr–May 2026 unless noted. Market caps & consensus: companiesmarketcap.com · stockanalysis.com. YTD returns: Yahoo Finance (May 22, 2026).", {
     x: 0.7, y: 1.55, w: 8.6, h: 0.35,
     fontSize: 8.5, color: C.darkGray, fontFace: "Arial", valign: "middle", margin: 0,
   });
@@ -2226,54 +2369,48 @@ function lineOpts(extra) {
   const COL_W = 2.87, GAP = 0.20;
   const appendixCols2 = [
     {
-      x: 0.5, label: "RISKS  ·  14–17", color: C.red,
+      x: 0.5, label: "RISKS  ·  15–18", color: C.red,
       entries: [
-        { slide: "Slide 14", fig: "\"131× Cisco fwd P/E, Mar 2000\"",   src: "Harding Loevner" },
-        { slide: "Slide 14", fig: "\"~24× NVDA fwd P/E, Apr 17 2026\"", src: "GuruFocus" },
-        { slide: "Slide 14", fig: "\"14% of 2000 tech IPOs profitable\"", src: "Jay Ritter, University of Florida" },
-        { slide: "Slide 14", fig: "\"$500B dark fiber unused\"",        src: "FCC dark-fiber data" },
-        { slide: "Slide 14", fig: "\"GPU 2nd market 90–95% list\"",     src: "CoreWeave 2nd-market pricing" },
-        { slide: "Slide 14", fig: "\"Hyperscaler net debt/EBITDA ~48%\"", src: "Bloomberg" },
-        { slide: "Slide 15", fig: "\"TSMC ~90% advanced-node share\"",  src: "TSMC filings; SIA" },
-        { slide: "Slide 15", fig: "\"SK Hynix + Samsung ~76% DRAM\"",   src: "TrendForce; SIA" },
-        { slide: "Slide 15", fig: "\"ASML <100 EUV / yr\"",             src: "ASML filings" },
-        { slide: "Slide 15", fig: "US reshoring fab timelines",         src: "TSMC, Samsung, Micron, Intel filings" },
-        { slide: "Slide 15", fig: "\"CHIPS $36B of $52.7B committed\"", src: "US Commerce Dept (Nov 2025)" },
-        { slide: "Slide 16", fig: "H100/H200/Blackwell export ban",     src: "US Bureau of Industry and Security" },
-        { slide: "Slide 16", fig: "\"NVIDIA $5.5B H20 writedown\"",     src: "NVIDIA 10-Q" },
-        { slide: "Slide 16", fig: "ASML DUV ban; China ~20% revenue",   src: "ASML filings" },
-        { slide: "Slide 16", fig: "\"EU AI Act Aug 2, 2026 enforcement\"", src: "EU AI Act Article 99 / Chapter V" },
-        { slide: "Slide 16", fig: "\"SMIC 5nm yield ~20%\"",            src: "public industry reports" },
-        { slide: "Slide 17", fig: "\"$18B halted / $46B delayed\"",     src: "Data Center Watch" },
-        { slide: "Slide 17", fig: "\"142 activist groups, 24 states\"", src: "Data Center Watch" },
-        { slide: "Slide 17", fig: "\"26% of Americans positive on AI\"", src: "Echelon Insights" },
-        { slide: "Slide 17", fig: "\"Stop the AI Race\" Mar 2026 protests", src: "Stop the AI Race; TIME; CNN" },
-        { slide: "Slide 17", fig: "\"~480K data-center workforce gap\"", src: "Data Center Frontier" },
+        { slide: "Slide 15", fig: "Cisco 131× vs NVDA ~24× fwd P/E",    src: "Harding Loevner; GuruFocus" },
+        { slide: "Slide 15", fig: "14% of 2000 tech IPOs profitable",   src: "J. Ritter, Univ. Florida" },
+        { slide: "Slide 15", fig: "GPU 2nd market 90–95% of list",      src: "CoreWeave pricing" },
+        { slide: "Slide 15", fig: "Hyperscaler net debt/EBITDA ~48%",   src: "Bloomberg" },
+        { slide: "Slide 16", fig: "TSMC ~90% advanced-node share",      src: "TSMC; SIA" },
+        { slide: "Slide 16", fig: "SK Hynix + Samsung ~76% DRAM",       src: "TrendForce; SIA" },
+        { slide: "Slide 16", fig: "ASML <100 EUV/yr; reshoring",        src: "ASML; TSMC, Samsung, Intel" },
+        { slide: "Slide 16", fig: "CHIPS $36B of $52.7B committed",     src: "US Commerce Dept" },
+        { slide: "Slide 17", fig: "H100/H200/Blackwell China ban",      src: "US BIS" },
+        { slide: "Slide 17", fig: "NVIDIA $5.5B H20 writedown",         src: "NVIDIA 10-Q" },
+        { slide: "Slide 17", fig: "EU AI Act enforcement Aug 2026",     src: "EU AI Act Ch. V" },
+        { slide: "Slide 17", fig: "SMIC 5nm yield ~20%",               src: "industry reports" },
+        { slide: "Slide 18", fig: "Sentiment 37%→50% concerned",        src: "Pew; YouGov 2026" },
+        { slide: "Slide 18", fig: "~$64B NIMBY blocked/delayed; 71% oppose", src: "DataCenterWatch; Gallup" },
+        { slide: "Slide 18", fig: "\"Leading the Future\" PAC; moratoria", src: "CNBC/NOTUS; MultiState" },
       ],
     },
     {
-      x: 0.5 + COL_W + GAP, label: "FRONTIER  ·  18–21", color: C.purple,
+      x: 0.5 + COL_W + GAP, label: "FRONTIER  ·  19–22", color: C.purple,
       entries: [
-        { slide: "Slide 18", fig: "\"1,361 W/m² unfiltered solar\"",    src: "solar constant (physical)" },
-        { slide: "Slide 18", fig: "Orbital compute players",            src: "FCC filings; Starcloud, SpaceX, Google Suncatcher, Aetherflux; CNBC" },
-        { slide: "Slide 19", fig: "Humanoid deployments in pilots",     src: "Goldman Sachs humanoid research" },
-        { slide: "Slide 19", fig: "Player list",                        src: "Tesla, Figure, Boston Dynamics, Unitree, Agility announcements" },
-        { slide: "Slide 20", fig: "\"~1.35M road deaths / year\"",      src: "WHO Global Road Safety" },
-        { slide: "Slide 20", fig: "AV inference compute scale",         src: "NVIDIA FY2026" },
-        { slide: "Slide 21", fig: "AlphaFold structure prediction",     src: "Jumper et al., Nature 2020" },
-        { slide: "Slide 21", fig: "\"~10⁶⁰ drug-like small molecules\"", src: "Hughes et al., Br. J. Pharmacol." },
-        { slide: "Slide 21", fig: "\"10–15 yrs / ~$2.6B per drug\"",    src: "Tufts CSDD drug-development studies" },
-        { slide: "Slide 21", fig: "\"<10% Phase I success\"",           src: "Hughes et al., Br. J. Pharmacol." },
+        { slide: "Slide 19", fig: "\"1,361 W/m² unfiltered solar\"",    src: "solar constant (physical)" },
+        { slide: "Slide 19", fig: "Orbital players & pilots",           src: "FCC filings; Starcloud ($1.1B, 2026), SpaceX, Google Suncatcher, Aetherflux" },
+        { slide: "Slide 20", fig: "Humanoid deployments in pilots",     src: "Goldman Sachs humanoid research" },
+        { slide: "Slide 20", fig: "Player list",                        src: "Tesla, Figure, Boston Dynamics, Unitree, Agility announcements" },
+        { slide: "Slide 21", fig: "\"~1.35M road deaths / year\"",      src: "WHO Global Road Safety" },
+        { slide: "Slide 21", fig: "AV inference compute scale",         src: "NVIDIA FY2026" },
+        { slide: "Slide 22", fig: "AlphaFold structure prediction",     src: "Jumper et al., Nature 2020" },
+        { slide: "Slide 22", fig: "\"IsoDDE 50% vs AlphaFold3 23.3%\"",  src: "Isomorphic Labs (Feb 2026)" },
+        { slide: "Slide 22", fig: "\"10–15 yrs / ~$2.6B per drug\"",    src: "Tufts CSDD drug-development studies" },
+        { slide: "Slide 22", fig: "\"<10% Phase I success\"",           src: "Hughes et al., Br. J. Pharmacol." },
       ],
     },
     {
-      x: 0.5 + 2 * (COL_W + GAP), label: "TAKEAWAYS  ·  22", color: C.black,
+      x: 0.5 + 2 * (COL_W + GAP), label: "TAKEAWAYS  ·  23", color: C.black,
       entries: [
-        { slide: "Slide 22", fig: "\"~$750B hyperscaler 2026 capex\"",  src: "CreditSights / MUFG (Apr 2026)" },
-        { slide: "Slide 22", fig: "\"AI correlation 80% → 20%\"",       src: "Goldman Sachs correlation data" },
-        { slide: "Slide 22", fig: "\"Semis +38% / software –20% YTD\"", src: "Yahoo Finance (Apr 17, 2026)" },
-        { slide: "Slide 22", fig: "\"HBM TAM $35B → $100B, 2025–28\"",  src: "BofA HBM TAM; TrendForce" },
-        { slide: "Slide 22", fig: "Hyperscaler FCF impact",             src: "Amazon, Meta 10-Qs" },
+        { slide: "Slide 23", fig: "\"~$750B hyperscaler 2026 capex\"",  src: "CreditSights / MUFG (2026)" },
+        { slide: "Slide 23", fig: "\"capex ~70%→90% of op. cash flow\"", src: "BofA; company 10-Qs (2026)" },
+        { slide: "Slide 23", fig: "\"Semis +74% / software ~–15% YTD\"", src: "Yahoo Finance (May 22, 2026)" },
+        { slide: "Slide 23", fig: "\"HBM TAM $35B → $100B, 2025–28\"",  src: "BofA HBM TAM; TrendForce" },
+        { slide: "Slide 23", fig: "Hyperscaler FCF / lease impact",     src: "Amazon, Meta 10-Qs; Moody's" },
       ],
     },
   ];
@@ -2303,7 +2440,7 @@ function lineOpts(extra) {
   });
 
   addSource(s, "Appendix 2 of 2. End of deck.");
-  addFooter(s, 24);
+  addFooter(s, 25);
 }
 
 // ---------- Write ----------
