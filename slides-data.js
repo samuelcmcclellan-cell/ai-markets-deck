@@ -1,66 +1,76 @@
 window.DECK = {
   "title": "AI in the Market",
-  "subtitle": "June 2026",
+  "subtitle": "From token subsidy to token scarcity — June 2026",
   "file": "ai-markets-deck.pptx",
-  "total": 15,
+  "total": 20,
   "sections": [
     {
       "start": 1,
       "label": "Intro"
     },
     {
-      "start": 4,
-      "label": "What's happening"
+      "start": 3,
+      "label": "01 The shift"
     },
     {
       "start": 6,
-      "label": "Equity markets"
+      "label": "02 The crunch"
     },
     {
-      "start": 9,
-      "label": "Financing"
+      "start": 10,
+      "label": "03 The market"
     },
     {
-      "start": 11,
-      "label": "Portfolio"
+      "start": 16,
+      "label": "04 The stakes"
     },
     {
-      "start": 15,
+      "start": 20,
       "label": "Sources"
     }
   ],
   "titles": [
-    "Cover — AI in the Market",
-    "The thesis: the buildout is now a market event",
-    "Roadmap: four beats",
-    "The buildout in numbers (~$725B)",
-    "The constraint backdrop: chips → grid",
-    "Concentration: ten stocks ≈ 37%",
-    "Returns: the AI trade rotated",
-    "Valuations: rich index, uneven expectations",
-    "Paying for the buildout: capex > cash flow",
-    "The bond-issuance wave",
+    "Cover — From token subsidy to token scarcity",
+    "The argument",
+    "Divider — 01 The shift",
+    "From token subsidy to token scarcity",
+    "The enterprise token bill arrived",
+    "Divider — 02 The crunch",
+    "The capex sprint (~$705B)",
+    "The physical squeeze: memory and power",
+    "The neocloud hierarchy",
+    "Divider — 03 The market",
+    "The lab race goes public",
+    "Ten stocks are ~37% of the index",
+    "The AI trade rotated",
+    "Rich index, uneven expectations",
+    "The bill: capex > cash flow, bonds step in",
+    "Divider — 04 The stakes",
+    "Washington enters the trade",
     "Your index fund is an AI fund now",
-    "Dispersion along the chain",
-    "Risks to watch",
-    "Implications for investors",
+    "What breaks it — and what to do",
     "Sources & methodology"
   ],
   "notes": [
-    "Frame for the room: this is not an AI explainer — it's a markets deck. Four beats: what's happening, how it shows up in equities, how it's financed, what it means for positioning.",
-    "Three numbers carry the thesis: $725B guided capex (+77%); top-10 at ~37% of index (vs 40.7% 2025 peak, 18–23% historic norm); 89pp semis-vs-software spread. Dispersion, not direction, is 2026's story.",
-    "Orientation. The physical compute story is deliberately one context slide — the deep version lives in the standalone briefings.",
-    "Guided, not projected: MSFT $190B, AMZN $200B, GOOGL $175–185B, META $125–145B. Earnings visibility for the supply chain; cash-flow pressure for the spenders. Bear case of capex cuts hasn't shown up.",
-    "One slide of physics. IEA: DC electricity ~doubles to 950 TWh by 2030. WEF: grid access — not chips or capital — is the binding constraint. Constraint analysis is market analysis: moats shift to whoever holds power and interconnection.",
-    "Top-10 share ~37% vs 18–23% 1990–2015 norm; peaked 40.7% in 2025. NVDA ~$5T (first ever), AAPL $4.6T, MSFT $3.3T — three names ≈ 18% of index. Both readings fair: earnings concentration vs structural fragility.",
-    "2026's surprise: leadership migrated from platforms to suppliers. SOXX +79% (memory & custom silicon, best run since 2000, $5.7T added); MAGS +5.9% LAGS equal-weight +14.3%; software −9.5%. Breadth is back — with a new concentration inside semis. Retail piling into semis in May is a sentiment flag.",
-    "Fixes the old slide-11 contradiction. Index 21.1x fwd vs 19.0x 10-yr avg: elevated, not extreme. NVDA ~22x fwd — unremarkable multiple, the question is earnings durability. SOXX 57x trailing; software de-rated to pre-AI levels. The spread is the signal.",
-    "The 'unspoken contract' broke: ~94% of op cash flow consumed; Big-4 FCF lowest since 2014; AMZN negative; GOOGL −90% to ~$8B. Equity holders now carry execution risk AND financing risk.",
-    "The ledger: ORCL $18B (Sep 25) → META $30B (Oct 25, record non-M&A IG) → GOOGL $17.5B + AMZN $15B (Nov 25) → ORCL $25B (Feb 26). ~$300B AI-linked IG supply expected 2026. Two-sided: leverage still light (0.4–0.7x vs ~3x IG), but Oracle CDS >125bp shows credit discriminates. Spreads = real-time gauge of AI capex belief.",
-    "Hidden active risk: no allocator would deliberately put 37% in ten correlated names — a benchmark does. Honest caveat: equal-weight won 2026, lost 2024–25. Message is 'size the bet on purpose,' not 'sell megacaps.'",
-    "Intra-theme dispersion (89pp) dwarfs the index return. Value accruing: compute supply, power. Contested: platforms (revenue real, capex charged). Eroding: software priced for disruption. Map, not forecast — buckets rotated once already this cycle.",
-    "Each risk has a watchable gauge: capex guidance; hyperscaler CDS/spreads; rates (10-yr ~4.54%, 2-yr highest since early 2025); top-10 share. Financing stress and demand air pocket are the same risk at different speeds — credit reprices first.",
-    "Synthesis: (1) know your AI beta; (2) trade the chain, not the theme; (3) credit is the early-warning channel; (4) respect the breadth shift. Closing line: you don't need a view on AGI — you need to know what your portfolio already believes.",
-    "Back matter. Canonical stamp: data as of June 2026; returns through Jun 5–9 closes (index closes May 29 via slickcharts). Conservative figure used where sources disagreed; nothing extrapolated."
+    "Markets deck, not an AI explainer. New spine: assisted → agentic ended the token-subsidy era and made compute scarce. Four acts: the shift, the crunch, the market, the stakes.",
+    "The whole deck in four cards: (1) agentic shift = demand shock; (2) scarcity makes the ~$705B capex sprint rational; (3) the market priced the chain unevenly — semis +80%, software −10%; (4) the tail risks are political as much as financial.",
+    "Act One divider. Uber's $1,500/mo per-employee token cap is the anchor: firms meter what is scarce. That budget line is the demand signal behind every chart that follows.",
+    "Vocabulary lesson: subsidy era (2023–25, seat pricing, drafting) vs scarcity era (2026→, metered usage, agentic loops). Advantage gap widens; Jevons paradox — cheaper software production raises total demand — keeps scarcity persistent.",
+    "Uber $1,500/mo cap; Walmart ended unlimited 'Code Puppy' access; 20–25% of the knowledge-work week lost to coordination is the demand pool. Token budgets = the cleanest demand gauge for agentic AI.",
+    "Act Two divider. SK Hynix: doubling HBM capacity, relief still not before ~2030. 'Structural, not cyclical' is what matters for supply-chain pricing power and multiples.",
+    "Guided, not projected: MSFT $190B, AMZN $200B, GOOGL $180B, META $135B → ~$705B, +72% YoY (range-tops ~$725B; MS five-platform ~$805B). Under scarcity, overpaying for capacity is rational — underbuilding costs share.",
+    "Three bottlenecks: HBM (structural to ~2030), architecture (Vera Rubin pivots CPU-centric for agentic tool calls), grid (85 GW requested vs ~100 GW needed; IEA power ~doubles to 950 TWh by 2030). Moats shift to whoever controls the constraint.",
+    "The scarcity market: SpaceX Colossus 550k GPUs, $40B, ~18-month payback — the bull case's best number. Google pays $920M/mo renting 110k GPUs — the cost of not owning capacity. RTX Spark pushes inference to the edge.",
+    "Act Three divider. Anthropic run rate $3B → $47B on usage-based pricing — token scarcity in revenue form, soon to be priced directly by public markets via the IPO race.",
+    "Lab strategies: OpenAI consumer super-app vs Anthropic 'make money first' ($47B run rate) vs Microsoft Frontier Tuning (~10x cheaper, weaker agentic benchmarks). IPOs = issuance supply AND price discovery for the whole theme.",
+    "Top-10 share ~37% vs 18–23% 1990–2015 norm; 40.7% 2025 peak. NVDA ~$5T (first ever), AAPL $4.6T, MSFT $3.3T ≈ 18% of index. The top of the index is the scarcity trade in benchmark form.",
+    "Dispersion: SOXX +80% (best since 2000, ~$5.7T added), equal-weight +14% beats S&P +11% and MAGS +6%; software −10%. Value accrues where AI spend is revenue, erodes where AI is the threat. Map, not forecast.",
+    "All forward multiples: index 21.1x vs 19.0x 10-yr avg — elevated, not extreme. NVDA 22.5x forward: unremarkable multiple, the question is earnings durability under scarcity economics. Software de-rated to pre-AI levels.",
+    "One mechanism, two halves: ~94% of op cash flow consumed, Big-4 FCF lowest since 2014 → $105B+ of IG mega-deals in nine months (META $30B = record non-M&A print). Leverage still light, but Oracle CDS >125bp: credit discriminates, and spreads reprice before earnings.",
+    "Act Four divider. The 50% equity-tax proposal anchors the act: Sanders proposed, Trump echoed. When that pair converges, the Overton window has moved — from regulating AI to owning it.",
+    "Three pillars, all sides quoted: EO (voluntary 30-day NSA review, cyber focus, no licensing), sovereign wealth fund (50% equity tax → AI Dividends), Sacks critique (corporate-government fusion). Public-ownership tail risk now belongs in lab-equity and IPO models.",
+    "Hidden active risk: 37% in ten correlated names via a benchmark. Equal-weight won 2026, lost 2024–25 — message is 'size the bet on purpose.' New: policy risk is embedded in the benchmark's top ten, not exogenous.",
+    "Four gauges (capex guidance + token budgets, CDS/spreads, rates, top-10 share) × four takeaways (know your AI beta; trade the chain; watch credit; respect breadth). Credit reprices faster than earnings — most likely stress path.",
+    "Back matter. Data as of June 2026; returns through Jun 5–9 closes. AI Frontier review column = review-sourced items, flagged separately from exchange-verified market data. Chart labels rounded; exact values footnoted."
   ]
 };
