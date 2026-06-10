@@ -13,7 +13,20 @@
       "source": "/ai-markets-deck.pptx",
       "headers": [
         { "key": "Content-Type", "value": "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
-        { "key": "Content-Disposition", "value": "attachment; filename=\"ai-markets-deck.pptx\"" }
+        { "key": "Content-Disposition", "value": "attachment; filename=\"ai-markets-deck.pptx\"" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/slides-data.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
     }
   ]

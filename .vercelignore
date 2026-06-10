@@ -1,0 +1,14 @@
+# Ship only the viewer and its assets — keep internal docs and build tooling out of the deploy.
+# Deployed: index.html, slides-data.js, slides/, ai-markets-deck.pptx, vercel.json
+node_modules
+.claude
+.vercel
+.git
+.gitignore
+*.md
+*.ps1
+build-deck.js
+package.json
+package-lock.json
+slides-images
+logos
