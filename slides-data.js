@@ -2,8 +2,8 @@ window.DECK = {
   "title": "AI in the Market",
   "subtitle": "What’s happening now — and how markets reprice — June 2026",
   "file": "ai-markets-deck.pptx",
-  "v": "202606102340",
-  "total": 12,
+  "v": "202606110146",
+  "total": 13,
   "sections": [
     {
       "start": 1,
@@ -14,17 +14,18 @@ window.DECK = {
       "label": "01 What’s happening"
     },
     {
-      "start": 6,
+      "start": 7,
       "label": "02 Market impact"
     },
     {
-      "start": 12,
+      "start": 13,
       "label": "Sources"
     }
   ],
   "titles": [
     "Cover — AI in the Market",
     "Three shifts, happening now",
+    "The AI Era Diagnostic Matrix",
     "From prompts to loops — demand has no ceiling",
     "Tokens got a budget line",
     "Washington wants a stake",
@@ -37,9 +38,10 @@ window.DECK = {
     "Sources & methodology"
   ],
   "notes": [
-    "Twelve slides, two parts. 01 WHAT’S HAPPENING: models became loop-running agents, tokens became a rationed input, Washington moved from regulating AI to debating who owns it. 02 MARKET IMPACT: equities split the trade, labor data moved, financing went to the bond market, your benchmark became an AI fund. One question throughout: what does this do to portfolios.",
+    "Thirteen slides, two parts. 01 WHAT’S HAPPENING: models became loop-running agents, tokens became a rationed input, Washington moved from regulating AI to debating who owns it. 02 MARKET IMPACT: equities split the trade, labor data moved, financing went to the bond market, your benchmark became an AI fund. One question throughout: what does this do to portfolios.",
     "The thesis: three shifts at once — linear chat → autonomous loops ($47B run rate); token subsidy → token scarcity ($920M/mo GPU rental); private tech → sovereign asset (50% equity-tax proposal). Banner: the chatbot’s economics are exhausted; the stack is reorganizing around token-burning agentic loops.",
-    "The unit of work changed: one-shot prompts → try-fail-fix-ship loops ('My job is to write loops' — Cherny). Right: the Jevons paradox — as creation friction falls, compute demanded expands geometrically: PDF summaries → dashboards → disposable apps → giant research projects. Efficiency multiplies demand. (Curve illustrative.)",
+    "Framework slide — four dimensions where the assisted-to-agentic transition shows up. Interface shifted from chat to background loops. Cost moved from flat seats to metered tokens. Output evolved from snippets to disposable apps. Bottleneck moved from human attention to compute allocation. Each of these shows up in the market data on the slides that follow.",
+    "The unit of work changed: one-shot prompts → try-fail-fix-ship loops (‘My job is to write loops’ — Cherny). Right: the Jevons paradox — as creation friction falls, compute demanded expands geometrically: PDF summaries → dashboards → disposable apps → giant research projects. Efficiency multiplies demand. (Curve illustrative.)",
     "Token rationing: Uber capped agents at $1,500/mo per employee; Walmart killed unlimited Code Puppy access; behind it, SK Hynix sees no HBM relief before ~2030 and Google rents 110k GPUs at $920M/mo. READ: token caps are demand evidence — the new same-store sales.",
     "Washington: a 30-day NSA pre-release checkpoint (EO), a proposed 50% one-time tax on lab equity funding 'AI Dividends' (Sanders proposed, Trump echoed), and Sacks' corporate-government-fusion critique. The debate is ownership, not regulation — dilution tail risk no equity model carries.",
     "The equity scoreboard: SOXX +80% / RSP +14% / S&P +11% / MAGS +6% / IGV −10% — a ~90-point spread inside one theme. Right rail: top-10 share 37% (norm 18–23%), Nvidia ~$5T (7%), index 21.1x forward vs 19.0x avg. Trade the chain, not the theme.",
