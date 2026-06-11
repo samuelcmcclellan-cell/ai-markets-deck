@@ -1,5 +1,5 @@
 // =============================================================================
-// AI in the Market: What’s happening now, and how markets reprice. June 2026
+// AI in the markets: What’s happening now, and how markets reprice. June 2026
 // BII visual style, ALL-DARK edition: every slide on ink (#111114), 16:9 (10" x 5.625")
 // Run: node build-deck.js
 //   → outputs ai-markets-deck.pptx (13 slides)
@@ -10,10 +10,8 @@
 //   • two-part arc: 01 WHAT’S HAPPENING (diagnostic matrix, loops, rationing, Washington)
 //     → 02 MARKET IMPACT (equities, labor, bonds ×2, portfolio, frontier)
 //   • all slides dark; bright accent variants for contrast on ink
-//   • image/infographic PLACEHOLDERS: addImagePlaceholder() renders a labeled
-//     slot with the intended art described in situ. To drop in real art later,
-//     replace the call with s.addImage({ path, x, y, w, h,
-//     sizing: { type: "cover", w, h } }) at the SAME geometry.
+//   • native editable visuals replace placeholder art; no unverified logos or
+//     pseudo-official identity assets are drawn.
 //   • labor slide (7) uses web-verified June 2026 data (Challenger, NY Fed)
 // Canonical figures: semis +80% / software −10%; Big-4 capex ~$705B (+72%);
 // issuance $105B+ over five mega-deals; ~$300B 2026 AI-linked IG supply.
@@ -25,7 +23,7 @@ const fs = require("fs");
 const pres = new pptxgen();
 pres.layout = "LAYOUT_16x9";
 pres.author = "Strategy";
-pres.title = "AI in the Market: June 2026";
+pres.title = "AI in the markets: June 2026";
 
 // ---------- Brand system ----------
 
@@ -216,6 +214,99 @@ function addImagePlaceholder(slide, opts) {
   }
 }
 
+function addCoverLoopVisual(slide, x, y, w, h) {
+  slide.addShape(pres.shapes.RECTANGLE, {
+    x, y, w, h, fill: { color: C.inkPanel }, line: { color: C.inkLine, width: 1 },
+  });
+  slide.addShape(pres.shapes.RECTANGLE, { x, y, w: 0.08, h, fill: { color: C.yellow } });
+  slide.addText("AGENTIC LOOP", {
+    x: x + 0.25, y: y + 0.28, w: w - 0.5, h: 0.24,
+    fontSize: 8, color: C.yellow, bold: true, fontFace: "Arial", charSpacing: 2.2, margin: 0,
+  });
+  slide.addText("Try, fail, fix, ship - then meter the compute.", {
+    x: x + 0.25, y: y + 0.58, w: w - 0.5, h: 0.4,
+    fontSize: 9, color: C.inkBody, fontFace: "Arial", margin: 0,
+  });
+
+  const cx = x + w / 2;
+  const nodes = [
+    { t: "TRY", x: x + 0.48, y: y + 1.38 },
+    { t: "FAIL", x: x + 1.48, y: y + 1.38 },
+    { t: "FIX", x: x + 1.48, y: y + 2.22 },
+    { t: "SHIP", x: x + 0.48, y: y + 2.22 },
+  ];
+  slide.addShape(pres.shapes.LINE, { x: x + 1.2, y: y + 1.56, w: 0.28, h: 0, line: { color: C.tealBright, width: 1.4, endArrowType: "triangle" } });
+  slide.addShape(pres.shapes.LINE, { x: x + 1.84, y: y + 1.74, w: 0, h: 0.48, line: { color: C.tealBright, width: 1.4, endArrowType: "triangle" } });
+  slide.addShape(pres.shapes.LINE, { x: x + 1.2, y: y + 2.4, w: 0.28, h: 0, flipH: true, line: { color: C.tealBright, width: 1.4, endArrowType: "triangle" } });
+  slide.addShape(pres.shapes.LINE, { x: x + 0.84, y: y + 1.74, w: 0, h: 0.48, flipV: true, line: { color: C.tealBright, width: 1.4, endArrowType: "triangle" } });
+  nodes.forEach((n) => {
+    slide.addShape(pres.shapes.OVAL, {
+      x: n.x, y: n.y, w: 0.72, h: 0.36,
+      fill: { color: C.ink }, line: { color: C.tealBright, width: 1.5 },
+    });
+    slide.addText(n.t, {
+      x: n.x, y: n.y + 0.08, w: 0.72, h: 0.16,
+      fontSize: 7.5, color: C.tealBright, bold: true, fontFace: "Arial", align: "center", margin: 0,
+    });
+  });
+  slide.addShape(pres.shapes.OVAL, {
+    x: cx - 0.45, y: y + 1.78, w: 0.9, h: 0.44,
+    fill: { color: C.inkGhost }, line: { color: C.inkLine, width: 1 },
+  });
+  slide.addText("RUNS UNTIL DONE", {
+    x: cx - 0.36, y: y + 1.92, w: 0.72, h: 0.12,
+    fontSize: 5.8, color: C.white, bold: true, fontFace: "Arial", align: "center", margin: 0,
+  });
+
+  const railY = y + h - 0.7;
+  slide.addText("MARKET SIGNAL", {
+    x: x + 0.25, y: railY, w: 1.1, h: 0.16,
+    fontSize: 6.5, color: C.inkMuted, bold: true, fontFace: "Arial", charSpacing: 1.4, margin: 0,
+  });
+  slide.addShape(pres.shapes.RECTANGLE, { x: x + 0.25, y: railY + 0.25, w: w - 0.5, h: 0.08, fill: { color: C.inkBar } });
+  slide.addShape(pres.shapes.RECTANGLE, { x: x + 0.25, y: railY + 0.25, w: (w - 0.5) * 0.72, h: 0.08, fill: { color: C.orange } });
+  slide.addText("more loops -> more tokens -> more capex", {
+    x: x + 0.25, y: railY + 0.42, w: w - 0.5, h: 0.18,
+    fontSize: 7.2, color: C.inkMuted, fontFace: "Arial", align: "center", margin: 0,
+  });
+}
+
+function addTokenMeterVisual(slide, x, y, w, h) {
+  slide.addShape(pres.shapes.RECTANGLE, {
+    x, y, w, h, fill: { color: C.inkPanel }, line: { color: C.inkLine, width: 1 },
+  });
+  slide.addShape(pres.shapes.RECTANGLE, { x, y, w, h: 0.06, fill: { color: C.gold } });
+  slide.addText("TOKEN BUDGET METER", {
+    x: x + 0.18, y: y + 0.16, w: w - 0.36, h: 0.18,
+    fontSize: 7.2, color: C.gold, bold: true, fontFace: "Arial", charSpacing: 2, margin: 0,
+  });
+
+  const boxY = y + 0.5;
+  ["1", "5", "0", "0"].forEach((digit, i) => {
+    slide.addShape(pres.shapes.RECTANGLE, {
+      x: x + 0.22 + i * 0.34, y: boxY, w: 0.28, h: 0.35,
+      fill: { color: C.black }, line: { color: C.inkLine, width: 0.75 },
+    });
+    slide.addText(digit, {
+      x: x + 0.22 + i * 0.34, y: boxY + 0.07, w: 0.28, h: 0.16,
+      fontSize: 10, color: C.white, bold: true, fontFace: "Arial Black", align: "center", margin: 0,
+    });
+  });
+  slide.addText("$ / employee / month", {
+    x: x + 1.68, y: boxY + 0.08, w: 0.95, h: 0.22,
+    fontSize: 7.2, color: C.inkMuted, fontFace: "Arial", margin: 0,
+  });
+
+  const barY = y + 1.02;
+  [0.2, 0.34, 0.5, 0.62, 0.8, 1.0].forEach((pct, i) => {
+    const bh = 0.12 + pct * 0.22;
+    slide.addShape(pres.shapes.RECTANGLE, {
+      x: x + 0.28 + i * 0.32, y: barY + 0.36 - bh, w: 0.24, h: bh,
+      fill: { color: i < 4 ? C.orange : C.gold }, line: { color: i < 4 ? C.orange : C.gold, width: 0 },
+    });
+  });
+}
+
 const BAR_DEFAULTS = {
   barDir: "col",
   showTitle: false,
@@ -244,7 +335,7 @@ const BAR_DEFAULTS = {
     fontSize: 14, color: C.inkMuted, fontFace: "Arial", align: "right", margin: 0, charSpacing: 2,
   });
   s.addShape(pres.shapes.RECTANGLE, { x: 0.5, y: 1.0, w: 1.4, h: 0.07, fill: { color: C.yellow } });
-  s.addText("AI in the Market.", {
+  s.addText("AI in the markets.", {
     x: 0.5, y: 1.25, w: 6.2, h: 1.7,
     fontSize: 40, color: C.white, bold: true, fontFace: "Arial Black", margin: 0,
   });
@@ -260,13 +351,9 @@ const BAR_DEFAULTS = {
     x: 0.5, y: 4.35, w: 5.0, h: 0.35,
     fontSize: 12, color: C.inkMuted, bold: true, fontFace: "Arial", margin: 0,
   });
-  addImagePlaceholder(s, {
-    x: 6.9, y: 0.85, w: 2.6, h: 3.85,
-    label: "AGENTIC LOOP LIGHT TRAILS", accent: C.yellow,
-    prompt: "Glowing teal and yellow light trails forming interlocking orbits on near-black. Abstract agent loops, cinematic, minimal.",
-  });
+  addCoverLoopVisual(s, 6.9, 0.85, 2.6, 3.85);
   addFooter(s, "");
-  s.addNotes("The deck in one breath: part one is what’s happening right now: models became loop-running agents, tokens became a rationed input, and governments moved from regulating AI to debating who owns it. Part two is how markets reprice all of it: equities split the trade, the labor data started moving, the financing moved into the bond market, and your benchmark quietly became an AI fund. Twelve slides, two parts, one question throughout: what does this do to portfolios.");
+  s.addNotes("The deck in one breath: part one is what’s happening right now: models became loop-running agents, tokens became a rationed input, and governments moved from regulating AI to debating who owns it. Part two is how markets reprice all of it: equities split the trade, the labor data started moving, the financing moved into the bond market, and your benchmark quietly became an AI fund. Thirteen slides, two parts, one question throughout: what does this do to portfolios.");
 }
 
 // =============================================================================
@@ -401,7 +488,7 @@ const BAR_DEFAULTS = {
   });
 
   addFooter(s, 3);
-  s.addNotes("Framework slide — four dimensions where the assisted-to-agentic transition shows up. Interface shifted from chat to background loops. Cost moved from flat seats to metered tokens. Output evolved from snippets to disposable apps. Bottleneck moved from human attention to compute allocation. Each of these shows up in the market data on the slides that follow.");
+  s.addNotes("Framework slide: four dimensions where the assisted-to-agentic transition shows up. Interface shifted from chat to background loops. Cost moved from flat seats to metered tokens. Output evolved from snippets to disposable apps. Bottleneck moved from human attention to compute allocation. Each of these shows up in the market data on the slides that follow.");
 }
 
 // =============================================================================
@@ -491,73 +578,82 @@ const BAR_DEFAULTS = {
   const s = newSlide();
   addKicker(s, PARTS.NOW, "TOKEN RATIONING", C.orange);
   addHeadline(s, "Tokens got a budget line");
-  addSubhead(s, "Major firms are abandoning unlimited access and writing token budgets — rationing is what demand looks like when the input is scarce.");
+  addSubhead(s, "Major firms are abandoning unlimited access and writing token budgets; rationing is what demand looks like when the input is scarce.");
 
   const cases = [
-    { kicker: "UBER", color: C.tealBright, t: "Agents got a budget line.", b: "A hard $1,500/month token cap per employee replaced unlimited access — “eye-watering” agentic costs became a managed line item, not an experiment." },
-    { kicker: "WALMART", color: C.orange, t: "Unlimited access is over.", b: "“Code Puppy,” its agentic dev tool, moved from unlimited tokens to individual budgets plus efficiency training — absorbing the cost of the agentic shift." },
-    { kicker: "THE CRUNCH BEHIND IT", color: C.gold, t: "Scarcity is structural — and priced.", b: "SK Hynix is doubling HBM capacity and still sees no relief before ~2030; Google rents 110k Nvidia GPUs from SpaceX at $920M/month while its own silicon catches up." },
+    { kicker: "UBER", color: C.tealBright, t: "Agents got a budget line.", b: "A hard $1,500/month token cap per employee replaced unlimited access; “eye-watering” agentic costs became a managed line item, not an experiment." },
+    { kicker: "WALMART", color: C.orange, t: "Unlimited access is over.", b: "“Code Puppy,” its agentic dev tool, moved from unlimited tokens to individual budgets plus efficiency training, absorbing the cost of the agentic shift." },
+    { kicker: "THE CRUNCH BEHIND IT", color: C.gold, t: "Scarcity is structural, and priced.", b: "SK Hynix is doubling HBM capacity and still sees no relief before ~2030; Google rents 110k Nvidia GPUs from SpaceX at $920M/month while its own silicon catches up." },
   ];
   cases.forEach((c, i) => {
     addPointCard(s, { kicker: c.kicker, color: c.color, title: c.t, body: c.b, x: 0.5, y: 1.66 + i * 0.98, w: 5.9, h: 0.9 });
   });
 
-  addImagePlaceholder(s, {
-    x: 6.65, y: 1.66, w: 2.85, h: 1.4,
-    label: "TOKEN METER", accent: C.gold,
-    prompt: "Industrial utility meter for the AI era — glowing gold digits, a stream of tokens flowing in, dark brushed metal.",
-  });
+  addTokenMeterVisual(s, 6.65, 1.66, 2.85, 1.4);
   addReadBox(s, 6.65, 3.16, 2.85, 1.36,
     "Token caps are demand evidence, not retreat.",
     "Firms ration what is scarce and valuable. Watch token budgets the way retail analysts watch same-store sales.");
 
-  addSource(s, MD_SOURCE + " — Uber and Walmart cost-management cases; SK Hynix HBM outlook; Google/SpaceX GPU rental.", 4.62);
+  addSource(s, MD_SOURCE + ". Uber and Walmart cost-management cases; SK Hynix HBM outlook; Google/SpaceX GPU rental.", 4.62);
   addFooter(s, 5);
-  s.addNotes("Three data points, one message: enterprises now treat tokens as a metered input with a budget line. Uber: $1,500/month per employee. Walmart: killed unlimited access for Code Puppy. The third card is the supply side — SK Hynix sees no HBM relief before ~2030 even after doubling capacity, and Google’s $920M/month rental is what scarcity costs when you don’t own capacity. The READ box carries the investability point: token budgets are the new same-store sales.");
+  s.addNotes("Three data points, one message: enterprises now treat tokens as a metered input with a budget line. Uber: $1,500/month per employee. Walmart: killed unlimited access for Code Puppy. The third card is the supply side: SK Hynix sees no HBM relief before ~2030 even after doubling capacity, and Google’s $920M/month rental is what scarcity costs when you don’t own capacity. The READ box carries the investability point: token budgets are the new same-store sales.");
 }
 
 // =============================================================================
-// SLIDE 6 — Washington enters the trade
+// SLIDE 6: Governments want a stake (US + South Korea)
 // =============================================================================
 {
   const s = newSlide();
   addKicker(s, PARTS.NOW, "POLICY", C.purpleBright);
-  addHeadline(s, "Washington wants a stake");
-  addSubhead(s, "Trump, Bannon, and Sanders converge on oversight and public participation in the AI upside — ownership, not regulation, is now the debate.");
+  addHeadline(s, "Governments want a stake");
+  addSubhead(s, "From Washington to Seoul, the debate shifted from regulating AI to owning a piece of it. Markets priced the Korea proposal in hours.");
 
-  const pillars = [
-    { kicker: "THE EXECUTIVE ORDER", color: C.purpleBright, t: "A 30-day federal checkpoint.", b: "Voluntary but high-pressure NSA review — 30 days, down from 90 — before releasing models with a “meaningful step change” in cyber capability. Mandatory licensing expressly forbidden — for now." },
-    { kicker: "THE SOVEREIGN WEALTH FUND", color: C.gold, t: "A 50% claim on lab equity.", b: "Sanders’ proposal, echoed by Trump as “a concept of a plan”: a one-time 50% tax on AI-lab equity (not profits) seeds a public fund paying “AI Dividends” to citizens." },
-    { kicker: "THE CRITIQUE", color: C.redBright, t: "“Corporate-government fusion.”", b: "Sacks: government equity risks a CCP-style social-credit state — and nationalization talk is a “stupidity tax” on the job-apocalypse narrative the labs themselves stoked." },
+  // Left column: US policy (3 tightened cards)
+  s.addText("UNITED STATES", {
+    x: 0.5, y: 1.55, w: 4.7, h: 0.2, fontSize: 8, color: C.purpleBright, bold: true, fontFace: "Arial", charSpacing: 2, margin: 0,
+  });
+  const usPillars = [
+    { kicker: "EXECUTIVE ORDER", color: C.purpleBright, t: "30-day NSA checkpoint.", b: "Voluntary pre-release review before deploying models with a step change in cyber capability. Mandatory licensing expressly forbidden, for now." },
+    { kicker: "SOVEREIGN WEALTH FUND", color: C.gold, t: "50% claim on lab equity.", b: "Sanders proposed, Trump echoed: a one-time 50% tax on AI-lab equity to seed a public fund paying \"AI Dividends\" to citizens." },
+    { kicker: "THE CRITIQUE", color: C.redBright, t: "\"Corporate-government fusion.\"", b: "Sacks: government equity risks a social-credit state. Nationalization talk is a \"stupidity tax\" on the job-apocalypse narrative." },
   ];
-  pillars.forEach((p, i) => {
-    addPointCard(s, { kicker: p.kicker, color: p.color, title: p.t, body: p.b, x: 0.5, y: 1.6 + i * 0.92, w: 6.0, h: 0.84 });
+  usPillars.forEach((p, i) => {
+    addPointCard(s, { kicker: p.kicker, color: p.color, title: p.t, body: p.b, x: 0.5, y: 1.82 + i * 0.78, w: 4.7, h: 0.72 });
   });
 
-  addImagePlaceholder(s, {
-    x: 6.65, y: 1.6, w: 2.85, h: 2.6,
-    label: "CAPITOL IN DARK GLASS", accent: C.purpleBright,
-    prompt: "Neoclassical government dome rendered in dark glass, faint purple circuit patterns glowing inside, black background, centered.",
+  // Right column: South Korea
+  s.addText("SOUTH KOREA", {
+    x: 5.35, y: 1.55, w: 4.15, h: 0.2, fontSize: 8, color: C.tealBright, bold: true, fontFace: "Arial", charSpacing: 2, margin: 0,
   });
+  addStat(s, { x: 5.35, y: 1.82, w: 4.15, value: "KOSPI -5.1%", color: C.redBright, fontSize: 20,
+    label: "Intraday drop on May 12 after the \"citizen dividend\" post. The market priced the proposal in hours." });
+  addPointCard(s, { kicker: "CITIZEN DIVIDEND", color: C.tealBright,
+    title: "Kim Yong-beom floated an AI tax windfall.",
+    body: "The presidential policy chief proposed a \"citizen dividend\" funded by AI and chip-sector tax revenue (May 12, Facebook post). President Lee Jae-myung clarified it was not official policy. Norway and Alaska sovereign-fund models cited.",
+    x: 5.35, y: 2.75, w: 4.15, h: 0.92 });
+  addPointCard(s, { kicker: "SAMSUNG UNION", color: C.gold,
+    title: "Workers want 15% of chip profits.",
+    body: "Samsung's largest union demanded 15% of semiconductor-division profit be shared with workers (Apr 2026), tying labor's AI claim directly to the supply chain.",
+    x: 5.35, y: 3.75, w: 4.15, h: 0.72 });
 
   s.addText([
     { text: "Investor read: ", options: { bold: true, color: C.white } },
-    { text: "the 2026 debate is no longer whether AI is regulated — it’s whether the means of AI production are publicly owned. That’s a dilution tail risk no equity model carries.", options: { color: C.inkBody } },
-  ], { x: 0.5, y: 4.3, w: 9.0, h: 0.38, fontSize: 10, fontFace: "Arial", margin: 0 });
+    { text: "the 2026 debate is no longer whether AI is regulated. It is whether the means of AI production are publicly owned. That is a dilution tail risk no equity model carries.", options: { color: C.inkBody } },
+  ], { x: 0.5, y: 4.52, w: 9.0, h: 0.38, fontSize: 9.5, fontFace: "Arial", margin: 0 });
 
-  addSource(s, MD_SOURCE + " — Executive Order provisions, sovereign wealth fund proposals, Sacks critique.", 4.7);
+  addSource(s, MD_SOURCE + "; Korea Herald, Bloomberg, Nikkei Asia (May 2026); Executive Order provisions; sovereign wealth fund proposals; Sacks critique.", 4.92);
   addFooter(s, 6);
-  s.addNotes("The policy slide stays neutral by quoting all sides. EO: voluntary 30-day NSA review, cyber-focused, no licensing — lighter than feared, but a calendar item before every frontier release. SWF: a one-time 50% equity tax to fund AI Dividends — when Sanders proposes and Trump echoes, the Overton window has genuinely moved. Sacks' critique is the third leg: nationalization as a threat to the property rights underpinning lab valuations. The investable point: public-ownership tail risk now belongs in any model of lab equity, the IPO pipeline, and the hyperscalers holding lab stakes. This slide is also the political receiving end of the labor story on slide 8.");
+  s.addNotes("The policy slide, now global. Left: US. EO is a voluntary 30-day NSA review, lighter than feared but a calendar item before every frontier release. The 50% equity-tax proposal seeds AI Dividends: when Sanders and Trump both float it, the Overton window moved. Sacks' critique completes the triangle. Right: South Korea. Kim Yong-beom (presidential policy chief) posted a \"citizen dividend\" idea on May 12; KOSPI dropped 5.1% intraday. Lee Jae-myung walked it back, but Samsung's union had already demanded 15% of chip-division profit (April). The pattern: once governments frame AI as a sovereign asset, the ownership debate follows. Investable point: public-ownership tail risk now belongs in any model of lab equity, the IPO pipeline, and the hyperscalers holding lab stakes.");
 }
 
 // =============================================================================
-// SLIDE 7 — The market split the trade (equity repricing)
+// SLIDE 7: The market split the trade (equity repricing)
 // =============================================================================
 {
   const s = newSlide();
   addKicker(s, PARTS.IMPACT, "EQUITIES", C.gold);
   addHeadline(s, "The market split the trade");
-  addSubhead(s, "Semis +80%, software −10% — a ~90-point spread inside one theme, while ten stocks hold ~37% of the index.");
+  addSubhead(s, "Semis +80%, software −10%: a ~90-point spread inside one theme, while ten stocks hold ~37% of the index.");
 
   addChartTitle(s, "Total return, YTD 2026 (%)", 0.5, 5.4, C.gold);
   s.addChart(pres.charts.BAR, [{
@@ -572,35 +668,35 @@ const BAR_DEFAULTS = {
   });
 
   addStat(s, { x: 6.2, y: 1.85, w: 3.3, value: "37%", color: C.orange,
-    label: "Top-10 share of S&P 500 market cap — the 1990–2015 norm was 18–23%; the 2025 peak 40.7%." });
+    label: "Top-10 share of S&P 500 market cap; the 1990–2015 norm was 18–23%, the 2025 peak 40.7%." });
   addStat(s, { x: 6.2, y: 2.78, w: 3.3, value: "~$5.0T", color: C.gold,
-    label: "Nvidia market cap, 7.0% of the index — Apple $4.6T and Microsoft $3.3T behind it; three names ≈ 18%." });
+    label: "Nvidia market cap, 7.0% of the index; Apple $4.6T and Microsoft $3.3T behind it; three names ≈ 18%." });
   addStat(s, { x: 6.2, y: 3.71, w: 3.3, value: "21.1x", color: C.tealBright,
-    label: "S&P 500 forward P/E vs a 19.0x 10-yr average — elevated, not extreme. The spread is the signal." });
+    label: "S&P 500 forward P/E vs a 19.0x 10-yr average: elevated, not extreme. The spread is the signal." });
 
   s.addText([
     { text: "Leadership migrated from the platforms to their suppliers. ", options: { bold: true, color: C.white } },
-    { text: "Value accrues where AI spend is revenue — and erodes where AI is the threat.", options: { color: C.inkBody } },
+    { text: "Value accrues where AI spend is revenue, and erodes where AI is the threat.", options: { color: C.inkBody } },
   ], { x: 0.5, y: 4.48, w: 9.0, h: 0.26, fontSize: 10, fontFace: "Arial", margin: 0 });
 
   addSource(s, "YTD total returns through early Jun 2026: stockanalysis.com (SOXX, IGV); slickcharts (S&P 500); Morningstar/Yahoo (RSP, MAGS). Weights: S&P DJI, slickcharts. Caps: companiesmarketcap.com. Fwd P/E: FactSet.", 4.72);
   addFooter(s, 7);
-  s.addNotes("Part two opens with the equity scoreboard. SOXX +80% YTD (best run since 2000, ~$5.7T added in the April rally alone); equal-weight +14% beats cap-weight +11%; MAGS +6% lags; software −10%, priced for disruption. The market is no longer trading 'AI yes/no' — it’s trading position in the chain. The right rail is the concentration story: 37% of the index in ten names (double the 25-year norm), Nvidia alone at 7%, and a forward multiple that’s elevated but not extreme — provided the AI earnings stream keeps compounding.");
+  s.addNotes("Part two opens with the equity scoreboard. SOXX +80% YTD (best run since 2000, ~$5.7T added in the April rally alone); equal-weight +14% beats cap-weight +11%; MAGS +6% lags; software −10%, priced for disruption. The market is no longer trading 'AI yes/no'; it’s trading position in the chain. The right rail is the concentration story: 37% of the index in ten names (double the 25-year norm), Nvidia alone at 7%, and a forward multiple that’s elevated but not extreme, provided the AI earnings stream keeps compounding.");
 }
 
 // =============================================================================
-// SLIDE 8 — One worker now outputs like a team (LABOR)
+// SLIDE 8: One worker now outputs like a team (LABOR)
 // =============================================================================
 {
   const s = newSlide();
   addKicker(s, PARTS.IMPACT, "LABOR", C.tealBright);
   addHeadline(s, "One worker now outputs like a team");
-  addSubhead(s, "Agents change what a job is — and in 2026 the labor data started moving. Markets price both: deflated cost lines and the policy risk that displacement fuels.");
+  addSubhead(s, "Agents change what a job is, and in 2026 the labor data started moving. Markets price both: deflated cost lines and the policy risk that displacement fuels.");
 
   // Left: the shape of a job changed (coded infographic) + hero stat
   addChartTitle(s, "The shape of a job changed", 0.5, 4.1, C.tealBright);
   addStat(s, { x: 0.5, y: 1.98, w: 4.1, value: "20–25%", color: C.tealBright, fontSize: 24,
-    label: "of the work week goes to coordination and retrieval (OpenAI’s “strange abundance”) — the labor pool agents are bought to recover." });
+    label: "of the work week goes to coordination and retrieval (OpenAI’s “strange abundance”): the labor pool agents are bought to recover." });
 
   s.addText("2023–25 · ONE PERSON, ONE TASK", { x: 0.5, y: 2.95, w: 4.1, h: 0.2, fontSize: 7.5, color: C.inkMuted, bold: true, fontFace: "Arial", charSpacing: 1.5, margin: 0 });
   s.addShape(pres.shapes.OVAL, { x: 0.78, y: 3.18, w: 0.16, h: 0.16, fill: { type: "none" }, line: { color: C.inkBody, width: 1.5 } });
@@ -621,11 +717,11 @@ const BAR_DEFAULTS = {
     s.addText(a.t, { x: a.x, y: a.y, w: 0.96, h: 0.32, fontSize: 6.5, color: C.tealBright, bold: true, align: "center", valign: "middle", fontFace: "Arial", margin: 0 });
   });
 
-  // Right: 2026 — the data starts to move
+  // Right: 2026, the data starts to move
   addChartTitle(s, "2026: the data starts to move", 4.95, 4.55, C.tealBright);
   const rows = [
-    { color: C.redBright, t: "AI is now the #1 stated reason for layoffs.", b: "Challenger: AI was cited in ~40% of May’s announced US job cuts (38.6k of 97k) — the first month it beat “market conditions.” 87.7k AI-attributed cuts YTD vs 54.8k in all of 2025. (Self-reported; some firms may be scapegoating AI.)" },
-    { color: C.orange, t: "The entry level takes the hit.", b: "Recent-grad unemployment 5.6% vs 4.2% overall (NY Fed, Mar 2026) — one of the worst readings in a decade outside the pandemic. Payrolls for 22–25-year-olds in AI-exposed roles are declining while senior cohorts hold." },
+    { color: C.redBright, t: "AI is now the #1 stated reason for layoffs.", b: "Challenger: AI was cited in ~40% of May’s announced US job cuts (38.6k of 97k), the first month it beat “market conditions.” 87.7k AI-attributed cuts YTD vs 54.8k in all of 2025. (Self-reported; some firms may be scapegoating AI.)" },
+    { color: C.orange, t: "The entry level takes the hit.", b: "Recent-grad unemployment 5.6% vs 4.2% overall (NY Fed, Mar 2026), one of the worst readings in a decade outside the pandemic. Payrolls for 22–25-year-olds in AI-exposed roles are declining while senior cohorts hold." },
     { color: C.gold, t: "The job that remains is orchestration.", b: "Power users running parallel loops compound their advantage over casual users; comp follows loop design, not task execution. And displacement fear is the political fuel behind slide 6’s equity-tax debate." },
   ];
   rows.forEach((r, i) => {
@@ -639,17 +735,17 @@ const BAR_DEFAULTS = {
 
   addSource(s, "Challenger, Gray & Christmas via CNBC (Jun 5, 2026) & CBS News; NY Fed via CNBC; entry-level payrolls: academic working papers; framing: internal strategic review (Jun 2026).", 4.74);
   addFooter(s, 8);
-  s.addNotes("The labor slide — new this version, with verified June 2026 data. Left: the structural story — a job stops being task execution and becomes orchestration of parallel agent loops; the 20–25% coordination figure is the pool agents are bought to recover. Right: the data — Challenger’s May report made AI the #1 stated layoff reason for the first time (~40% of announced cuts, with the honest caveat that it’s self-reported and partly scapegoating); the entry level is where it bites (grad unemployment 5.6% vs 4.2%, declining payrolls for the youngest AI-exposed cohort); and the advantage gap stratifies pay within surviving roles. Markets price labor twice: as a cost line agents deflate, and as the political trigger for slide 6’s ownership debate.");
+  s.addNotes("The labor slide, new this version, with verified June 2026 data. Left: the structural story: a job stops being task execution and becomes orchestration of parallel agent loops; the 20–25% coordination figure is the pool agents are bought to recover. Right: the data: Challenger’s May report made AI the #1 stated layoff reason for the first time (~40% of announced cuts, with the honest caveat that it’s self-reported and partly scapegoating); the entry level is where it bites (grad unemployment 5.6% vs 4.2%, declining payrolls for the youngest AI-exposed cohort); and the advantage gap stratifies pay within surviving roles. Markets price labor twice: as a cost line agents deflate, and as the political trigger for slide 6’s ownership debate.");
 }
 
 // =============================================================================
-// SLIDE 9 — Capex outgrew cash flow (BONDS I: the financing gap)
+// SLIDE 9: Capex outgrew cash flow (BONDS I: the financing gap)
 // =============================================================================
 {
   const s = newSlide();
-  addKicker(s, PARTS.IMPACT, "FINANCING — THE GAP", C.orange);
+  addKicker(s, PARTS.IMPACT, "FINANCING · THE GAP", C.orange);
   addHeadline(s, "Capex outgrew cash flow");
-  addSubhead(s, "The buildout was self-funded until it wasn’t. ~$705B of guided 2026 capex consumes the cash machine — and opens a funding gap.");
+  addSubhead(s, "The buildout was self-funded until it wasn’t. ~$705B of guided 2026 capex consumes the cash machine, and opens a funding gap.");
 
   addChartTitle(s, "Big-4 combined capex, $B", 0.5, 3.2, C.orange);
   s.addChart(pres.charts.BAR, [{
@@ -659,14 +755,14 @@ const BAR_DEFAULTS = {
   }], {
     ...BAR_DEFAULTS, x: 0.5, y: 2.05, w: 3.2, h: 2.3, chartColors: [C.inkBar, C.orange],
   });
-  s.addText("+72% YoY — raised into record spend", {
+  s.addText("+72% YoY, raised into record spend", {
     x: 0.5, y: 4.38, w: 3.2, h: 0.3, fontSize: 8, color: C.orange, bold: true, fontFace: "Arial", align: "center", valign: "top", margin: 0,
   });
 
   addChartTitle(s, "The cash math, 2026E", 4.1, 5.4, C.orange);
   const cash = [
     { t: "Cash cover is gone.", label: "~94% of operating cash flow consumed by capex + dividends + buybacks (BofA)", color: C.orange },
-    { t: "Leanest since 2014.", label: "Big-4 free cash flow at a decade low — at far larger revenue (CNBC)", color: C.gold },
+    { t: "Leanest since 2014.", label: "Big-4 free cash flow at a decade low, at far larger revenue (CNBC)", color: C.gold },
     { t: "Amazon goes negative.", label: "2026E: $200B capex vs ~$140B operating cash flow", color: C.redBright },
     { t: "Alphabet FCF −90%.", label: "FCF falls to ~$8B; Microsoft down ~28% (2026E)", color: C.pink },
   ];
@@ -690,17 +786,17 @@ const BAR_DEFAULTS = {
 
   addSource(s, "BofA via Breckinridge; CNBC (Feb 6, 2026); techtimes/beincrypto FCF estimates; capex guidance via CNBC, Tom’s Hardware, Statista (midpoints).", 4.72);
   addFooter(s, 9);
-  s.addNotes("Bonds, part one: the gap. Capex went from $410B to ~$705B guided (+72%) — and three of four raised guidance in the latest round. The cash math: ~94% of operating cash flow committed to capex, dividends, and buybacks; Big-4 FCF at a decade low; Amazon outright negative ($200B capex vs ~$140B operating cash flow); Alphabet’s FCF down ~90% to ~$8B. For a decade the megacap social contract was self-funding plus buybacks. It broke in 2026 — and something had to fill the gap. Next slide.");
+  s.addNotes("Bonds, part one: the gap. Capex went from $410B to ~$705B guided (+72%), and three of four raised guidance in the latest round. The cash math: ~94% of operating cash flow committed to capex, dividends, and buybacks; Big-4 FCF at a decade low; Amazon outright negative ($200B capex vs ~$140B operating cash flow); Alphabet’s FCF down ~90% to ~$8B. For a decade the megacap social contract was self-funding plus buybacks. It broke in 2026, and something had to fill the gap. Next slide.");
 }
 
 // =============================================================================
-// SLIDE 10 — The buildout moved into the bond market (BONDS II: the wave)
+// SLIDE 10: The buildout moved into the bond market (BONDS II: the wave)
 // =============================================================================
 {
   const s = newSlide();
-  addKicker(s, PARTS.IMPACT, "FINANCING — THE BOND WAVE", C.orange);
+  addKicker(s, PARTS.IMPACT, "FINANCING · THE BOND WAVE", C.orange);
   addHeadline(s, "The buildout moved into the bond market");
-  addSubhead(s, "$105B+ of investment-grade mega-deals in six months — record prints, a live CDS signal, and ~$300B of supply expected for full-year 2026.");
+  addSubhead(s, "$105B+ of investment-grade mega-deals in six months: record prints, a live CDS signal, and ~$300B of supply expected for full-year 2026.");
 
   addChartTitle(s, "The issuance ledger", 0.5, 5.9, C.orange);
   const deals = [
@@ -733,29 +829,29 @@ const BAR_DEFAULTS = {
   addStat(s, { x: 6.65, y: 1.75, w: 2.85, value: "~$300B", color: C.orange,
     label: "AI-linked investment-grade supply expected in 2026 (UBS, Barclays via Reuters)." });
   addStat(s, { x: 6.65, y: 2.55, w: 2.85, value: ">125bp", color: C.gold,
-    label: "Oracle 5-yr CDS despite light leverage — credit already discriminates by funding capacity (MUFG)." });
+    label: "Oracle 5-yr CDS despite light leverage; credit already discriminates by funding capacity (MUFG)." });
   addReadBox(s, 6.65, 3.5, 2.85, 1.12,
     "Credit reprices before equity.",
-    "Spreads move before earnings revisions — the early-warning gauge for AI equities.");
+    "Spreads move before earnings revisions: the early-warning gauge for AI equities.");
 
   addSource(s, "Deal record: Mawer; M&G Investments; Fortune (Mar 2026); CNBC. CDS: MUFG via CNBC. Supply forecasts: UBS & Barclays via Reuters (Jan 2026).", 4.72);
   addFooter(s, 10);
-  s.addNotes("Bonds, part two: the wave. Five mega-deals in six months — Oracle $18B (Sep ’25), Meta $30B (Oct ’25, the largest non-M&A IG deal on record), Alphabet $17.5B and Amazon $15B (Nov ’25), Oracle again $25B across eight tranches (Feb ’26). Street consensus: ~$300B of AI-linked IG supply in 2026. The signal layer: Oracle’s 5-yr CDS above ~125bp despite light leverage — credit is already discriminating by funding capacity, not just rating. The READ box is the takeaway for equity holders: spreads reprice before earnings revisions. Balance sheets are still lightly levered vs IG norms — this is not 2008 telecom — but the funding model changed permanently.");
+  s.addNotes("Bonds, part two: the wave. Five mega-deals in six months: Oracle $18B (Sep ’25), Meta $30B (Oct ’25, the largest non-M&A IG deal on record), Alphabet $17.5B and Amazon $15B (Nov ’25), Oracle again $25B across eight tranches (Feb ’26). Street consensus: ~$300B of AI-linked IG supply in 2026. The signal layer: Oracle’s 5-yr CDS above ~125bp despite light leverage; credit is already discriminating by funding capacity, not just rating. The READ box is the takeaway for equity holders: spreads reprice before earnings revisions. Balance sheets are still lightly levered vs IG norms (this is not 2008 telecom), but the funding model changed permanently.");
 }
 
 // =============================================================================
-// SLIDE 11 — Your index fund is an AI fund now (portfolio implications)
+// SLIDE 11: Your index fund is an AI fund now (portfolio implications)
 // =============================================================================
 {
   const s = newSlide();
   addKicker(s, PARTS.IMPACT, "PORTFOLIO", C.purpleBright);
   addHeadline(s, "Your index fund is an AI fund now");
-  addSubhead(s, "A passive S&P 500 allocation embeds an undiversified AI bet no one sized deliberately — manage it with four gauges.");
+  addSubhead(s, "A passive S&P 500 allocation embeds an undiversified AI bet no one sized deliberately; manage it with four gauges.");
 
   addChartTitle(s, "Where $100 of S&P 500 exposure sits", 0.5, 3.9, C.purpleBright);
   s.addChart(pres.charts.DOUGHNUT, [{
     name: "Allocation",
-    labels: ["Top 3 — $18", "Rest of top 10 — $19", "Other 490 — $63"],
+    labels: ["Top 3: $18", "Rest of top 10: $19", "Other 490: $63"],
     values: [18, 19, 63],
   }], {
     x: 0.5, y: 2.0, w: 3.9, h: 2.5,
@@ -771,9 +867,9 @@ const BAR_DEFAULTS = {
     x: 1.7, y: 3.16, w: 1.5, h: 0.2, fontSize: 7, color: C.inkMuted, fontFace: "Arial", align: "center", margin: 0,
   });
 
-  addChartTitle(s, "Four gauges — and what to do with them", 4.7, 4.8, C.purpleBright);
+  addChartTitle(s, "Four gauges, and what to do with them", 4.7, 4.8, C.purpleBright);
   const pts = [
-    { color: C.redBright, t: "Demand air pocket.", g: "capex guidance · enterprise token budgets", b: "~94% of op cash flow is committed; token budgets are the new same-store sales. Know your AI beta — size the 37% deliberately." },
+    { color: C.redBright, t: "Demand air pocket.", g: "capex guidance · enterprise token budgets", b: "~94% of op cash flow is committed; token budgets are the new same-store sales. Know your AI beta; size the 37% deliberately." },
     { color: C.orange, t: "Financing stress.", g: "CDS · new-issue spreads", b: "A failed mega-deal would reprice AI equities within days. Watch credit as the early warning." },
     { color: C.gold, t: "Rate sensitivity.", g: "10-yr UST ~4.5%", b: "Long-duration AI cash flows and record IG supply both lean on rates staying contained." },
     { color: C.purpleBright, t: "Concentration unwind.", g: "top-10 share · equal-weight spread", b: "Equal-weight beat cap-weight in 2026; the disorderly version is passive outflows meeting thin breadth. Trade the chain, not the theme." },
@@ -790,29 +886,29 @@ const BAR_DEFAULTS = {
 
   s.addText([
     { text: "Bottom line: ", options: { bold: true, color: C.white } },
-    { text: "you don’t need a view on AGI — you need to know what your portfolio already believes.", options: { color: C.inkBody } },
+    { text: "you don’t need a view on AGI; you need to know what your portfolio already believes.", options: { color: C.inkBody } },
   ], { x: 0.5, y: 4.5, w: 9.0, h: 0.26, fontSize: 10.5, fontFace: "Arial", margin: 0 });
 
   addSource(s, "Index weights: S&P Dow Jones Indices, slickcharts (Jun 2026); YTD returns: Morningstar (RSP), slickcharts (S&P 500).", 4.76);
   addFooter(s, 11);
-  s.addNotes("The so-what slide. Nobody in this room would deliberately put 37% of an equity sleeve in ten correlated names sharing one earnings driver — but a benchmark allocation does precisely that ($37 of every $100). Four gauges, each paired with an action: demand (capex guidance + token budgets — the new same-store sales), financing (CDS and new-issue spreads, per slide 10), rates (long-duration cash flows + record supply), and concentration (equal-weight vs cap-weight as the orderly preview of the disorderly version). Honest caveat: equal-weight won 2026 but lost 2024–25 — the message is 'size the bet on purpose,' not 'sell megacaps.' Closing line is the deck’s thesis in one sentence.");
+  s.addNotes("The so-what slide. Nobody in this room would deliberately put 37% of an equity sleeve in ten correlated names sharing one earnings driver, but a benchmark allocation does precisely that ($37 of every $100). Four gauges, each paired with an action: demand (capex guidance + token budgets: the new same-store sales), financing (CDS and new-issue spreads, per slide 10), rates (long-duration cash flows + record supply), and concentration (equal-weight vs cap-weight as the orderly preview of the disorderly version). Honest caveat: equal-weight won 2026 but lost 2024–25; the message is 'size the bet on purpose,' not 'sell megacaps.' Closing line is the deck’s thesis in one sentence.");
 }
 
 // =============================================================================
-// SLIDE 12 — The frontier (closing; real images)
+// SLIDE 12: The frontier (closing; real images)
 // =============================================================================
 {
   const s = newSlide();
   addKicker(s, PARTS.IMPACT, "THE FRONTIER", C.pink, 4.3);
-  s.addText("FRONTIER WATCH — SPECULATIVE", {
+  s.addText("FRONTIER WATCH · SPECULATIVE", {
     x: 5.4, y: 0.17, w: 4.1, h: 0.3, fontSize: 8, color: C.inkMuted, bold: true, fontFace: "Arial", charSpacing: 2, valign: "middle", align: "right", margin: 0,
   });
-  addHeadline(s, "The loop gets hands, wheels, wings — and proteins", { fontSize: 23 });
-  addSubhead(s, "None of this is in 2026 guidance. All of it extends the Jevons demand curve (slide 4) by another decade — the option value markets quietly pay for.");
+  addHeadline(s, "The loop gets hands, wheels, wings, and proteins", { fontSize: 23 });
+  addSubhead(s, "None of this is in 2026 guidance. All of it extends the Jevons demand curve (slide 4) by another decade: the option value markets quietly pay for.");
 
   const cards = [
-    { img: "humanoid.jpg", t: "Embodiment.", b: "Agentic loops in a body — warehouse shifts, not concept art. Physical labor enters the token economy." },
-    { img: "robotaxi.jpg", t: "Wheels.", b: "Robotaxis are inference on wheels — per-mile token economics and a city-scale demand pool for compute." },
+    { img: "humanoid.jpg", t: "Embodiment.", b: "Agentic loops in a body: warehouse shifts, not concept art. Physical labor enters the token economy." },
+    { img: "robotaxi.jpg", t: "Wheels.", b: "Robotaxis are inference on wheels: per-mile token economics and a city-scale demand pool for compute." },
     { img: "orbital.jpg", t: "Orbit.", b: "24/7 solar and radiative cooling escape the grid constraint behind token rationing. SpaceX owns the rockets and 550k-GPU clusters." },
     { img: "protein.jpg", t: "Proteins.", b: "Frontier models lead biology benchmarks; AI-designed proteins make discovery compute-bound. R&D starts to look like capex." },
   ];
@@ -829,16 +925,16 @@ const BAR_DEFAULTS = {
 
   s.addText([
     { text: "Watch these like markets, not memes: ", options: { bold: true, color: C.white } },
-    { text: "launch cadence, fleet miles, design wins — gauges, not guidance.", options: { color: C.inkBody } },
+    { text: "launch cadence, fleet miles, design wins: gauges, not guidance.", options: { color: C.inkBody } },
   ], { x: 0.5, y: 4.48, w: 9.0, h: 0.26, fontSize: 10, fontFace: "Arial", margin: 0 });
 
   addSource(s, "Deck analysis building on " + MD_SOURCE + ". All frontier-watch items are speculative and appear in no company guidance.", 4.72);
   addFooter(s, 12);
-  s.addNotes("The closer — the option value sitting behind the multiples, kept disciplined. Embodiment: agentic loops in a body, walking a shift. Orbit: it removes the exact power-and-cooling constraints behind token rationing (slide 5), and SpaceX is simultaneously the neocloud king and the launch monopolist — if orbital compute happens it’s an extension of the most vertically integrated player in the stack. Wheels: every robotaxi mile is metered inference. Proteins: frontier models lead biology benchmarks; discovery becomes compute-bound. Every card is new compute demand — the Jevons curve extended a decade. Flagged speculative; gauges, not guidance.");
+  s.addNotes("The closer: the option value sitting behind the multiples, kept disciplined. Embodiment: agentic loops in a body, walking a shift. Orbit: it removes the exact power-and-cooling constraints behind token rationing (slide 5), and SpaceX is simultaneously the neocloud king and the launch monopolist; if orbital compute happens it’s an extension of the most vertically integrated player in the stack. Wheels: every robotaxi mile is metered inference. Proteins: frontier models lead biology benchmarks; discovery becomes compute-bound. Every card is new compute demand: the Jevons curve extended a decade. Flagged speculative; gauges, not guidance.");
 }
 
 // =============================================================================
-// SLIDE 13 — Sources & methodology
+// SLIDE 13: Sources & methodology
 // =============================================================================
 {
   const s = newSlide();
@@ -866,16 +962,16 @@ const BAR_DEFAULTS = {
       "Supply forecasts: UBS & Barclays via Reuters (Jan 2026); credit signals: MUFG CDS via CNBC",
     ]},
     { h: "LABOR & POLICY", color: C.tealBright, items: [
-      "Layoffs: Challenger, Gray & Christmas via CNBC (Jun 5, 2026) & CBS News — AI cited in ~40% of May cuts; 87.7k YTD",
+      "Layoffs: Challenger, Gray & Christmas via CNBC (Jun 5, 2026) & CBS News; AI cited in ~40% of May cuts; 87.7k YTD",
       "Graduate unemployment: NY Fed recent-grad series (5.6% vs 4.2% overall, Mar 2026) via CNBC",
       "Entry-level payrolls: academic working papers on AI-exposed occupations (22–25 cohort)",
-      "Policy: Executive Order provisions, sovereign-wealth-fund proposals, Sacks critique — per the strategic review",
+      "Policy: Executive Order provisions, sovereign-wealth-fund proposals, Sacks critique, per the strategic review",
     ]},
     { h: "AI FRONTIER REVIEW", color: C.purpleBright, items: [
       "Internal strategic review: “The 2026 AI Frontier” (Jun 2026)",
       "Agentic loops & token economics; enterprise caps (Uber, Walmart); Karpathy & Cherny commentary",
       "Compute: SK Hynix HBM outlook; SpaceX Colossus; Google GPU rental; run rates via Leona’s Capital",
-      "Frontier watch: embodiment, orbital compute, robotaxis, AI biology — speculative",
+      "Frontier watch: embodiment, orbital compute, robotaxis, AI biology; speculative",
     ]},
   ];
   cols.forEach((c, i) => {
@@ -889,12 +985,12 @@ const BAR_DEFAULTS = {
     })), { x: x + 0.04, y: 1.87, w: 2.18, h: 2.4, fontFace: "Arial", valign: "top", paraSpaceAfter: 4, margin: 0 });
   });
 
-  s.addText("Methodology: figures verified against at least one primary or institutional source; where sources disagreed, the more conservative figure was used. The Jevons chart (slide 4) is illustrative, not measured data. Layoff attributions to AI are self-reported by employers (Challenger) and may overstate causation. Frontier items (slide 12) are speculative and appear in no company guidance. Image placeholders are labeled in situ and pending final art. End of deck.", {
+  s.addText("Methodology: figures verified against at least one primary or institutional source; where sources disagreed, the more conservative figure was used. The Jevons chart (slide 4) is illustrative, not measured data. Layoff attributions to AI are self-reported by employers (Challenger) and may overstate causation. Frontier items (slide 12) are speculative and appear in no company guidance. End of deck.", {
     x: 0.5, y: 4.34, w: 9.0, h: 0.56, fontSize: 7.5, color: C.inkFaint, italic: true, fontFace: "Arial", margin: 0,
   });
 
   addFooter(s, 13);
-  s.addNotes("Back matter. Canonical stamp: data as of June 2026; returns through Jun 5–9 closes. New LABOR & POLICY column covers the web-verified Challenger and NY Fed figures. Honesty notes: the Jevons curve is illustrative; AI layoff attributions are self-reported and may overstate causation; frontier items are speculative; the three image placeholders (cover, token meter, capitol) are pending final art and labeled as such on-slide.");
+  s.addNotes("Back matter. Canonical stamp: data as of June 2026; returns through Jun 5–9 closes. New LABOR & POLICY column covers the web-verified Challenger and NY Fed figures. Honesty notes: the Jevons curve is illustrative; AI layoff attributions are self-reported and may overstate causation; frontier items are speculative.");
 }
 
 // =============================================================================
@@ -903,30 +999,30 @@ const BAR_DEFAULTS = {
 
 const VIEWER_NOTES = [
   "Thirteen slides, two parts. 01 WHAT’S HAPPENING: models became loop-running agents, tokens became a rationed input, Washington moved from regulating AI to debating who owns it. 02 MARKET IMPACT: equities split the trade, labor data moved, financing went to the bond market, your benchmark became an AI fund. One question throughout: what does this do to portfolios.",
-  "The thesis: three shifts at once — linear chat → autonomous loops ($47B run rate); token subsidy → token scarcity ($920M/mo GPU rental); private tech → sovereign asset (50% equity-tax proposal). Banner: the chatbot’s economics are exhausted; the stack is reorganizing around token-burning agentic loops.",
-  "Framework slide — four dimensions where the assisted-to-agentic transition shows up. Interface shifted from chat to background loops. Cost moved from flat seats to metered tokens. Output evolved from snippets to disposable apps. Bottleneck moved from human attention to compute allocation. Each of these shows up in the market data on the slides that follow.",
-  "The unit of work changed: one-shot prompts → try-fail-fix-ship loops (‘My job is to write loops’ — Cherny). Right: the Jevons paradox — as creation friction falls, compute demanded expands geometrically: PDF summaries → dashboards → disposable apps → giant research projects. Efficiency multiplies demand. (Curve illustrative.)",
-  "Token rationing: Uber capped agents at $1,500/mo per employee; Walmart killed unlimited Code Puppy access; behind it, SK Hynix sees no HBM relief before ~2030 and Google rents 110k GPUs at $920M/mo. READ: token caps are demand evidence — the new same-store sales.",
-  "Washington: a 30-day NSA pre-release checkpoint (EO), a proposed 50% one-time tax on lab equity funding 'AI Dividends' (Sanders proposed, Trump echoed), and Sacks' corporate-government-fusion critique. The debate is ownership, not regulation — dilution tail risk no equity model carries.",
-  "The equity scoreboard: SOXX +80% / RSP +14% / S&P +11% / MAGS +6% / IGV −10% — a ~90-point spread inside one theme. Right rail: top-10 share 37% (norm 18–23%), Nvidia ~$5T (7%), index 21.1x forward vs 19.0x avg. Trade the chain, not the theme.",
-  "LABOR (new): one orchestrator, N agents — the 20–25% coordination pool is what agents are bought to recover. The 2026 data: Challenger — AI now the #1 stated layoff reason (~40% of May cuts, 87.7k YTD; self-reported); NY Fed — grad unemployment 5.6% vs 4.2%; the entry level takes the hit. Comp follows loop design. Displacement fear fuels the slide-5 policy debate.",
-  "BONDS I — the gap: capex $410B → ~$705B (+72%), ~94% of op cash flow consumed, Big-4 FCF at a decade low, Amazon negative, Alphabet −90%. The self-funding megacap contract broke in 2026.",
-  "BONDS II — the wave: Oracle $18B, Meta $30B (record non-M&A IG), Alphabet $17.5B, Amazon $15B, Oracle $25B (8 tranches) = $105B+ in six months; ~$300B expected for full-year 2026. Oracle CDS >125bp: credit discriminates by funding capacity. READ: credit reprices before equity.",
-  "Portfolio: $37 of every $100 of S&P exposure sits in ten names. Four gauges × actions: demand (capex + token budgets), financing (CDS/spreads), rates (~4.5% 10-yr), concentration (equal-weight spread). You don’t need a view on AGI — you need to know what your portfolio already believes.",
+  "The thesis: three shifts at once. Linear chat → autonomous loops ($47B run rate); token subsidy → token scarcity ($920M/mo GPU rental); private tech → sovereign asset (50% equity-tax proposal). Banner: the chatbot’s economics are exhausted; the stack is reorganizing around token-burning agentic loops.",
+  "Framework slide: four dimensions where the assisted-to-agentic transition shows up. Interface shifted from chat to background loops. Cost moved from flat seats to metered tokens. Output evolved from snippets to disposable apps. Bottleneck moved from human attention to compute allocation. Each of these shows up in the market data on the slides that follow.",
+  "The unit of work changed: one-shot prompts → try-fail-fix-ship loops (‘My job is to write loops,’ per Cherny). Right: the Jevons paradox. As creation friction falls, compute demanded expands geometrically: PDF summaries → dashboards → disposable apps → giant research projects. Efficiency multiplies demand. (Curve illustrative.)",
+  "Token rationing: Uber capped agents at $1,500/mo per employee; Walmart killed unlimited Code Puppy access; behind it, SK Hynix sees no HBM relief before ~2030 and Google rents 110k GPUs at $920M/mo. READ: token caps are demand evidence, the new same-store sales.",
+  "Policy goes global. US: 30-day NSA checkpoint (EO), 50% equity-tax proposal funding 'AI Dividends' (Sanders proposed, Trump echoed), Sacks' corporate-government-fusion critique. South Korea: Kim Yong-beom floated a 'citizen dividend' from AI/chip tax windfalls (May 12); KOSPI dropped 5.1% intraday. Samsung union demanded 15% of chip profits (Apr). The debate is ownership, not regulation. Dilution tail risk no equity model carries.",
+  "The equity scoreboard: SOXX +80% / RSP +14% / S&P +11% / MAGS +6% / IGV −10%: a ~90-point spread inside one theme. Right rail: top-10 share 37% (norm 18–23%), Nvidia ~$5T (7%), index 21.1x forward vs 19.0x avg. Trade the chain, not the theme.",
+  "LABOR (new): one orchestrator, N agents; the 20–25% coordination pool is what agents are bought to recover. The 2026 data: Challenger reports AI now the #1 stated layoff reason (~40% of May cuts, 87.7k YTD; self-reported); NY Fed puts grad unemployment at 5.6% vs 4.2%; the entry level takes the hit. Comp follows loop design. Displacement fear fuels the slide-6 policy debate.",
+  "BONDS I, the gap: capex $410B → ~$705B (+72%), ~94% of op cash flow consumed, Big-4 FCF at a decade low, Amazon negative, Alphabet −90%. The self-funding megacap contract broke in 2026.",
+  "BONDS II, the wave: Oracle $18B, Meta $30B (record non-M&A IG), Alphabet $17.5B, Amazon $15B, Oracle $25B (8 tranches) = $105B+ in six months; ~$300B expected for full-year 2026. Oracle CDS >125bp: credit discriminates by funding capacity. READ: credit reprices before equity.",
+  "Portfolio: $37 of every $100 of S&P exposure sits in ten names. Four gauges × actions: demand (capex + token budgets), financing (CDS/spreads), rates (~4.5% 10-yr), concentration (equal-weight spread). You don’t need a view on AGI; you need to know what your portfolio already believes.",
   "The frontier (speculative, flagged): embodiment (loops in a body), orbit (escapes the grid constraint; SpaceX owns rockets + clusters), wheels (inference per mile), proteins (discovery becomes compute-bound). Every card extends the Jevons curve a decade. Gauges, not guidance.",
-  "Back matter. Data as of June 2026. New LABOR & POLICY sources column (Challenger, NY Fed). Honesty notes: Jevons illustrative; AI layoff attributions self-reported; frontier speculative; three image placeholders pending final art.",
+  "Back matter. Data as of June 2026. New LABOR & POLICY sources column (Challenger, NY Fed). Honesty notes: Jevons illustrative; AI layoff attributions self-reported; frontier speculative.",
 ];
 
-// Build stamp doubles as the viewer cache-buster (index.html: const V = D.v) —
+// Build stamp doubles as the viewer cache-buster (index.html: const V = D.v);
 // every rebuild invalidates the immutable-cached /slides/*.JPG URLs automatically.
 const BUILD_STAMP = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 12);
 
 const viewerData = {
-  title: "AI in the Market",
-  subtitle: "What’s happening now — and how markets reprice — June 2026",
+  title: "AI in the markets",
+  subtitle: "What’s happening now, and how markets reprice. June 2026",
   file: "ai-markets-deck.pptx",
   v: BUILD_STAMP,
-  total: 0, // derived from titles.length below — do not hand-edit
+  total: 0, // derived from titles.length below; do not hand-edit
   sections: [
     { start: 1, label: "Intro" },
     { start: 3, label: "01 What’s happening" },
@@ -934,18 +1030,18 @@ const viewerData = {
     { start: 13, label: "Sources" },
   ],
   titles: [
-    "Cover — AI in the Market",
+    "Cover: AI in the markets",
     "Three shifts, happening now",
     "The AI Era Diagnostic Matrix",
     "From prompts to loops: demand has no ceiling",
     "Tokens got a budget line",
-    "Washington wants a stake",
+    "Governments want a stake",
     "The market split the trade",
     "One worker now outputs like a team",
     "Capex outgrew cash flow",
     "The buildout moved into the bond market",
     "Your index fund is an AI fund now",
-    "The loop gets hands, wheels, wings — and proteins",
+    "The loop gets hands, wheels, wings, and proteins",
     "Sources & methodology",
   ],
   notes: VIEWER_NOTES,
@@ -953,7 +1049,7 @@ const viewerData = {
 
 viewerData.total = viewerData.titles.length;
 if (viewerData.notes.length !== viewerData.total) {
-  throw new Error("Slide count mismatch: " + viewerData.total + " titles vs " + viewerData.notes.length + " notes — update both arrays together.");
+  throw new Error("Slide count mismatch: " + viewerData.total + " titles vs " + viewerData.notes.length + " notes; update both arrays together.");
 }
 
 fs.writeFileSync("slides-data.js", "window.DECK = " + JSON.stringify(viewerData, null, 2) + ";\n");

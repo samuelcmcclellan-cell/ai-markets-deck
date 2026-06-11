@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI in the Market — What’s happening now — and how markets reprice — June 2026</title>
-<meta name="description" content="AI in the Market: agentic loops, token rationing, and Washington's entry — then the repricing: equities, labor, and the AI bond wave. June 2026.">
+<title>AI in the markets: June 2026</title>
+<meta name="description" content="AI in the markets: agentic loops, token rationing, and government entry. Then the repricing: equities, labor, and a $300B bond wave. June 2026.">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; background: #0a0a0a; color: #fff; font-family: Arial, Helvetica, sans-serif; overflow: hidden; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   .stage { position: fixed; inset: 0; display: flex; transition: right 0.2s ease; }
   body.notes-open .stage { right: 320px; }
   .viewer { flex: 1; display: flex; align-items: center; justify-content: center; min-width: 0; }
@@ -16,7 +17,8 @@
     object-fit: contain; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     user-select: none; -webkit-user-drag: none;
   }
-  .chrome { position: fixed; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; pointer-events: none; z-index: 10; transition: right 0.2s ease; }
+  .chrome { position: fixed; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; pointer-events: none; z-index: 10; transition: right 0.2s ease, opacity 0.4s ease; }
+  .chrome.hidden:not(:focus-within) { opacity: 0; pointer-events: none !important; }
   body.notes-open .chrome { right: 320px; }
   .chrome.top { top: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent); }
   .chrome.bottom { bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent); }
@@ -33,19 +35,20 @@
   .ghost { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
   .download:hover, .ghost:hover { transform: translateY(-1px); }
   .ghost:hover { background: rgba(255,255,255,0.2); }
+  button:focus-visible, a:focus-visible { outline: 2px solid #FFB800; outline-offset: 3px; }
   .controls {
     display: flex; gap: 8px; align-items: center;
     background: rgba(20,20,20,0.85); padding: 8px 12px; border-radius: 999px;
     font-size: 12px; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08);
   }
-  .controls button {
+  .controls .nav-button {
     background: none; border: 1px solid rgba(255,255,255,0.2); color: #fff;
     width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
     font-size: 16px; line-height: 1; padding: 0; transition: all 0.15s;
   }
-  .controls button:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
-  .controls button:disabled { opacity: 0.3; cursor: default; }
-  .counter { min-width: 56px; text-align: center; color: #fff; font-variant-numeric: tabular-nums; cursor: pointer; border-radius: 4px; padding: 4px 2px; }
+  .controls .nav-button:hover:not(:disabled) { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+  .controls .nav-button:disabled { opacity: 0.3; cursor: default; }
+  .counter { min-width: 56px; text-align: center; color: #fff; font-variant-numeric: tabular-nums; cursor: pointer; border-radius: 4px; padding: 4px 2px; background: transparent; border: 0; font: inherit; }
   .counter:hover { background: rgba(255,255,255,0.1); }
   .counter b { color: #F6693D; font-weight: bold; }
   .hint { font-size: 10px; color: #fff; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; }
@@ -60,7 +63,7 @@
   .grid-overlay .closex { position: fixed; top: 16px; right: 24px; font-size: 26px; color: #fff; background: none; border: none; cursor: pointer; }
   .section-label { font-size: 11px; font-weight: bold; letter-spacing: 0.12em; text-transform: uppercase; color: #F6693D; margin: 18px 0 8px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
-  .thumb { cursor: pointer; border: 2px solid transparent; border-radius: 6px; overflow: hidden; background: #161616; transition: border-color 0.15s, transform 0.15s; }
+  .thumb { cursor: pointer; border: 2px solid transparent; border-radius: 6px; overflow: hidden; background: #161616; transition: border-color 0.15s, transform 0.15s; color: inherit; text-align: left; padding: 0; width: 100%; }
   .thumb:hover { border-color: #F6693D; transform: translateY(-2px); }
   .thumb.current { border-color: #FFB800; }
   .thumb img { width: 100%; display: block; aspect-ratio: 16/9; object-fit: cover; }
@@ -86,39 +89,44 @@
     body.notes-open .stage, body.notes-open .chrome { right: 0; }
     .notes { width: 85vw; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; scroll-behavior: auto !important; }
+    .download:hover, .ghost:hover, .thumb:hover { transform: none; }
+  }
 </style>
 </head>
 <body>
-  <div class="stage"><div class="viewer">
-    <img id="slide" class="slide" alt="Slide" draggable="false" />
-  </div></div>
+  <main class="stage" id="viewerMain" aria-label="Slide viewer"><div class="viewer">
+    <img id="slide" class="slide" alt="" aria-describedby="slideTranscript" draggable="false" />
+    <div id="slideTranscript" class="sr-only" aria-live="polite"></div>
+  </div></main>
 
-  <div class="chrome top">
-    <div class="title" id="deckTitle">AI in the Market <span>— June 2026</span></div>
+  <header class="chrome top">
+    <div class="title" id="deckTitle">AI in the markets</div>
     <div class="topbtns">
-      <button class="ghost" id="gridBtn" title="Jump to slide (G)">Slides</button>
-      <button class="ghost" id="notesBtn" title="Presenter notes (N)">Notes</button>
+      <button class="ghost" id="gridBtn" title="Jump to slide (G)" aria-expanded="false" aria-controls="gridOverlay">Slides</button>
+      <button class="ghost" id="notesBtn" title="Presenter notes (N)" aria-expanded="false" aria-controls="notesPanel">Notes</button>
       <a class="download" id="dl" href="./ai-markets-deck.pptx" download>Download .pptx</a>
     </div>
-  </div>
+  </header>
 
-  <div class="chrome bottom">
+  <nav class="chrome bottom" aria-label="Slide navigation">
     <div class="hint">← → arrows · G grid · N notes</div>
     <div class="controls">
-      <button id="prev" aria-label="Previous slide">‹</button>
-      <span class="counter" id="counter" title="Jump to slide"><b id="cur">1</b> / <span id="total">–</span></span>
-      <button id="next" aria-label="Next slide">›</button>
+      <button class="nav-button" id="prev" aria-label="Previous slide">‹</button>
+      <button class="counter" id="counter" title="Jump to slide" aria-label="Open slide grid"><b id="cur">1</b> / <span id="total">–</span></button>
+      <button class="nav-button" id="next" aria-label="Next slide">›</button>
     </div>
     <div class="hint" style="visibility:hidden;">spacer</div>
-  </div>
+  </nav>
 
-  <div class="grid-overlay" id="gridOverlay">
+  <div class="grid-overlay" id="gridOverlay" role="dialog" aria-modal="true" aria-labelledby="gridTitle" aria-hidden="true">
     <button class="closex" id="gridClose" aria-label="Close">×</button>
-    <h2>Jump to slide</h2>
+    <h2 id="gridTitle">Jump to slide</h2>
     <div id="gridBody"></div>
   </div>
 
-  <aside class="notes" id="notesPanel">
+  <aside class="notes" id="notesPanel" aria-label="Presenter notes" aria-hidden="true">
     <h3 id="notesNum">Slide 1</h3>
     <div class="slide-title" id="notesTitle"></div>
     <div class="body" id="notesBody"></div>
@@ -137,23 +145,33 @@
     const img = document.getElementById('slide');
     const cur = document.getElementById('cur');
     document.getElementById('total').textContent = TOTAL;
-    document.getElementById('deckTitle').innerHTML = D.title + (D.subtitle ? ' <span>— ' + D.subtitle + '</span>' : '');
+    document.getElementById('deckTitle').textContent = D.title;
     document.getElementById('dl').href = './' + D.file;
-    document.title = D.title + (D.subtitle ? ' — ' + D.subtitle : '');
+    document.title = D.title + ': June 2026';
     const prevBtn = document.getElementById('prev');
     const nextBtn = document.getElementById('next');
+    const gridBtn = document.getElementById('gridBtn');
+    const notesBtn = document.getElementById('notesBtn');
+    const notesPanel = document.getElementById('notesPanel');
     const V = D.v || '2026-06-10a'; // cache-buster: auto-stamped per build via slides-data.js (/slides/* is served with a 1-yr immutable cache)
     const src = n => `./slides/Slide${n}.JPG?v=${V}`;
+    const slideLabel = n => `Slide ${n} of ${TOTAL}: ${D.titles[n - 1] || 'Untitled slide'}`;
 
     function show(n) {
       i = Math.max(1, Math.min(TOTAL, n));
       img.src = src(i);
+      img.alt = slideLabel(i);
       cur.textContent = i;
       prevBtn.disabled = i === 1;
       nextBtn.disabled = i === TOTAL;
       history.replaceState(null, '', `#${i}`);
       renderNotes();
-      document.querySelectorAll('.thumb').forEach((t, k) => t.classList.toggle('current', k + 1 === i));
+      document.querySelectorAll('.thumb').forEach((t, k) => {
+        const current = k + 1 === i;
+        t.classList.toggle('current', current);
+        if (current) t.setAttribute('aria-current', 'true');
+        else t.removeAttribute('aria-current');
+      });
     }
 
     // --- Notes / presenter mode ---
@@ -161,15 +179,21 @@
       document.getElementById('notesNum').textContent = 'Slide ' + i + ' of ' + TOTAL;
       document.getElementById('notesTitle').textContent = (D.titles[i - 1] || '');
       document.getElementById('notesBody').textContent = (D.notes[i - 1] || 'No notes for this slide.');
+      document.getElementById('slideTranscript').textContent = `${slideLabel(i)}. ${D.notes[i - 1] || ''}`;
       const nt = document.getElementById('nextThumb');
-      if (i < TOTAL) { nt.src = src(i + 1); nt.style.display = ''; }
+      if (i < TOTAL) { nt.src = src(i + 1); nt.alt = slideLabel(i + 1); nt.style.display = ''; }
       else { nt.style.display = 'none'; }
     }
-    function toggleNotes() { document.body.classList.toggle('notes-open'); }
-    document.getElementById('notesBtn').addEventListener('click', toggleNotes);
+    function toggleNotes() {
+      const open = document.body.classList.toggle('notes-open');
+      notesBtn.setAttribute('aria-expanded', String(open));
+      notesPanel.setAttribute('aria-hidden', String(!open));
+    }
+    notesBtn.addEventListener('click', toggleNotes);
 
     // --- Jump-to grid ---
     const overlay = document.getElementById('gridOverlay');
+    let lastGridTrigger = null;
     function buildGrid() {
       const body = document.getElementById('gridBody');
       body.innerHTML = '';
@@ -187,17 +211,34 @@
           grid.className = 'grid';
           body.appendChild(grid);
         }
-        const t = document.createElement('div');
+        const t = document.createElement('button');
+        t.type = 'button';
         t.className = 'thumb' + (n === i ? ' current' : '');
-        t.innerHTML = `<img loading="lazy" src="${src(n)}" alt="Slide ${n}"><div class="cap"><b>${n}.</b> ${(D.titles[n-1] || '')}</div>`;
+        if (n === i) t.setAttribute('aria-current', 'true');
+        t.setAttribute('aria-label', slideLabel(n));
+        t.innerHTML = `<img loading="lazy" src="${src(n)}" alt=""><div class="cap"><b>${n}.</b> ${(D.titles[n-1] || '')}</div>`;
         t.addEventListener('click', () => { show(n); closeGrid(); });
         grid.appendChild(t);
       }
     }
-    function openGrid() { buildGrid(); overlay.classList.add('open'); }
-    function closeGrid() { overlay.classList.remove('open'); }
+    function openGrid() {
+      lastGridTrigger = document.activeElement;
+      buildGrid();
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      gridBtn.setAttribute('aria-expanded', 'true');
+      const currentThumb = overlay.querySelector('.thumb.current') || document.getElementById('gridClose');
+      currentThumb.focus();
+    }
+    function closeGrid() {
+      const wasOpen = overlay.classList.contains('open');
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      gridBtn.setAttribute('aria-expanded', 'false');
+      if (wasOpen && lastGridTrigger && typeof lastGridTrigger.focus === 'function') lastGridTrigger.focus();
+    }
     function toggleGrid() { overlay.classList.contains('open') ? closeGrid() : openGrid(); }
-    document.getElementById('gridBtn').addEventListener('click', toggleGrid);
+    gridBtn.addEventListener('click', toggleGrid);
     document.getElementById('gridClose').addEventListener('click', closeGrid);
     document.getElementById('counter').addEventListener('click', toggleGrid);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeGrid(); });
@@ -212,7 +253,15 @@
       if (k === 'escape') { closeGrid(); return; }
       if (k === 'g') { toggleGrid(); e.preventDefault(); return; }
       if (k === 'n') { toggleNotes(); e.preventDefault(); return; }
-      if (overlay.classList.contains('open')) return;
+      if (overlay.classList.contains('open')) {
+        if (e.key === 'Tab') {
+          const focusables = Array.from(overlay.querySelectorAll('button'));
+          const first = focusables[0], last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+          else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+        }
+        return;
+      }
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown' || k === 'j') { show(i + 1); e.preventDefault(); }
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || k === 'k') { show(i - 1); e.preventDefault(); }
       else if (e.key === 'Home') { show(1); e.preventDefault(); }
@@ -244,6 +293,20 @@
     show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash : 1);
 
     for (let n = 1; n <= TOTAL; n++) { const pre = new Image(); pre.src = src(n); }
+
+    // --- Auto-hide chrome after 3s of inactivity ---
+    let hideTimer = null;
+    const chromes = document.querySelectorAll('.chrome');
+    function showChrome() {
+      chromes.forEach(c => c.classList.remove('hidden'));
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => chromes.forEach(c => c.classList.add('hidden')), 3000);
+    }
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt =>
+      document.addEventListener(evt, showChrome, { passive: true })
+    );
+    document.addEventListener('focusin', showChrome);
+    showChrome();
   </script>
 </body>
 </html>

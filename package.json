@@ -4,7 +4,8 @@
   "private": true,
   "description": "AI Markets deck built in the BII visual style via pptxgenjs.",
   "scripts": {
-    "build": "node build-deck.js"
+    "build": "node build-deck.js",
+    "validate": "node validate-deck.js"
   },
   "dependencies": {
     "pptxgenjs": "^3.12.0"
