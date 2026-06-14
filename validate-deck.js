@@ -42,6 +42,17 @@ async function pptxSlideCount() {
     .length;
 }
 
+const EXPORT_STAMP_FILE = path.join(SLIDES_DIR, "EXPORT_STAMP.txt");
+
+// The .pptx is rebuilt with a fresh stamp on every `node build-deck.js`; the JPGs
+// are only refreshed when export-slides.ps1 re-renders them and records that same
+// stamp here. If they disagree, the deck was rebuilt but not re-exported — the
+// viewer would cache-bust to new URLs that still serve the OLD slide images.
+function exportStamp() {
+  if (!fs.existsSync(EXPORT_STAMP_FILE)) return null;
+  return fs.readFileSync(EXPORT_STAMP_FILE, "utf8").trim();
+}
+
 async function main() {
   const data = readViewerData();
   const pptSlides = await pptxSlideCount();
@@ -64,6 +75,14 @@ async function main() {
     if (dims.width !== 1920 || dims.height !== 1080) {
       errors.push(`${found.name} is ${dims.width}x${dims.height}, expected 1920x1080`);
     }
+  }
+
+  // Freshness: the JPGs must have been exported from the current build of the deck.
+  const stamp = exportStamp();
+  if (stamp === null) {
+    console.warn(`Warning: ${path.relative(ROOT, EXPORT_STAMP_FILE)} not found — run the updated export-slides.ps1 once to enable stale-slide detection.`);
+  } else if (stamp !== data.v) {
+    errors.push(`slides were exported from build ${stamp} but the deck is build ${data.v} — re-run export-slides.ps1 to re-render the slides`);
   }
 
   if (errors.length) {

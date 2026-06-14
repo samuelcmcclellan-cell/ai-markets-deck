@@ -12,3 +12,6 @@ package.json
 package-lock.json
 slides-images
 logos
+# The deck ships zero PNGs (slides render to JPG); exclude any so stray working
+# files (e.g. "ChatGPT Image*.png") can never leak into the deploy.
+*.png

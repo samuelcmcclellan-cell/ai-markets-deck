@@ -1,0 +1,22 @@
+name: validate-deck
+
+# Enforce the deck consistency invariant on every push/PR so a stale or
+# mismatched export can't slip in: pptx slide count == JPG count == titles ==
+# notes, JPGs are 1920x1080, and (once slides/EXPORT_STAMP.txt is committed)
+# the slides were exported from the current build.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: node validate-deck.js

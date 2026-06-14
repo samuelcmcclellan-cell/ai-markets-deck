@@ -4,3 +4,6 @@ node_modules/
 .DS_Store
 
 .vercel
+
+# Scratch AI-generated image exports kept locally but not tracked
+/ChatGPT Image*.png

@@ -38,6 +38,16 @@ try {
 
   # Export 16:9 slide JPGs for the static viewer.
   $pres.Export($resolvedOutDir, "JPG", 1920, 1080)
+
+  # Record the build stamp these JPGs were rendered from so validate-deck.js can
+  # detect a rebuild that wasn't followed by a re-export (stale-slide guard).
+  $dataPath = Join-Path $workspace "slides-data.js"
+  if (Test-Path $dataPath) {
+    $dataJs = Get-Content -LiteralPath $dataPath -Raw
+    if ($dataJs -match '"v":\s*"([^"]+)"') {
+      Set-Content -LiteralPath (Join-Path $resolvedOutDir "EXPORT_STAMP.txt") -Value $Matches[1] -NoNewline -Encoding ascii
+    }
+  }
 }
 finally {
   if ($pres -ne $null) {

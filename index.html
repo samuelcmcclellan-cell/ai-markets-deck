@@ -88,6 +88,11 @@
     .hint, .title { display: none; }
     body.notes-open .stage, body.notes-open .chrome { right: 0; }
     .notes { width: 85vw; }
+    /* Touch targets: meet the ~44px guideline on phones (desktop sizing unchanged). */
+    .controls { padding: 8px 12px; gap: 10px; }
+    .controls .nav-button { width: 44px; height: 44px; font-size: 20px; }
+    .counter { min-width: 64px; padding: 12px 10px; }
+    .download, .ghost { padding: 15px 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; scroll-behavior: auto !important; }
@@ -153,13 +158,25 @@
     const gridBtn = document.getElementById('gridBtn');
     const notesBtn = document.getElementById('notesBtn');
     const notesPanel = document.getElementById('notesPanel');
-    const V = D.v || '2026-06-10a'; // cache-buster: auto-stamped per build via slides-data.js (/slides/* is served with a 1-yr immutable cache)
+    const V = D.v || 'dev'; // cache-buster: auto-stamped per build via slides-data.js (/slides/* is served with a 1-yr immutable cache). 'dev' fallback never masquerades as a real build stamp.
     const src = n => `./slides/Slide${n}.JPG?v=${V}`;
     const slideLabel = n => `Slide ${n} of ${TOTAL}: ${D.titles[n - 1] || 'Untitled slide'}`;
+
+    // Demand-driven preloading: fetch the current slide's neighbors eagerly, and warm
+    // the rest only once the browser is idle — so the first paint isn't competing with
+    // all 13 full-res JPGs at once (matters most on slow mobile links / link-shares).
+    const preloaded = new Set();
+    function preload(n) {
+      if (n < 1 || n > TOTAL || preloaded.has(n)) return;
+      preloaded.add(n);
+      const pre = new Image();
+      pre.src = src(n);
+    }
 
     function show(n) {
       i = Math.max(1, Math.min(TOTAL, n));
       img.src = src(i);
+      preload(i + 1); preload(i - 1); preload(i + 2); // keep adjacent nav instant
       img.alt = slideLabel(i);
       cur.textContent = i;
       prevBtn.disabled = i === 1;
@@ -216,7 +233,15 @@
         t.className = 'thumb' + (n === i ? ' current' : '');
         if (n === i) t.setAttribute('aria-current', 'true');
         t.setAttribute('aria-label', slideLabel(n));
-        t.innerHTML = `<img loading="lazy" src="${src(n)}" alt=""><div class="cap"><b>${n}.</b> ${(D.titles[n-1] || '')}</div>`;
+        // Build via DOM (not innerHTML) so a slide title can never inject markup.
+        const tImg = document.createElement('img');
+        tImg.loading = 'lazy'; tImg.src = src(n); tImg.alt = '';
+        const cap = document.createElement('div');
+        cap.className = 'cap';
+        const num = document.createElement('b');
+        num.textContent = n + '.';
+        cap.append(num, ' ' + (D.titles[n - 1] || ''));
+        t.append(tImg, cap);
         t.addEventListener('click', () => { show(n); closeGrid(); });
         grid.appendChild(t);
       }
@@ -292,7 +317,9 @@
     const fromHash = parseInt((location.hash || '').slice(1), 10);
     show(Number.isFinite(fromHash) && fromHash >= 1 ? fromHash : 1);
 
-    for (let n = 1; n <= TOTAL; n++) { const pre = new Image(); pre.src = src(n); }
+    const warmAll = () => { for (let n = 1; n <= TOTAL; n++) preload(n); };
+    if ('requestIdleCallback' in window) requestIdleCallback(warmAll, { timeout: 4000 });
+    else setTimeout(warmAll, 2000);
 
     // --- Auto-hide chrome after 3s of inactivity ---
     let hideTimer = null;
