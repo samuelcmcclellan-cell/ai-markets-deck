@@ -216,7 +216,7 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   s.addText("Strategy  |  Institutional", { x: 0.5, y: 4.25, w: 5.0, h: 0.35, fontSize: 12, color: C.inkMuted, bold: true, fontFace: "Arial", margin: 0 });
 
   addArt(s, { file: "cover.png", x: 6.0, y: 1.1, w: 3.5, h: 3.4, accent: C.yellow, label: "cover art",
-    prompt: ISO + "a financial district whose skyscrapers are built from stacked GPU / circuit-board blocks, glowing orange and yellow data streams flowing between the towers" + ISO_TAIL });
+    prompt: ISO + "a financial district at night where the skyscrapers are stacked GPU server-racks; a glowing candlestick stock-chart runs like a road along their base, and a curved arrow of capital flows from a domed bank building into the single tallest GPU tower; orange and yellow accents" + ISO_TAIL });
 
   addFooter(s, "");
 }
@@ -232,13 +232,13 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   const cols = [
     { cat: "CAPABILITY", color: C.tealBright, from: "Linear chat", to: "Autonomous loops",
       claim: "Models became self-correcting agents that run until the task is done.",
-      file: "shift-capability.png", prompt: ISO + "a small robot arm assembling a glowing cube inside an endless loop track (an autonomous work loop), teal accents" + ISO_TAIL },
+      file: "shift-capability.png", prompt: ISO + "a robotic arm on a small circular conveyor picking up a glowing cube, spotting a flaw, and placing it back to retry — a literal self-correcting loop, teal accents" + ISO_TAIL },
     { cat: "ECONOMICS", color: C.orange, from: "Token subsidy", to: "Token scarcity",
       claim: "Labs stopped subsidizing tokens; enterprises now ration them like a commodity.",
-      file: "shift-economics.png", prompt: ISO + "a utility meter / fuel gauge dispensing glowing token coins into a laptop, metered-compute feel, orange accents" + ISO_TAIL },
+      file: "shift-economics.png", prompt: ISO + "a coin-operated electricity meter wired into a GPU, its dial pushed near a red limit line, a small rationed stack of glowing token-coins beside it, orange accents" + ISO_TAIL },
     { cat: "POLICY", color: C.purpleBright, from: "Private tech", to: "Sovereign asset",
       claim: "Governments now debate owning a piece of the labs, not just regulating them.",
-      file: "shift-policy.png", prompt: ISO + "a government / capitol building with a glowing microchip resting on top, a flag planted in a server rack, purple accents" + ISO_TAIL },
+      file: "shift-policy.png", prompt: ISO + "a capitol dome beside a server-rack tower; a giant government hand plants a flag stamped with a percent sign on the tower while an official seal hovers over a glowing microchip, purple accents" + ISO_TAIL },
   ];
   cols.forEach((c, i) => {
     const x = 0.5 + i * 3.07;
@@ -305,17 +305,39 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   addHeadline(s, "From prompts to loops: demand has no ceiling", { fontSize: 26 });
   addSubhead(s, "Agents try, fail, fix, and ship on their own — and a loop burns orders of magnitude more tokens than a chat.");
 
-  s.addText("THE UNIT OF WORK CHANGED", { x: 0.5, y: 1.85, w: 4.6, h: 0.2, fontSize: 8, color: C.tealBright, bold: true, fontFace: "Arial", charSpacing: 1.5, margin: 0 });
-  s.addText("One-shot prompting gave way to try → fail → fix → ship loops that run without a human in each cycle. As creation friction falls, compute demand expands geometrically (the Jevons paradox).", {
-    x: 0.5, y: 2.12, w: 4.6, h: 1.2, fontSize: 11, color: C.inkBody, fontFace: "Arial", valign: "top", margin: 0,
+  // Left infographic: the agentic loop (TRY -> FAIL -> FIX -> SHIP, clockwise)
+  s.addText("THE AGENTIC LOOP", { x: 0.5, y: 1.82, w: 4.3, h: 0.2, fontSize: 9, color: C.tealBright, bold: true, fontFace: "Arial", charSpacing: 2, margin: 0 });
+  [
+    { t: "TRY", x: 0.95, y: 2.2 }, { t: "FAIL", x: 2.75, y: 2.2 },
+    { t: "FIX", x: 2.75, y: 3.15 }, { t: "SHIP", x: 0.95, y: 3.15 },
+  ].forEach((n) => {
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: n.x, y: n.y, w: 1.2, h: 0.5, fill: { color: C.inkPanel }, line: { color: C.tealBright, width: 1.5 }, rectRadius: 0.06 });
+    s.addText(n.t, { x: n.x, y: n.y, w: 1.2, h: 0.5, fontSize: 10, color: C.tealBright, bold: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
   });
-  s.addText("“My job is to write loops.”", { x: 0.5, y: 3.7, w: 4.6, h: 0.35, fontSize: 15, color: C.white, bold: true, fontFace: "Arial Black", margin: 0 });
-  s.addText("Boris Cherny — the agentic workflow in one sentence", { x: 0.5, y: 4.06, w: 4.6, h: 0.2, fontSize: 8, color: C.inkMuted, fontFace: "Arial", margin: 0 });
+  s.addShape(pres.shapes.LINE, { x: 2.18, y: 2.45, w: 0.54, h: 0, line: { color: C.tealBright, width: 1.75, endArrowType: "triangle" } });
+  s.addShape(pres.shapes.LINE, { x: 3.35, y: 2.73, w: 0, h: 0.4, line: { color: C.tealBright, width: 1.75, endArrowType: "triangle" } });
+  s.addShape(pres.shapes.LINE, { x: 2.18, y: 3.4, w: 0.54, h: 0, flipH: true, line: { color: C.tealBright, width: 1.75, endArrowType: "triangle" } });
+  s.addShape(pres.shapes.LINE, { x: 1.55, y: 2.73, w: 0, h: 0.4, flipV: true, line: { color: C.tealBright, width: 1.75, endArrowType: "triangle" } });
+  s.addText("runs until\ndone", { x: 1.93, y: 2.78, w: 0.89, h: 0.35, fontSize: 7, color: C.inkMuted, italic: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
+  s.addText("“My job is to write loops.”", { x: 0.5, y: 3.92, w: 4.3, h: 0.32, fontSize: 14, color: C.white, bold: true, fontFace: "Arial Black", margin: 0 });
+  s.addText("Boris Cherny — the agentic workflow in one sentence", { x: 0.5, y: 4.25, w: 4.3, h: 0.2, fontSize: 7.5, color: C.inkMuted, fontFace: "Arial", margin: 0 });
 
-  addArt(s, { file: "loops-jevons.png", x: 5.3, y: 1.78, w: 4.2, h: 2.6, accent: C.tealBright, label: "loop + rising demand",
-    prompt: ISO + "an infinity-shaped pipeline of four gears labelled by position (try, fail, fix, ship) feeding an ascending staircase of glowing server-rack blocks that grows taller to the right (runaway compute demand), teal accents" + ISO_TAIL });
+  // Right infographic: efficiency multiplies demand (Jevons escalation ladder)
+  s.addText("AS FRICTION FALLS, MORE GETS BUILT", { x: 5.1, y: 1.82, w: 4.4, h: 0.2, fontSize: 9, color: C.tealBright, bold: true, fontFace: "Arial", charSpacing: 1.5, margin: 0 });
+  s.addText("compute demanded ↑", { x: 5.1, y: 2.06, w: 4.4, h: 0.18, fontSize: 7.5, color: C.inkMuted, italic: true, fontFace: "Arial", align: "right", margin: 0 });
+  const jBase = 3.95;
+  [
+    { x: 5.35, h: 0.45, label: "Internal\nPDF summaries", bright: false },
+    { x: 6.4,  h: 0.85, label: "Custom\ndashboards", bright: false },
+    { x: 7.45, h: 1.25, label: "Disposable\nweb apps", bright: true },
+    { x: 8.5,  h: 1.6,  label: "Giant research\nprojects", bright: true },
+  ].forEach((b) => {
+    s.addShape(pres.shapes.RECTANGLE, { x: b.x, y: jBase - b.h, w: 0.85, h: b.h, fill: { color: b.bright ? C.tealBright : C.inkBar } });
+    s.addText(b.label, { x: b.x - 0.12, y: jBase + 0.05, w: 1.09, h: 0.42, fontSize: 6.8, color: b.bright ? C.white : C.inkMuted, bold: b.bright, fontFace: "Arial", align: "center", valign: "top", margin: 0 });
+  });
+  s.addShape(pres.shapes.LINE, { x: 5.5, y: 2.3, w: 3.5, h: 1.2, flipV: true, line: { color: C.tealBright, width: 2, endArrowType: "triangle" } });
 
-  addSource(s, MD_SOURCE + ". Cherny/Steinberger loop framing; Jevons paradox illustrative, not measured data.", 4.5);
+  addSource(s, MD_SOURCE + ". Cherny/Steinberger loop framing; Jevons paradox illustrative, not measured data.", 4.55);
   addFooter(s, 4);
 }
 
@@ -329,7 +351,7 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   addSubhead(s, "Major firms are abandoning unlimited access — rationing is what demand looks like when the input is scarce.");
 
   addArt(s, { file: "token-budget.png", x: 5.3, y: 1.75, w: 4.2, h: 2.65, accent: C.orange, label: "metered compute",
-    prompt: ISO + "a fuel-pump-style 'token budget' dispenser with a glowing numeric meter, piping metered light into a laptop while a near-empty reservoir sits behind it (scarcity), orange and gold accents" + ISO_TAIL });
+    prompt: ISO + "a guarded vault dispensing only a small rationed handful of glowing tokens onto a conveyor that feeds a row of waiting laptops, an 'allocation' valve throttling the flow, orange and gold accents" + ISO_TAIL });
 
   const cases = [
     { kicker: "UBER", color: C.tealBright, t: "A hard $1,500/mo per-employee token cap replaced unlimited access." },
@@ -360,7 +382,7 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   addSubhead(s, "From Washington to Seoul, the debate shifted from regulating AI to owning a piece of it.");
 
   addArt(s, { file: "gov-stake.png", x: 5.3, y: 1.75, w: 4.2, h: 2.65, accent: C.purpleBright, label: "sovereign stake",
-    prompt: ISO + "a government capitol building and a corporate AI tower linked by a glowing bridge made of equity/share certificates and a handshake, a public 'dividend' coin flowing toward small houses, purple accents" + ISO_TAIL });
+    prompt: ISO + "a giant government hand planting a flag bearing a percentage symbol atop a glowing server-rack skyscraper, while a chute rains small dividend coins down onto a cluster of tiny suburban houses below, purple accents" + ISO_TAIL });
 
   const pts = [
     { kicker: "UNITED STATES", color: C.purpleBright, t: "A 30-day NSA pre-release review (voluntary), plus a floated one-time 50% tax on AI-lab equity to seed a public “AI Dividends” fund — Sanders proposed, Trump echoed." },
@@ -428,8 +450,23 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   addHeadline(s, "One worker now outputs like a team");
   addSubhead(s, "Agents change what a job is — and in 2026 the labor data started moving.");
 
-  addArt(s, { file: "labor-orchestrator.png", x: 0.5, y: 1.8, w: 4.2, h: 2.6, accent: C.tealBright, label: "orchestrator + N agents",
-    prompt: ISO + "a single human at a control console directing a fan-out of many small agent-robots working in parallel on research, build, test and ship tasks, glowing connection lines, teal accents" + ISO_TAIL });
+  // Left infographic: one orchestrator -> N parallel agents (native fan-out)
+  s.addText("ONE ORCHESTRATOR  →  N AGENTS", { x: 0.5, y: 1.82, w: 4.3, h: 0.2, fontSize: 9, color: C.tealBright, bold: true, fontFace: "Arial", charSpacing: 1.5, margin: 0 });
+  s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.6, y: 2.85, w: 1.35, h: 0.8, fill: { color: C.inkPanel }, line: { color: C.tealBright, width: 1.75 }, rectRadius: 0.06 });
+  s.addText([
+    { text: "YOU", options: { bold: true, color: C.white, fontSize: 11, breakLine: true } },
+    { text: "orchestrator", options: { color: C.tealBright, fontSize: 7.5 } },
+  ], { x: 0.6, y: 2.85, w: 1.35, h: 0.8, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
+  const orchX = 1.95, orchY = 3.25;
+  [
+    { t: "RESEARCH", y: 1.98 }, { t: "BUILD", y: 2.62 }, { t: "TEST", y: 3.26 }, { t: "SHIP", y: 3.9 },
+  ].forEach((a) => {
+    const acy = a.y + 0.25;
+    s.addShape(pres.shapes.LINE, { x: orchX, y: Math.min(acy, orchY), w: 3.25 - orchX, h: Math.abs(acy - orchY) || 0.001, flipV: acy < orchY, line: { color: C.inkMuted, width: 1, endArrowType: "triangle" } });
+    s.addShape(pres.shapes.RECTANGLE, { x: 3.25, y: a.y, w: 1.4, h: 0.5, fill: { type: "none" }, line: { color: C.tealBright, width: 1.25 } });
+    s.addText(a.t, { x: 3.25, y: a.y, w: 1.4, h: 0.5, fontSize: 8.5, color: C.tealBright, bold: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
+  });
+  s.addText("one person now outputs like a team", { x: 0.6, y: 4.02, w: 2.5, h: 0.5, fontSize: 8, color: C.inkMuted, italic: true, fontFace: "Arial", valign: "top", margin: 0 });
 
   const rows = [
     { color: C.redBright, t: "AI is now the #1 stated reason for layoffs.", b: "Cited in ~40% of May's announced US cuts; 87.7k AI-attributed YTD vs 54.8k in all of 2025 (Challenger; self-reported)." },
@@ -552,13 +589,13 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
 
   const cards = [
     { file: "frontier-embodiment.png", t: "Embodiment.", b: "Agentic loops in a body — physical labor enters the token economy.",
-      prompt: ISO + "a humanoid robot working on a warehouse floor among shelving, pink accents" + ISO_TAIL },
+      prompt: ISO + "a humanoid robot carrying a labeled tote down a numbered warehouse aisle lined with shelving racks, mid-stride, pink accents" + ISO_TAIL },
     { file: "frontier-wheels.png", t: "Wheels.", b: "Robotaxis are inference on wheels — per-mile token economics.",
-      prompt: ISO + "an autonomous robotaxi with a glowing sensor halo on a small city block, pink accents" + ISO_TAIL },
+      prompt: ISO + "a driverless robotaxi with a spinning lidar turret and glowing sensor cones stopped at a small city intersection with a traffic light and crosswalk, pink accents" + ISO_TAIL },
     { file: "frontier-orbit.png", t: "Orbit.", b: "Orbital compute escapes the grid constraint behind token rationing.",
-      prompt: ISO + "an orbital data-center satellite with large solar panels above the curve of Earth, pink accents" + ISO_TAIL },
+      prompt: ISO + "a ring-shaped orbital data-center with unfolded solar-panel wings and server modules, floating above the curved horizon of Earth with sparse stars, pink accents" + ISO_TAIL },
     { file: "frontier-proteins.png", t: "Proteins.", b: "AI-designed proteins make discovery compute-bound; R&D looks like capex.",
-      prompt: ISO + "a robotic lab arm assembling a glowing folded-protein / molecule structure, pink accents" + ISO_TAIL },
+      prompt: ISO + "a robotic pipette arm in a lab assembling a glowing folded-protein ribbon and double-helix on a sample platform, small vials arranged around it, pink accents" + ISO_TAIL },
   ];
   cards.forEach((c, i) => {
     const x = 0.5 + i * 2.3;
