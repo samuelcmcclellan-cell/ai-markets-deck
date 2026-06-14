@@ -177,7 +177,7 @@ function addArt(slide, opts) {
     x: x + 0.2, y: y + 0.16, w: w - 0.4, h: 0.24, fontSize: 9, color: accent, bold: true, fontFace: "Arial", charSpacing: 2, margin: 0,
   });
   slide.addText([
-    { text: "ISOMETRIC PROMPT → save as " + (file || "image.png"), options: { italic: true, color: C.inkFaint, fontSize: 7, breakLine: true } },
+    { text: "IMAGE PROMPT → save as " + (file || "image.png"), options: { italic: true, color: C.inkFaint, fontSize: 7, breakLine: true } },
     { text: prompt, options: { color: C.inkBody, fontSize: 8.5 } },
   ], { x: x + 0.2, y: y + 0.46, w: w - 0.4, h: h - 0.66, fontFace: "Arial", valign: "top", margin: 0 });
 }
@@ -201,8 +201,8 @@ const BAR_DEFAULTS = {
 };
 
 // Short on-slide prompts (full versions live in IMAGE_PROMPTS_V3.md).
-const ISO = "Isometric 3D illustration, ";
-const ISO_TAIL = ", near-black background, clean low-poly vector style, soft studio glow, subtle floor grid, centered, no text, no logos.";
+const STYLE = "Clean modern editorial illustration with natural perspective (not isometric), ";
+const STYLE_TAIL = ", on a near-black background, soft cinematic studio lighting, minimal and polished, single centered subject, no text, no words, no logos.";
 
 // =============================================================================
 // SLIDE 1: Cover (simple, image-led)
@@ -216,13 +216,13 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   s.addText("Strategy  |  Institutional", { x: 0.5, y: 4.25, w: 5.0, h: 0.35, fontSize: 12, color: C.inkMuted, bold: true, fontFace: "Arial", margin: 0 });
 
   addArt(s, { file: "cover.png", x: 6.0, y: 1.1, w: 3.5, h: 3.4, accent: C.yellow, label: "cover art",
-    prompt: ISO + "a financial district at night where the skyscrapers are stacked GPU server-racks; a glowing candlestick stock-chart runs like a road along their base, and a curved arrow of capital flows from a domed bank building into the single tallest GPU tower; orange and yellow accents" + ISO_TAIL });
+    prompt: STYLE + "a financial district at night where the skyscrapers are stacked GPU server-racks; a glowing candlestick stock-chart runs like a road along their base, and a curved arrow of capital flows from a domed bank building into the single tallest GPU tower; orange and yellow accents" + STYLE_TAIL });
 
   addFooter(s, "");
 }
 
 // =============================================================================
-// SLIDE 2: Three shifts (thesis) - isometric icons, not hero stats
+// SLIDE 2: Three shifts (thesis) - native from->to diagrams, not hero stats
 // =============================================================================
 {
   const s = newSlide();
@@ -231,25 +231,24 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
 
   const cols = [
     { cat: "CAPABILITY", color: C.tealBright, from: "Linear chat", to: "Autonomous loops",
-      claim: "Models became self-correcting agents that run until the task is done.",
-      file: "shift-capability.png", prompt: ISO + "a robotic arm on a small circular conveyor picking up a glowing cube, spotting a flaw, and placing it back to retry — a literal self-correcting loop, teal accents" + ISO_TAIL },
+      claim: "Models became self-correcting agents that run until the task is done." },
     { cat: "ECONOMICS", color: C.orange, from: "Token subsidy", to: "Token scarcity",
-      claim: "Labs stopped subsidizing tokens; enterprises now ration them like a commodity.",
-      file: "shift-economics.png", prompt: ISO + "a coin-operated electricity meter wired into a GPU, its dial pushed near a red limit line, a small rationed stack of glowing token-coins beside it, orange accents" + ISO_TAIL },
+      claim: "Labs stopped subsidizing tokens; enterprises now ration them like a commodity." },
     { cat: "POLICY", color: C.purpleBright, from: "Private tech", to: "Sovereign asset",
-      claim: "Governments now debate owning a piece of the labs, not just regulating them.",
-      file: "shift-policy.png", prompt: ISO + "a capitol dome beside a server-rack tower; a giant government hand plants a flag stamped with a percent sign on the tower while an official seal hovers over a glowing microchip, purple accents" + ISO_TAIL },
+      claim: "Governments now debate owning a piece of the labs, not just regulating them." },
   ];
   cols.forEach((c, i) => {
-    const x = 0.5 + i * 3.07;
-    s.addText(c.cat, { x: x, y: 1.6, w: 2.95, h: 0.2, fontSize: 8, color: c.color, bold: true, fontFace: "Arial", charSpacing: 2, align: "center", margin: 0 });
-    addArt(s, { file: c.file, x: x, y: 1.86, w: 2.95, h: 1.55, accent: c.color, label: c.cat.toLowerCase(), prompt: c.prompt });
-    s.addText([
-      { text: c.from + "  ", options: { color: C.inkBody, fontSize: 11, bold: true } },
-      { text: "→  ", options: { color: c.color, fontSize: 12, bold: true } },
-      { text: c.to, options: { color: C.white, fontSize: 11, bold: true } },
-    ], { x: x, y: 3.5, w: 2.95, h: 0.3, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
-    s.addText(c.claim, { x: x + 0.12, y: 3.84, w: 2.71, h: 0.5, fontSize: 8.5, color: C.inkMuted, fontFace: "Arial", align: "center", valign: "top", margin: 0 });
+    const x = 0.5 + i * 3.07, w = 2.95;
+    s.addShape(pres.shapes.RECTANGLE, { x: x, y: 1.62, w: w, h: 2.62, fill: { color: C.inkPanel } });
+    s.addShape(pres.shapes.RECTANGLE, { x: x, y: 1.62, w: w, h: 0.05, fill: { color: c.color } });
+    s.addText(c.cat, { x: x, y: 1.78, w: w, h: 0.2, fontSize: 8, color: c.color, bold: true, fontFace: "Arial", charSpacing: 2, align: "center", margin: 0 });
+    // native from -> to transition diagram (vertical)
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 0.45, y: 2.12, w: w - 0.9, h: 0.42, fill: { color: C.inkGhost }, line: { color: C.inkLine, width: 1 }, rectRadius: 0.05 });
+    s.addText(c.from, { x: x + 0.45, y: 2.12, w: w - 0.9, h: 0.42, fontSize: 9.5, color: C.inkMuted, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
+    s.addShape(pres.shapes.LINE, { x: x + w / 2, y: 2.58, w: 0, h: 0.26, line: { color: c.color, width: 2, endArrowType: "triangle" } });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: x + 0.45, y: 2.88, w: w - 0.9, h: 0.42, fill: { color: C.inkPanel }, line: { color: c.color, width: 1.5 }, rectRadius: 0.05 });
+    s.addText(c.to, { x: x + 0.45, y: 2.88, w: w - 0.9, h: 0.42, fontSize: 9.5, color: C.white, bold: true, fontFace: "Arial", align: "center", valign: "middle", margin: 0 });
+    s.addText(c.claim, { x: x + 0.18, y: 3.46, w: w - 0.36, h: 0.72, fontSize: 8.5, color: C.inkMuted, fontFace: "Arial", align: "center", valign: "top", margin: 0 });
   });
 
   s.addShape(pres.shapes.RECTANGLE, { x: 0, y: 4.42, w: 10.0, h: 0.5, fill: { color: C.inkPanel } });
@@ -351,7 +350,7 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   addSubhead(s, "Major firms are abandoning unlimited access — rationing is what demand looks like when the input is scarce.");
 
   addArt(s, { file: "token-budget.png", x: 5.3, y: 1.75, w: 4.2, h: 2.65, accent: C.orange, label: "metered compute",
-    prompt: ISO + "a guarded vault dispensing only a small rationed handful of glowing tokens onto a conveyor that feeds a row of waiting laptops, an 'allocation' valve throttling the flow, orange and gold accents" + ISO_TAIL });
+    prompt: STYLE + "a guarded vault dispensing only a small rationed handful of glowing tokens onto a conveyor that feeds a row of waiting laptops, an 'allocation' valve throttling the flow, orange and gold accents" + STYLE_TAIL });
 
   const cases = [
     { kicker: "UBER", color: C.tealBright, t: "A hard $1,500/mo per-employee token cap replaced unlimited access." },
@@ -382,7 +381,7 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
   addSubhead(s, "From Washington to Seoul, the debate shifted from regulating AI to owning a piece of it.");
 
   addArt(s, { file: "gov-stake.png", x: 5.3, y: 1.75, w: 4.2, h: 2.65, accent: C.purpleBright, label: "sovereign stake",
-    prompt: ISO + "a giant government hand planting a flag bearing a percentage symbol atop a glowing server-rack skyscraper, while a chute rains small dividend coins down onto a cluster of tiny suburban houses below, purple accents" + ISO_TAIL });
+    prompt: STYLE + "a giant government hand planting a flag bearing a percentage symbol atop a glowing server-rack skyscraper, while a chute rains small dividend coins down onto a cluster of tiny suburban houses below, purple accents" + STYLE_TAIL });
 
   const pts = [
     { kicker: "UNITED STATES", color: C.purpleBright, t: "A 30-day NSA pre-release review (voluntary), plus a floated one-time 50% tax on AI-lab equity to seed a public “AI Dividends” fund — Sanders proposed, Trump echoed." },
@@ -589,13 +588,13 @@ const ISO_TAIL = ", near-black background, clean low-poly vector style, soft stu
 
   const cards = [
     { file: "frontier-embodiment.png", t: "Embodiment.", b: "Agentic loops in a body — physical labor enters the token economy.",
-      prompt: ISO + "a humanoid robot carrying a labeled tote down a numbered warehouse aisle lined with shelving racks, mid-stride, pink accents" + ISO_TAIL },
+      prompt: STYLE + "a humanoid robot carrying a labeled tote down a numbered warehouse aisle lined with shelving racks, mid-stride, pink accents" + STYLE_TAIL },
     { file: "frontier-wheels.png", t: "Wheels.", b: "Robotaxis are inference on wheels — per-mile token economics.",
-      prompt: ISO + "a driverless robotaxi with a spinning lidar turret and glowing sensor cones stopped at a small city intersection with a traffic light and crosswalk, pink accents" + ISO_TAIL },
+      prompt: STYLE + "a driverless robotaxi with a spinning lidar turret and glowing sensor cones stopped at a small city intersection with a traffic light and crosswalk, pink accents" + STYLE_TAIL },
     { file: "frontier-orbit.png", t: "Orbit.", b: "Orbital compute escapes the grid constraint behind token rationing.",
-      prompt: ISO + "a ring-shaped orbital data-center with unfolded solar-panel wings and server modules, floating above the curved horizon of Earth with sparse stars, pink accents" + ISO_TAIL },
+      prompt: STYLE + "a ring-shaped orbital data-center with unfolded solar-panel wings and server modules, floating above the curved horizon of Earth with sparse stars, pink accents" + STYLE_TAIL },
     { file: "frontier-proteins.png", t: "Proteins.", b: "AI-designed proteins make discovery compute-bound; R&D looks like capex.",
-      prompt: ISO + "a robotic pipette arm in a lab assembling a glowing folded-protein ribbon and double-helix on a sample platform, small vials arranged around it, pink accents" + ISO_TAIL },
+      prompt: STYLE + "a robotic pipette arm in a lab assembling a glowing folded-protein ribbon and double-helix on a sample platform, small vials arranged around it, pink accents" + STYLE_TAIL },
   ];
   cards.forEach((c, i) => {
     const x = 0.5 + i * 2.3;
