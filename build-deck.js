@@ -204,8 +204,8 @@ const BAR_DEFAULTS = {
 };
 
 // Short on-slide prompts (full detailed versions live in IMAGE_PROMPTS_V3.md).
-const STYLE = "Detailed modern editorial 3D illustration, slight three-quarter camera angle, polished semi-realistic render, cinematic: ";
-const STYLE_TAIL = ". Deep near-black studio background (#111114), soft volumetric lighting with gentle rim light, glossy and matte materials, fine detail, crisp focus, premium financial-tech mood, single hero subject with generous negative space, no text, no words, no logos, no watermark.";
+const STYLE = "Detailed modern editorial 3D illustration, slight three-quarter camera angle, polished semi-realistic render, clean and bright: ";
+const STYLE_TAIL = ". Deep near-black (#111114) studio background; brushed-silver and white materials; clean, bright, optimistic BlackRock-style institutional palette, never dark or ominous; soft even lighting, crisp focus, premium financial-tech mood; single hero subject with generous negative space; no text, no words, no logos, no watermark.";
 
 // =============================================================================
 // SLIDE 1: Cover (simple, image-led)
@@ -219,7 +219,7 @@ const STYLE_TAIL = ". Deep near-black studio background (#111114), soft volumetr
   s.addText("Strategy  |  Institutional", { x: 0.5, y: 4.25, w: 5.0, h: 0.35, fontSize: 12, color: C.inkMuted, bold: true, fontFace: "Arial", margin: 0 });
 
   addArt(s, { file: "cover.png", x: 6.0, y: 1.1, w: 3.5, h: 3.4, accent: C.yellow, label: "cover art",
-    prompt: STYLE + "a financial district at night where the skyscrapers are stacked GPU server-racks; a glowing candlestick stock-chart runs like a road along their base, and a curved arrow of capital flows from a domed bank building into the single tallest GPU tower; orange and yellow accents" + STYLE_TAIL });
+    prompt: STYLE + "a bright, optimistic financial district lit against a deep near-black sky, its skyscrapers built from stacked GPU server-racks with glowing status lights; a candlestick stock-chart winds through the streets like a lit highway with green up-bars and red down-bars; a luminous ribbon-arrow of capital arcs from a domed bank building up into the single tallest tower; orange (#F6693D) and gold (#FFB800) accents with green (#00A854) and red (#CC0000) candlesticks" + STYLE_TAIL });
 
   addFooter(s, "");
 }
@@ -353,7 +353,7 @@ const STYLE_TAIL = ". Deep near-black studio background (#111114), soft volumetr
   addSubhead(s, "Major firms are abandoning unlimited access — rationing is what demand looks like when the input is scarce.");
 
   addArt(s, { file: "token-budget.png", x: 5.3, y: 1.75, w: 4.2, h: 2.65, accent: C.orange, label: "metered compute",
-    prompt: STYLE + "a guarded vault dispensing only a small rationed handful of glowing tokens onto a conveyor that feeds a row of waiting laptops, an 'allocation' valve throttling the flow, orange and gold accents" + STYLE_TAIL });
+    prompt: STYLE + "a clean, orderly allocation station that dispenses a measured handful of glowing tokens onto a conveyor feeding a row of laptops, a clear dial set to a budget limit, managed and modern (not grim); orange (#F6693D) and gold (#FFB800) accents" + STYLE_TAIL });
 
   const cases = [
     { kicker: "UBER", color: C.tealBright, t: "A hard $1,500/mo per-employee token cap replaced unlimited access." },
@@ -384,7 +384,7 @@ const STYLE_TAIL = ". Deep near-black studio background (#111114), soft volumetr
   addSubhead(s, "From Washington to Seoul, the debate shifted from regulating AI to owning a piece of it.");
 
   addArt(s, { file: "gov-stake.png", x: 5.3, y: 1.75, w: 4.2, h: 2.65, accent: C.purpleBright, label: "sovereign stake",
-    prompt: STYLE + "a giant government hand planting a flag bearing a percentage symbol atop a glowing server-rack skyscraper, while a chute rains small dividend coins down onto a cluster of tiny suburban houses below, purple accents" + STYLE_TAIL });
+    prompt: STYLE + "a classical domed government building and a modern data-center tower standing side by side on a clean plaza, linked by a bright walkway along which glowing 'dividend' coins travel toward a tidy row of friendly homes — an optimistic public-private partnership; orange (#F6693D) and gold (#FFB800) accents" + STYLE_TAIL });
 
   const pts = [
     { kicker: "UNITED STATES", color: C.purpleBright, t: "A 30-day NSA pre-release review (voluntary), plus a floated one-time 50% tax on AI-lab equity to seed a public “AI Dividends” fund — Sanders proposed, Trump echoed." },
@@ -591,13 +591,13 @@ const STYLE_TAIL = ". Deep near-black studio background (#111114), soft volumetr
 
   const cards = [
     { file: "frontier-embodiment.png", t: "Embodiment.", b: "Agentic loops in a body — physical labor enters the token economy.",
-      prompt: STYLE + "a humanoid robot carrying a labeled tote down a numbered warehouse aisle lined with shelving racks, mid-stride, pink accents" + STYLE_TAIL },
+      prompt: STYLE + "a friendly, sleek white-and-silver humanoid robot walking upright down a bright, well-lit numbered warehouse aisle, carrying a labeled tote, neat shelving on either side; magenta-pink (#E8478D) and warm orange accents" + STYLE_TAIL },
     { file: "frontier-wheels.png", t: "Wheels.", b: "Robotaxis are inference on wheels — per-mile token economics.",
-      prompt: STYLE + "a driverless robotaxi with a spinning lidar turret and glowing sensor cones stopped at a small city intersection with a traffic light and crosswalk, pink accents" + STYLE_TAIL },
+      prompt: STYLE + "a sleek driverless robotaxi with a spinning lidar turret and soft glowing sensor cones, stopped at a clean, bright city intersection with a traffic light and crosswalk; magenta-pink (#E8478D) and warm orange accents" + STYLE_TAIL },
     { file: "frontier-orbit.png", t: "Orbit.", b: "Orbital compute escapes the grid constraint behind token rationing.",
-      prompt: STYLE + "a ring-shaped orbital data-center with unfolded solar-panel wings and server modules, floating above the curved horizon of Earth with sparse stars, pink accents" + STYLE_TAIL },
+      prompt: STYLE + "a ring-shaped orbital data-center with unfolded solar-panel wings and server modules, sunlit above the bright curved horizon of Earth; magenta-pink (#E8478D) and warm orange accents" + STYLE_TAIL },
     { file: "frontier-proteins.png", t: "Proteins.", b: "AI-designed proteins make discovery compute-bound; R&D looks like capex.",
-      prompt: STYLE + "a robotic pipette arm in a lab assembling a glowing folded-protein ribbon and double-helix on a sample platform, small vials arranged around it, pink accents" + STYLE_TAIL },
+      prompt: STYLE + "a precise robotic lab arm assembling a glowing folded-protein ribbon and DNA double-helix on a bright, clean sample platform with small glass vials around it; magenta-pink (#E8478D) and warm orange accents" + STYLE_TAIL },
   ];
   cards.forEach((c, i) => {
     const x = 0.5 + i * 2.3;
