@@ -2,7 +2,7 @@ window.DECK = {
   "title": "AI in the markets",
   "subtitle": "What's happening now, and how markets reprice. June 2026",
   "file": "ai-markets-deck.pptx",
-  "v": "202606141657",
+  "v": "202606141705",
   "total": 12,
   "sections": [
     {
