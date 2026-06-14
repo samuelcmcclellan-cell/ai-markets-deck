@@ -11,13 +11,16 @@
 //     the .pptx speaker notes and the viewer panel).
 //   - Concept slides are image-led via addArt(): if the named file exists in
 //     slides-images/web/ it is placed; otherwise an "intentional placeholder" box
-//     renders the isometric text-to-image PROMPT to paste into ChatGPT. Drop the
-//     generated image into slides-images/web/ and rebuild — no code change needed.
-//   - Cover simplified (no bond-wave line, no loop diagram). Slide 2 uses isometric
-//     icons instead of hero stats. Slide 5 (tokens) redesigned around an image, not
-//     the old meter. Slide 6 (policy) drops the KOSPI hero stat. The two bond slides
-//     are merged into one. Data slides (equities, bonds, portfolio) keep their charts.
-//   - Image aesthetic: cohesive isometric 3D illustration. Full prompts also in
+//     renders the text-to-image PROMPT to paste into ChatGPT. Drop the generated
+//     image into slides-images/web/ and rebuild — no code change needed.
+//   - Slides 2, 4 and 8 are native, labeled diagrams (not images): slide 2's three
+//     from->to shift cards, slide 4's agentic loop + Jevons ladder, slide 8's
+//     orchestrator -> N agents fan-out.
+//   - Cover simplified (no bond-wave line, no loop diagram). Slide 5 (tokens)
+//     redesigned around an image, not the old meter. Slide 6 (policy) drops the
+//     KOSPI hero stat. The two bond slides are merged. Data slides (equities,
+//     bonds, portfolio) keep their charts.
+//   - Image aesthetic: cohesive modern editorial 3D illustration. Full prompts in
 //     IMAGE_PROMPTS_V3.md.
 //
 // Data as of June 2026. Sources cited per slide and consolidated on the final slide.
@@ -155,7 +158,7 @@ function addStat(slide, opts) {
 
 // Image-led art slot. If the named file exists in ART_DIR it is placed (cover-fit)
 // with a thin accent rule; otherwise an intentional placeholder renders the
-// copy-ready isometric prompt so the user can generate the art in ChatGPT.
+// copy-ready image prompt so the user can generate the art in ChatGPT.
 function addArt(slide, opts) {
   const { file, x, y, w, h, label, prompt } = opts;
   const accent = opts.accent || C.yellow;
@@ -200,9 +203,9 @@ const BAR_DEFAULTS = {
   showLegend: false,
 };
 
-// Short on-slide prompts (full versions live in IMAGE_PROMPTS_V3.md).
-const STYLE = "Clean modern editorial illustration with natural perspective (not isometric), ";
-const STYLE_TAIL = ", on a near-black background, soft cinematic studio lighting, minimal and polished, single centered subject, no text, no words, no logos.";
+// Short on-slide prompts (full detailed versions live in IMAGE_PROMPTS_V3.md).
+const STYLE = "Detailed modern editorial 3D illustration, slight three-quarter camera angle, polished semi-realistic render, cinematic: ";
+const STYLE_TAIL = ". Deep near-black studio background (#111114), soft volumetric lighting with gentle rim light, glossy and matte materials, fine detail, crisp focus, premium financial-tech mood, single hero subject with generous negative space, no text, no words, no logos, no watermark.";
 
 // =============================================================================
 // SLIDE 1: Cover (simple, image-led)
@@ -577,7 +580,7 @@ const STYLE_TAIL = ", on a near-black background, soft cinematic studio lighting
 }
 
 // =============================================================================
-// SLIDE 11: The frontier (image-led, isometric re-prompts)
+// SLIDE 11: The frontier (image-led)
 // =============================================================================
 {
   const s = newSlide();
